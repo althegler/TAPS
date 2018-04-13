@@ -1,7 +1,7 @@
 
 
 -- Takes some time to run with 65535. Try with a smaller number
-channel input : {1..65536}
+channel input : {1..65535}
 
 channel background : {0}
 channel potatoe : {1}
