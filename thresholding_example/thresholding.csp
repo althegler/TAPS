@@ -1,0 +1,21 @@
+
+
+-- Takes some time to run with 65535. Try with a smaller number
+channel input : {1..65536}
+
+channel background : {0}
+channel potatoe : {1}
+channel metal : {2}
+
+potatoe_threshold_high = 55000
+potatoe_threshold_low  = 15000
+
+
+f(x) = if x < potatoe_threshold_high then potatoe!1 -> SKIP
+        else if x < potatoe_threshold_low then metal!2 -> SKIP
+        else background!0 -> SKIP
+
+Process = input ? x -> if x < 65536 then f (x) else STOP
+
+-- Does Process always terminate
+assert SKIP [F= Process \ Events
