@@ -1,0 +1,123 @@
+---------------------------------------------------------------------------
+-- "The Symbiosis of Concurrency and Verification: Teaching and Case Studies"
+--
+-- J.B.Pedersen and P.H.Welch
+--
+-- FDR script supporting the Ben-Ari case study in Appendix A
+
+---------------------------------------------------- Appendix A.1
+
+channel load, store : {0..20}
+channel kill
+
+inc (x) = if x >= 20 then 20 else x + 1
+
+P = ; x:<0..9> @ load ? n -> store ! inc (n) -> SKIP
+
+Var (n) =
+  store ? x -> Var (x) []
+  load ! n -> Var (n) []
+  kill -> SKIP  -- terminate
+
+PP_check = (P ||| P) ; load ? n -> if n == 2 then STOP else kill -> SKIP
+
+SYSTEM = PP_check [| {| load, store, kill |} |] Var (0)
+
+---------------------------------------------------- Appendix A.2
+
+-- Does SYSTEM always terminate?
+-- The following assertion fails: so the answer is no.
+
+assert SKIP [FD= SYSTEM \ Events
+
+-- If a final "load" in PP_check (in some execution path) delivered 2,
+-- PP_check would "STOP" and SYSTEM would deadlock and, therefore, fail
+-- to terminate.  Exploring the trace leading to the assertion failure
+-- discovered by FDR (by clicking the Debug button - see Figure 10 of
+-- the paper), shows that this is indeed the scenario found (Table 1).
+
+-- Rather than manual exploration using FDR's debugger, there is another
+-- way to verify that 2 is a possible result.  We need to demonstrate that
+-- there is no other reason for the above assertion failure (such as
+-- possible deadlock, or livelock, elsewhere in SYSTEM).  To do this,
+-- construct a system almost identical to SYSTEM, except that the final
+-- check on the value of the shared variable is not performed:
+
+PP_no_check = (P ||| P) ; kill -> SKIP
+
+SYSTEM_no_check = PP_no_check [| {| load, store, kill |} |] Var (0)
+
+-- Now, ask if this version always terminates.
+-- The following assertion succeeds: so the answer is yes.
+
+assert SKIP [FD= SYSTEM_no_check \ Events
+
+-- The only difference between the two versions is the presence or absence
+-- of the check made on the value held by the shared variable following
+-- execution of "(P ||| P)".  We may deduce that the only reason SYSTEM
+-- fails to terminate is its presence.
+
+-- Aside: we need to check for termination, rather than deadlock freedom,
+-- since a terminated system is technically in deadlock (as it refuses all
+-- events).  For example, the previous assertion verifies that
+-- SYSTEM_no_check always terminates and, so, always deadlocks - which
+-- means that the following assertion fails:
+
+assert SYSTEM_no_check :[ deadlock free [FD]]
+
+-- Thus, deadlock freedom checks do not distinguish between SYSTEM and
+-- SYSTEM_no_check (both fail); but termination does make the distinction
+-- (SYSTEM can fail to terminate and SYSTEM_no_check cannot).
+
+---------------------------------------------------- Appendix A.2 (extra)
+
+-- Just in case there was any concern that PP_no_check was not quite as
+-- close to PP_check as, perhaps, it should have been, consider:
+
+PP_no_check' = (P ||| P) ; load ? n -> kill -> SKIP
+
+-- This is closer to PP_check in that it performs the final "load" from
+-- the shared variable but, then, just kills the shared variable without
+-- checking the value just loaded.
+
+SYSTEM_no_check' = PP_no_check' [| {| load, store, kill |} |] Var (0)
+
+-- Does SYSTEM_no_check' always terminate?
+-- The following assertion succeeds: so the answer is yes.
+
+assert SKIP [FD= SYSTEM_no_check' \ Events
+
+---------------------------------------------------- Appendix A.3
+
+-- A simple mutex process:
+
+channel wait, signal
+
+Mutex = wait -> signal -> Mutex [] kill -> SKIP
+
+-- Modify P to bracket its load-inc-store operations between claiming
+-- ("wait") and releasing ("signal") the mutex.  This prevents interleaving
+-- of that sequence (by, for example, other instances of P):
+
+P' = ; x:<0..9> @ wait -> load ? n -> store ! inc (n) -> signal -> SKIP
+
+-- Now, running twin P' processes should result in 20 clean increments of
+-- the shared variable.  Check this by modifying the check to force deadlock
+-- (and, therefore, failure to terminate) if the answer is anything but 20:
+
+PPcheck' = (P' ||| P') ; load ? n -> if n != 20 then STOP else kill -> SKIP
+
+-- Put the together with the shared variable and the mutex:
+
+SYSTEM' = PPcheck' [| {| load, store, kill |} |] Var (0)
+
+SAFE_SYSTEM = SYSTEM' [| {| wait, signal, kill |} |] Mutex
+
+-- Does SYSTEM' always terminate?
+-- The following assertion succeeds: so the answer is yes.
+
+assert SKIP [FD= SAFE_SYSTEM \ Events
+
+-- So, with the mutex in place and properly operated, the operations on
+-- shared variable are safe and the answer is always 20, regardless of
+-- how those operations are scheduled.
