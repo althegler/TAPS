@@ -1,33 +1,9 @@
-channel input : {1..6}
 
+channel input : {1..109}
 
-f(x) = x + 5
 n = 10
+f(x) = x / n
 
 Process = input ? x -> if f(x) > n then STOP else SKIP
 
 assert SKIP [FD= Process \ Events
-
-
--- channel load, store : {0..20}
--- channel kill
---
--- inc (x) = if x >= 20 then 20 else x + 1
---
--- P = ; x:<0..9> @ load ? n -> store ! inc (n) -> SKIP
---
--- Var (n) =
---   store ? x -> Var (x) []
---   load ! n -> Var (n) []
---   kill -> SKIP  -- terminate
---
--- PP_check = (P ||| P) ; load ? n -> if n == 2 then STOP else kill -> SKIP
---
--- SYSTEM = PP_check [| {| load, store, kill |} |] Var (0)
---
--- ---------------------------------------------------- Appendix A.2
---
--- -- Does SYSTEM always terminate?
--- -- The following assertion fails: so the answer is no.
---
--- assert SKIP [FD= SYSTEM \ Events
