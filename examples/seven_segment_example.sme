@@ -1,0 +1,43 @@
+proc clock(const i)
+  bus clock_out {
+    val: int;
+  };
+  //var i: int = 0;
+{
+  //trace("iteration {}", i);
+  //i = i + 1;
+  clock_out.val = i;
+}
+
+proc hours(in hours_in)
+  bus hours_out {
+    hours1: int;
+    hours2: int;
+  };
+  var hours: int;
+  var hours10: int;
+  var hours20: int;
+{
+  hours = hours_in.val / 3600;
+  trace ("hours was {}", hours);
+  hours10 = hours / 10;
+  hours20 = hours % 10;
+  trace ("hours1 was {}", hours10);
+  trace ("hours2 was {}", hours20);
+  hours_out.hours1 = hours10;
+  hours_out.hours2 = hours20;
+}
+
+
+// proc minutes()
+
+
+// proc seconds()
+
+
+network clock_network()
+{
+  instance g of clock(i: 60533);
+  instance h of hours(g.clock_out);
+
+}
