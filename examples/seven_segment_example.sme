@@ -1,11 +1,11 @@
-proc clock(const i)
+proc clock()
   bus clock_out {
     val: int;
   };
-  //var i: int = 0;
+  var i: int = 60533;
 {
-  //trace("iteration {}", i);
-  //i = i + 1;
+  trace("iteration {}", i);
+  i = i + 1;
   clock_out.val = i;
 }
 
@@ -80,7 +80,7 @@ proc seconds(in seconds_in)
 
 network clock_network()
 {
-  instance g of clock(i: 60533);
+  instance g of clock();
   instance h of hours(g.clock_out);
   instance m of minutes(g.clock_out);
   instance s of seconds(g.clock_out);
