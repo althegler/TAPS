@@ -1,39 +1,59 @@
-channel input : {0..60533}
-channel hour1, hour2, minute1, minute2, second1, second2 : {0..15}
+channel input : {60533}
+
+channel hours_first_digit, hours_second_digit,
+minutes_first_digit, minutes_second_digit,
+seconds_first_digit, seconds_second_digit : {0..15}
+channel hours_channel : {0..23}
+channel minutes_channel, seconds_channel : {0..59}
 
 
 Bcd = input ? x -> let
                       hours = x / 3600
-                      hours' = hours * 3600
-                      hours_left = x - hours'
+                      hours_temp = hours * 3600
+                      hours_left = x - hours_temp
                       minutes = hours_left / 60
-                      minutes' = minutes * 60
-                      seconds = hours_left - minutes'
+                      minutes_temp = minutes * 60
+                      seconds = hours_left - minutes_temp
                     within
-                    let
-                      first_hours = hours / 10
-                      second_hours = hours % 10
-                    within
-                      if first_hours > 10 then STOP else
-                      hour1 ! first_hours ->
-                      if second_hours > 10 then STOP else
-                      hour2 ! second_hours ->
-                    let
-                      first_minute = minutes / 10
-                      second_minute = minutes % 10
-                    within
-                      if first_minute > 10 then STOP else
-                      minute1 ! first_minute ->
-                      if second_minute > 10 then STOP else
-                      minute2 ! second_minute ->
-                    let
-                      first_second = seconds / 10
-                      second_second = seconds % 10
-                    within
-                      if first_second> 10 then STOP else
-                      second1 ! first_second ->
-                      if second_second > 10 then STOP else
-                      second2 ! second_second -> SKIP
+                    hours_channel ! hours ->
+                    minutes_channel ! minutes ->
+                    seconds_channel ! seconds -> SKIP
 
+
+
+
+
+Hours = hours_channel ? x ->
+  let
+    first_hours = x / 10
+    second_hours = x % 10
+  within
+    if first_hours > 10 then STOP else
+    hours_first_digit ! first_hours ->
+    if second_hours > 10 then STOP else
+    hours_second_digit ! second_hours -> SKIP
+
+Minutes = minutes_channel ? x ->
+  let
+    first_minute = x / 10
+    second_minute = x % 10
+  within
+    if first_minute > 10 then STOP else
+    minutes_first_digit ! first_minute ->
+    if second_minute > 10 then STOP else
+    minutes_second_digit ! second_minute -> SKIP
+
+Seconds = seconds_channel ? x ->
+  let
+    first_second = x / 10
+    second_second = x % 10
+  within
+    if first_second> 10 then STOP else
+    seconds_first_digit ! first_second ->
+    if second_second > 10 then STOP else
+    seconds_second_digit ! second_second -> SKIP
 
 assert SKIP [FD= Bcd \ Events
+assert SKIP [FD= Hours \ Events
+assert SKIP [FD= Minutes \ Events
+assert SKIP [FD= Seconds \ Events

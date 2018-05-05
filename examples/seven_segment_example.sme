@@ -11,8 +11,8 @@ proc clock()
 
 proc hours(in hours_in)
   bus hours_out {
-    hours_first_segment: int;
-    hours_second_segment: int;
+    hours_first_digit: int;
+    hours_second_digit: int;
   };
   var hours: int;
   var hours_first_temp: int;
@@ -22,15 +22,15 @@ proc hours(in hours_in)
   trace ("hours was {}", hours);
   hours_first_temp = hours / 10;
   hours_second_temp = hours % 10;
-  hours_out.hours_first_segment = hours_first_temp;
-  hours_out.hours_second_segment = hours_second_temp;
+  hours_out.hours_first_digit = hours_first_temp;
+  hours_out.hours_second_digit = hours_second_temp;
 }
 
 
 proc minutes(in minutes_in)
   bus minutes_out {
-    minutes_first_segment: int;
-    minutes_second_segment: int;
+    minutes_first_digit: int;
+    minutes_second_digit: int;
   };
   var minutes: int;
   var minutes_first_temp: int;
@@ -46,8 +46,8 @@ proc minutes(in minutes_in)
   trace ("minutes was {}", minutes);
   minutes_first_temp = minutes / 10;
   minutes_second_temp = minutes % 10;
-  minutes_out.minutes_first_segment = minutes_first_temp;
-  minutes_out.minutes_second_segment = minutes_second_temp;
+  minutes_out.minutes_first_digit = minutes_first_temp;
+  minutes_out.minutes_second_digit = minutes_second_temp;
 }
 
 proc seconds(in seconds_in)
