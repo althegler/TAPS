@@ -35,14 +35,8 @@ proc minutes(in minutes_in)
   var minutes: int;
   var minutes_first_temp: int;
   var minutes_second_temp: int;
-  var hours_temp: int;
-  var hours_second_temp: int;
-  var hours_left: int;
   {
-  hours_temp = minutes_in.val / 3600;
-  hours_second_temp = hours_temp * 3600;
-  hours_left = minutes_in.val - hours_second_temp;
-  minutes = hours_left / 60;
+  minutes = (minutes_in.val / 60) % 60;
   trace ("minutes was {}", minutes);
   minutes_first_temp = minutes / 10;
   minutes_second_temp = minutes % 10;
@@ -58,18 +52,8 @@ proc seconds(in seconds_in)
   var seconds: int;
   var seconds_first_temp: int;
   var seconds_second_temp: int;
-  var hours_first_temp: int;
-  var hours_second_temp: int;
-  var hours_left: int;
-  var minutes: int;
-  var minutes_left: int;
   {
-  hours_first_temp = seconds_in.val / 3600;
-  hours_second_temp = hours_first_temp * 3600;
-  hours_left = seconds_in.val - hours_second_temp;
-  minutes = hours_left / 60;
-  minutes_left = minutes * 60;
-  seconds = hours_left - minutes_left;
+  seconds = seconds_in.val % 60;
   trace ("seconds was {}", seconds);
   seconds_first_temp = seconds / 10;
   seconds_second_temp = seconds % 10;
