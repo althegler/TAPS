@@ -1,10 +1,16 @@
 grammar Smeil;
 
-prog               :  module+ EOF ;
-
-module             :  WORD ;
 
 
-WORD                : [A-Za-z]+ ;
+process : 'proc' ident vardecl* ;
 
-WHITESPACE          : [ \t\r\n]+ -> skip ;
+vardecl : 'var' ident ': int ;' ;
+
+ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;
+
+ALPHA : [A-Za-z]+ ;
+NUM : [0-9]+ ;
+
+ALPHANUM : [A-Za-z0-9\-_]+;
+
+WHITESPACE : [ \t\r\n]+ -> skip ;

@@ -1,2 +1,14 @@
-WORD=1
-WHITESPACE=2
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+T__4=5
+ALPHA=6
+NUM=7
+ALPHANUM=8
+WHITESPACE=9
+'proc'=1
+'var'=2
+': int ;'=3
+'_'=4
+'-'=5
