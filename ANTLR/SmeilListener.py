@@ -22,12 +22,3 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#orden.
-    def enterOrden(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#orden.
-    def exitOrden(self, ctx):
-        pass
-
-

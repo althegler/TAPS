@@ -1,10 +1,8 @@
 grammar Smeil;
 
-prog               :  module EOF ;
+prog               :  module+ EOF ;
 
-module             :  'hej' orden* ;
-
-orden : WORD ;
+module             :  WORD ;
 
 
 WORD                : [A-Za-z]+ ;

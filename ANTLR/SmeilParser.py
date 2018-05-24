@@ -8,13 +8,11 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"\5\25\4\2\t\2\4\3\t\3\4\4\t\4\3\2\3\2\3\2\3\3\3\3\7\3")
-        buf.write(u"\16\n\3\f\3\16\3\21\13\3\3\4\3\4\3\4\2\2\5\2\4\6\2\2")
-        buf.write(u"\2\22\2\b\3\2\2\2\4\13\3\2\2\2\6\22\3\2\2\2\b\t\5\4\3")
-        buf.write(u"\2\t\n\7\2\2\3\n\3\3\2\2\2\13\17\7\3\2\2\f\16\5\6\4\2")
-        buf.write(u"\r\f\3\2\2\2\16\21\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2")
-        buf.write(u"\20\5\3\2\2\2\21\17\3\2\2\2\22\23\7\4\2\2\23\7\3\2\2")
-        buf.write(u"\2\3\17")
+        buf.write(u"\4\20\4\2\t\2\4\3\t\3\3\2\6\2\b\n\2\r\2\16\2\t\3\2\3")
+        buf.write(u"\2\3\3\3\3\3\3\2\2\4\2\4\2\2\2\16\2\7\3\2\2\2\4\r\3\2")
+        buf.write(u"\2\2\6\b\5\4\3\2\7\6\3\2\2\2\b\t\3\2\2\2\t\7\3\2\2\2")
+        buf.write(u"\t\n\3\2\2\2\n\13\3\2\2\2\13\f\7\2\2\3\f\3\3\2\2\2\r")
+        buf.write(u"\16\7\3\2\2\16\5\3\2\2\2\3\t")
         return buf.getvalue()
 
 
@@ -28,20 +26,18 @@ class SmeilParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'hej'" ]
+    literalNames = [  ]
 
-    symbolicNames = [ u"<INVALID>", u"<INVALID>", u"WORD", u"WHITESPACE" ]
+    symbolicNames = [ u"<INVALID>", u"WORD", u"WHITESPACE" ]
 
     RULE_prog = 0
     RULE_module = 1
-    RULE_orden = 2
 
-    ruleNames =  [ u"prog", u"module", u"orden" ]
+    ruleNames =  [ u"prog", u"module" ]
 
     EOF = Token.EOF
-    T__0=1
-    WORD=2
-    WHITESPACE=3
+    WORD=1
+    WHITESPACE=2
 
     def __init__(self, input, output=sys.stdout):
         super(SmeilParser, self).__init__(input, output=output)
@@ -57,12 +53,15 @@ class SmeilParser ( Parser ):
             super(SmeilParser.ProgContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def module(self):
-            return self.getTypedRuleContext(SmeilParser.ModuleContext,0)
-
-
         def EOF(self):
             return self.getToken(SmeilParser.EOF, 0)
+
+        def module(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SmeilParser.ModuleContext)
+            else:
+                return self.getTypedRuleContext(SmeilParser.ModuleContext,i)
+
 
         def getRuleIndex(self):
             return SmeilParser.RULE_prog
@@ -82,11 +81,22 @@ class SmeilParser ( Parser ):
 
         localctx = SmeilParser.ProgContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_prog)
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 6
-            self.module()
-            self.state = 7
+            self.state = 5 
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while True:
+                self.state = 4
+                self.module()
+                self.state = 7 
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if not (_la==SmeilParser.WORD):
+                    break
+
+            self.state = 9
             self.match(SmeilParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -102,12 +112,8 @@ class SmeilParser ( Parser ):
             super(SmeilParser.ModuleContext, self).__init__(parent, invokingState)
             self.parser = parser
 
-        def orden(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SmeilParser.OrdenContext)
-            else:
-                return self.getTypedRuleContext(SmeilParser.OrdenContext,i)
-
+        def WORD(self):
+            return self.getToken(SmeilParser.WORD, 0)
 
         def getRuleIndex(self):
             return SmeilParser.RULE_module
@@ -127,59 +133,9 @@ class SmeilParser ( Parser ):
 
         localctx = SmeilParser.ModuleContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_module)
-        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 9
-            self.match(SmeilParser.T__0)
-            self.state = 13
-            self._errHandler.sync(self)
-            _la = self._input.LA(1)
-            while _la==SmeilParser.WORD:
-                self.state = 10
-                self.orden()
-                self.state = 15
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class OrdenContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SmeilParser.OrdenContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def WORD(self):
-            return self.getToken(SmeilParser.WORD, 0)
-
-        def getRuleIndex(self):
-            return SmeilParser.RULE_orden
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterOrden"):
-                listener.enterOrden(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitOrden"):
-                listener.exitOrden(self)
-
-
-
-
-    def orden(self):
-
-        localctx = SmeilParser.OrdenContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_orden)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 16
+            self.state = 11
             self.match(SmeilParser.WORD)
         except RecognitionException as re:
             localctx.exception = re

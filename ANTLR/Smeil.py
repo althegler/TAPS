@@ -6,7 +6,7 @@ import sys
 
 class SmeilPrintListener(SmeilListener):
     def enterModule(self, ctx):
-        print("Smeil: %s" % ctx.orden().WORD())
+        print("Smeil: %s" % ctx.WORD())
 
 def main():
     lexer = SmeilLexer(StdinStream())
