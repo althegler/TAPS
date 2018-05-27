@@ -7,8 +7,8 @@ import sys
 class SmeilCspmListener(SmeilListener) :
     def __init__(self):
         self.process = ''
-        # self.network = ''
-        # self.channel = ''
+        self.network = ''
+        self.channel = ''
 
     # def enterProcess(self, ctx):
         # ctx.text = ctx.ident().getText()
@@ -17,14 +17,15 @@ class SmeilCspmListener(SmeilListener) :
         # self.process.write(ctx.ident().getText().capitalize())
         # self.process.write(' = ')
         # print type(ctx)
+        
     def get_process(self):
         return self.process
 
-    # def get_network(self):
-    #     return self.network
-    #
-    # def get_channel(self):
-    #     return self.channel
+    def get_network(self):
+        return self.network
+
+    def get_channel(self):
+        return self.channel
 
     def enterIdent(self, ctx):
         if isinstance(ctx.parentCtx, SmeilParser.ProcessContext) is True:
