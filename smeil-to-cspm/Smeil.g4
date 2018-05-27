@@ -10,11 +10,13 @@ vardecl : 'var' ident ': int ;' ;
 expression : name
            | name '(' expression* ')'
            | '(' expression ')'
+           ;
 
 name : ident
      | name '.' name
+     ;
 
-ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;
+ident : (ALPHANUM | ALPHA | NUM | '_' | '-') '()'? ;
 
 ALPHA : [A-Za-z]+ ;
 

@@ -22,6 +22,24 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#expression.
+    def enterExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#expression.
+    def exitExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#name.
+    def enterName(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#name.
+    def exitName(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#ident.
     def enterIdent(self, ctx):
         pass
