@@ -18,8 +18,10 @@ class SmeilListener(SmeilListener) :
 
     def enterIdent(self, ctx):
         if isinstance(ctx.parentCtx, SmeilParser.ProcessContext) is True:
-            self.output.write('\n')
-            self.output.write(ctx.getText().capitalize() + ' = ')
+            if ctx.getText()[-2:] == '()':
+                self.output.write(ctx.getText()[:-2].capitalize() + ' = ')
+            else:
+                self.output.write(ctx.getText().capitalize() + ' = ')
         else :
             self.output.write('\n')
             self.output.write('\t')

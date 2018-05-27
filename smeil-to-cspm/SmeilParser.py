@@ -8,13 +8,14 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"\13\27\4\2\t\2\4\3\t\3\4\4\t\4\3\2\3\2\3\2\7\2\f\n\2")
-        buf.write(u"\f\2\16\2\17\13\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\2\2\5\2")
-        buf.write(u"\4\6\2\3\3\2\6\n\2\24\2\b\3\2\2\2\4\20\3\2\2\2\6\24\3")
-        buf.write(u"\2\2\2\b\t\7\3\2\2\t\r\5\6\4\2\n\f\5\4\3\2\13\n\3\2\2")
-        buf.write(u"\2\f\17\3\2\2\2\r\13\3\2\2\2\r\16\3\2\2\2\16\3\3\2\2")
-        buf.write(u"\2\17\r\3\2\2\2\20\21\7\4\2\2\21\22\5\6\4\2\22\23\7\5")
-        buf.write(u"\2\2\23\5\3\2\2\2\24\25\t\2\2\2\25\7\3\2\2\2\3\r")
+        buf.write(u"\n\31\4\2\t\2\4\3\t\3\4\4\t\4\3\2\3\2\3\2\7\2\f\n\2\f")
+        buf.write(u"\2\16\2\17\13\2\3\3\3\3\3\3\3\3\3\4\3\4\5\4\27\n\4\3")
+        buf.write(u"\4\2\2\5\2\4\6\2\2\2\27\2\b\3\2\2\2\4\20\3\2\2\2\6\24")
+        buf.write(u"\3\2\2\2\b\t\7\3\2\2\t\r\5\6\4\2\n\f\5\4\3\2\13\n\3\2")
+        buf.write(u"\2\2\f\17\3\2\2\2\r\13\3\2\2\2\r\16\3\2\2\2\16\3\3\2")
+        buf.write(u"\2\2\17\r\3\2\2\2\20\21\7\4\2\2\21\22\5\6\4\2\22\23\7")
+        buf.write(u"\5\2\2\23\5\3\2\2\2\24\26\7\t\2\2\25\27\7\6\2\2\26\25")
+        buf.write(u"\3\2\2\2\26\27\3\2\2\2\27\7\3\2\2\2\4\r\26")
         return buf.getvalue()
 
 
@@ -28,12 +29,10 @@ class SmeilParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'proc'", u"'var'", u"': int ;'", u"'_'", 
-                     u"'-'" ]
+    literalNames = [ u"<INVALID>", u"'proc'", u"'var'", u"': int ;'", u"'()'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"ALPHA", u"NUM", u"ALPHANUM", 
-                      u"WHITESPACE" ]
+                      u"<INVALID>", u"ALPHA", u"NUM", u"ALPHANUM", u"WHITESPACE" ]
 
     RULE_process = 0
     RULE_vardecl = 1
@@ -46,11 +45,10 @@ class SmeilParser ( Parser ):
     T__1=2
     T__2=3
     T__3=4
-    T__4=5
-    ALPHA=6
-    NUM=7
-    ALPHANUM=8
-    WHITESPACE=9
+    ALPHA=5
+    NUM=6
+    ALPHANUM=7
+    WHITESPACE=8
 
     def __init__(self, input, output=sys.stdout):
         super(SmeilParser, self).__init__(input, output=output)
@@ -173,12 +171,6 @@ class SmeilParser ( Parser ):
         def ALPHANUM(self):
             return self.getToken(SmeilParser.ALPHANUM, 0)
 
-        def ALPHA(self):
-            return self.getToken(SmeilParser.ALPHA, 0)
-
-        def NUM(self):
-            return self.getToken(SmeilParser.NUM, 0)
-
         def getRuleIndex(self):
             return SmeilParser.RULE_ident
 
@@ -201,12 +193,15 @@ class SmeilParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 18
+            self.match(SmeilParser.ALPHANUM)
+            self.state = 20
+            self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__3) | (1 << SmeilParser.T__4) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0)):
-                self._errHandler.recoverInline(self)
-            else:
-                self._errHandler.reportMatch(self)
-                self.consume()
+            if _la==SmeilParser.T__3:
+                self.state = 19
+                self.match(SmeilParser.T__3)
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
