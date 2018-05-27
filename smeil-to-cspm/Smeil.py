@@ -1,53 +1,20 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
-from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
+from SmeilCspmListener import SmeilCspmListener
 import sys
 
-class SmeilListener(SmeilListener) :
-    def __init__(self, output):
-        self.output = output
-
-    # def enterProcess(self, ctx):
-        # ctx.text = ctx.ident().getText()
-        # ctx.text = ctx.ident().getText().capitalize()
-        # ctx.text += ' = '
-        # self.output.write(ctx.ident().getText().capitalize())
-        # self.output.write(' = ')
-        # print type(ctx)
-
-    def enterIdent(self, ctx):
-        if isinstance(ctx.parentCtx, SmeilParser.ProcessContext) is True:
-            if ctx.getText()[-2:] == '()':
-                self.output.write(ctx.getText()[:-2].capitalize() + ' = ')
-            else:
-                self.output.write(ctx.getText().capitalize() + ' = ')
-        else :
-            self.output.write('\n')
-            self.output.write('\t')
-            self.output.write(ctx.getText().capitalize() + ' : ')
-        # print 'hello'
-        # print type(ctx)
-        # print ctx.getChildCount()
-        # print ctx.getChild(0)
-        # print ctx.parentCtx
-
-
-
 def main():
-    # input = open("input.sme", "r")
     lexer = SmeilLexer(StdinStream())
-    # lexer = SmeilLexer(input)
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.process()
-
-    output = open("output.csp","w")
-
-    printer = SmeilListener(output)
+    printer = SmeilCspmListener()
     walker = ParseTreeWalker()
     walker.walk(printer, tree)
-
+    print printer.get_process()
+    output = open("output.csp","w")
+    output.write(printer.get_process())
     output.close()
 
 if __name__ == '__main__':
