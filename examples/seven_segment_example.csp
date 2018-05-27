@@ -33,7 +33,7 @@ Seconds = input ? x ->
     first_second = seconds / 10
     second_second = seconds % 10
   within
-    if first_second> 10 then STOP else
+    if first_second > 10 then STOP else
     seconds_first_digit ! first_second ->
     if second_second > 10 then STOP else
     seconds_second_digit ! second_second -> SKIP

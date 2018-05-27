@@ -15,13 +15,37 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterModule(SmeilParser.ModuleContext ctx) { }
+	@Override public void enterProcess(SmeilParser.ProcessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitModule(SmeilParser.ModuleContext ctx) { }
+	@Override public void exitProcess(SmeilParser.ProcessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVardecl(SmeilParser.VardeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVardecl(SmeilParser.VardeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdent(SmeilParser.IdentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdent(SmeilParser.IdentContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
