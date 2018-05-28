@@ -1,0 +1,9 @@
+channel a, b, c
+
+Left = a -> a -> b -> STOP
+Right = a -> b -> STOP
+
+Impl = Left [| {b} |] Right
+Spec = a -> Spec
+
+assert Spec [T= Impl

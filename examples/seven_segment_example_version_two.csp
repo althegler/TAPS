@@ -1,0 +1,47 @@
+channel input : {60533}
+
+channel hours_first_digit, hours_second_digit,
+minutes_first_digit, minutes_second_digit,
+seconds_first_digit, seconds_second_digit : {0..15}
+
+
+Hours_first_digit_assert = hours_first_digit ? x -> if x > 10 then STOP else SKIP
+Hours_second_digit_assert = hours_second_digit ? x -> if x > 10 then STOP else SKIP
+
+Hours(variable) =
+  let
+    hours = variable / 3600
+    first_hours = hours / 10
+    second_hours = hours % 10
+  within
+    hours_first_digit ! first_hours ->
+    hours_second_digit ! second_hours -> SKIP
+
+-- Minutes = input ? x ->
+--   let
+--     minutes = (x / 60) % 60
+--     first_minute = minutes / 10
+--     second_minute = minutes % 10
+--   within
+--     if first_minute > 10 then STOP else
+--     minutes_first_digit ! first_minute ->
+--     if second_minute > 10 then STOP else
+--     minutes_second_digit ! second_minute -> SKIP
+--
+-- Seconds = input ? x ->
+--   let
+--     seconds = x % 60
+--     first_second = seconds / 10
+--     second_second = seconds % 10
+--   within
+--     if first_second > 10 then STOP else
+--     seconds_first_digit ! first_second ->
+--     if second_second > 10 then STOP else
+--     seconds_second_digit ! second_second -> SKIP
+
+Process = input ? variable -> Hours(variable)
+
+assert SKIP [FD= Hours_first_digit_assert \ Events
+assert SKIP [FD= Hours_second_digit_assert \ Events
+-- assert SKIP [FD= Minutes \ Events
+-- assert SKIP [FD= Seconds \ Events
