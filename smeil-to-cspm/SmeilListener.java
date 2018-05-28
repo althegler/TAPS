@@ -7,6 +7,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface SmeilListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link SmeilParser#entity}.
+	 * @param ctx the parse tree
+	 */
+	void enterEntity(SmeilParser.EntityContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#entity}.
+	 * @param ctx the parse tree
+	 */
+	void exitEntity(SmeilParser.EntityContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SmeilParser#process}.
 	 * @param ctx the parse tree
 	 */
@@ -16,16 +26,6 @@ public interface SmeilListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProcess(SmeilParser.ProcessContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SmeilParser#vardecl}.
-	 * @param ctx the parse tree
-	 */
-	void enterVardecl(SmeilParser.VardeclContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SmeilParser#vardecl}.
-	 * @param ctx the parse tree
-	 */
-	void exitVardecl(SmeilParser.VardeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SmeilParser#ident}.
 	 * @param ctx the parse tree

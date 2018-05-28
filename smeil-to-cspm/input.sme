@@ -1,5 +1,6 @@
 proc clock()
     var hour : int ;
+    {}
 
 
 network clock_network()

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/alt/git/SMEIL-to-CSPm/smeil-to-cspm/')
+sys.path.append('/home/albt/git/SMEIL-to-CSPm/smeil-to-cspm/')
 
 from antlr4 import *
 from SmeilLexer import SmeilLexer

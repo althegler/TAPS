@@ -10,14 +10,6 @@ class SmeilCspmListener(SmeilListener) :
         self.network = ''
         self.channel = ''
 
-    # def enterProcess(self, ctx):
-        # ctx.text = ctx.ident().getText()
-        # ctx.text = ctx.ident().getText().capitalize()
-        # ctx.text += ' = '
-        # self.process.write(ctx.ident().getText().capitalize())
-        # self.process.write(' = ')
-        # print type(ctx)
-        
     def get_process(self):
         return self.process
 
@@ -27,8 +19,17 @@ class SmeilCspmListener(SmeilListener) :
     def get_channel(self):
         return self.channel
 
+    # def enterProcess(self, ctx):
+        # ctx.text = ctx.ident().getText()
+        # ctx.text = ctx.ident().getText().capitalize()
+        # ctx.text += ' = '
+        # self.process.write(ctx.ident().getText().capitalize())
+        # self.process.write(' = ')
+        # print type(ctx)
+
     def enterIdent(self, ctx):
         if isinstance(ctx.parentCtx, SmeilParser.ProcessContext) is True:
+            # For the empty input bus, AKA. input channel
             if ctx.getText()[-2:] == '()':
                 self.process += (ctx.getText()[:-2].capitalize() + ' = ')
             else:
