@@ -25,7 +25,7 @@ def test_proc_name():
 
 
 def test_variables():
-    test_input = "proc clock()\n\tvar hour : int ;"
+    test_input = "proc clock()var hour : int ;"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -40,7 +40,7 @@ def test_variables():
 
 
 def test_channel():
-    test_input = "proc clock()\n\tbus clock_out {\n\tval: int;\n\t};\n\tvar hour : int ;"
+    test_input = "proc clock()bus clock_out {val: int;};var hour : int ;"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -54,4 +54,24 @@ def test_channel():
     print test_output
     print output
 
-    assert (output == test_output)
+    assert output == test_output
+
+
+def test_several_channels():
+    test_input = "proc clock() bus clock_out {val1: int; val2: int;}; var hour : int ;"
+    lexer = SmeilLexer(InputStream(test_input))
+    stream = CommonTokenStream(lexer)
+    parser = SmeilParser(stream)
+    tree = parser.process()
+
+    printer = SmeilCspmListener()
+    walker = ParseTreeWalker()
+    walker.walk(printer, tree)
+    test_output = "channel clock_out_val1 : {42} \n\nchannel clock_out_val2 : {42} \n\nClock = \n\thour : "
+    output = printer.get_channel() + printer.get_process()
+    print test_output
+    print output
+
+    assert output == test_output
+
+
