@@ -44,17 +44,23 @@ Seconds(variable) =
     seconds_first_digit ! first_second ->
     seconds_second_digit ! second_second -> SKIP
 
-P_hours = input ? variable -> (Hours(variable) [| {| hours_first_digit |} |]
+P_hours = input ? variable ->
+          (Hours(variable)
+          [| {| hours_first_digit |} |]
           Hours_first_digit_assert(hours_first_digit))
           [| {| hours_second_digit |} |]
           Hours_second_digit_assert(hours_second_digit)
 
-P_minutes = input ? variable -> (Minutes(variable) [| {| minutes_first_digit |} |]
+P_minutes = input ? variable ->
+          (Minutes(variable)
+          [| {| minutes_first_digit |} |]
           Minutes_first_digit_assert(minutes_first_digit))
           [| {| minutes_second_digit |} |]
           Minutes_second_digit_assert(minutes_second_digit)
 
-P_seconds = input ? variable -> (Seconds(variable) [| {| seconds_first_digit |} |]
+P_seconds = input ? variable ->
+          (Seconds(variable)
+          [| {| seconds_first_digit |} |]
           Seconds_first_digit_assert(seconds_first_digit))
           [| {| seconds_second_digit |} |]
           Seconds_second_digit_assert(seconds_second_digit)
