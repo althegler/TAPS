@@ -14,6 +14,7 @@ def main():
     walker.walk(printer, tree)
     print printer.get_process()
     output = open("output.csp","w")
+    output.write(printer.get_channel())
     output.write(printer.get_process())
     output.close()
 

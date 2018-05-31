@@ -1,2 +1,6 @@
+channel clock_out_val1: {42}
+
+channel clock_out_val2: {42}
+
 Clock =
-	Hour :
+	hour : 

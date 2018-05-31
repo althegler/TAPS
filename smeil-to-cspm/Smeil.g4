@@ -5,7 +5,7 @@ entity : process
        /*| network*/
        ;
 
-process : 'proc' ident '()'? ;
+process : 'proc' ident '()'? busdecl* vardecl* ;
 
 /*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
 
@@ -38,25 +38,30 @@ process : 'proc' ident '()'? ;
           /*| 'break' ';'*/
           /*| 'return' expression? ';'*/
           /*;*/
+busdecl : 'exposed'? 'bus' ident '{' bussignaldecls '}' ';' ;
 
-/*vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;*/
+bussignaldecls : bussignaldecl bussignaldecl* ;
 
-/*typename : 'int' ;// not finished*/
+bussignaldecl : ident ':' typename ';' ;// not finished
 
-/*ranges : 'range' expression 'to' expression ;*/
+vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;
+
+typename : 'int' ;// not finished
+
+ranges : 'range' expression 'to' expression ;
 
 
-/*expression : name*/
+expression : name
            /*| litteral*/
            /*| expression binop expression*/
            /*| unop expression*/
-           /*| name '(' expression* ')'*/
+           | name '(' expression* ')'
            /*| '(' expression ')'*/
-           /*;*/
+           ;
 
-/*name : ident*/
+name : ident
      /*| name '.' name*/
-     /*;*/
+     ;
 
 ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;
 

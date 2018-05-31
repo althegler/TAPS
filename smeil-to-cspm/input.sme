@@ -1,9 +1,7 @@
 proc clock()
-    var hour : int ;
-    {}
+  bus clock_out {
+    val1 : int;
+    val2 : int;
+  };
+  var hour : int ;
 
-
-network clock_network()
-{
-  instance c of clock();
-}
