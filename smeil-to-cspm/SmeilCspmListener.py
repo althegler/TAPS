@@ -27,6 +27,7 @@ class SmeilCspmListener(SmeilListener) :
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
         self.process += (ctx.ident().getText().capitalize())
+        # Parameters
         if ctx.params():
             self.process += '('
             for x in ctx.params().children:
@@ -35,7 +36,7 @@ class SmeilCspmListener(SmeilListener) :
                 self.process += x.ident().getText()
             self.process += ')'
         self.process += (' = \n\t')
-
+        # Declarations
         if ctx.declaration():
             for x in ctx.declaration():
                 # print type(x.children)
@@ -50,8 +51,15 @@ class SmeilCspmListener(SmeilListener) :
                                               + ' = '
                                               + y.expression().getText()
                                               + '\n\t')
+        # Statements
         if ctx.statement():
-            print ctx.getText()
+            for x in ctx.statement():
+                # if x.name() == #TODO handle communications (bus.channel = x)
+                let_variables += ('\t'
+                                  + x.name().getText()
+                                  + ' = '
+                                  + x.expression().getText()
+                                  +  '\n\t')
             self.process += 'let\n\t'
             self.process += let_variables
             self.process += 'within\n\t\t'

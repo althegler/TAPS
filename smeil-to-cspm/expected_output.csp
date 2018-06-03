@@ -1,6 +1,6 @@
 channel clock_out_val: {42}
 
 Clock =
-	hour :
     let
+        minutes_first_temp = 10;
     within
