@@ -125,7 +125,7 @@ def test_process_communication():
                   " { minutes = 10; clock_out.val = minutes;}")
     test_output = ("channel clock_out_val : {42} \n\nClock = \n\t" +
                    "let\n\t\tminutes = 10\n\twithin\n\t\t" +
-                   "clock_out_val ! minutes -> SKIP")
+                   "clock_out_val ! minutes -> \nSKIP")
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)

@@ -1,8 +1,15 @@
-proc clock()
-  bus clock_out {
-    val : int;
+  proc hours(in hours_in)
+  bus hours_out {
+    hours_first_digit: int;
+    hours_second_digit: int;
   };
-  {
-      minutes = 10;
-      clock_out.val = minutes;
-  }
+  var hours: int;
+  var hours_first_temp: int;
+  var hours_second_temp: int;
+{
+  hours = hours_in.val / 3600;
+  hours_first_temp = hours / 10;
+  hours_second_temp = hours % 10;
+  hours_out.hours_first_digit = hours_first_temp;
+  hours_out.hours_second_digit = hours_second_temp;
+}

@@ -1,7 +1,13 @@
-channel clock_out_val : {42} 
+channel hours_out_hours_first_digit : {42} 
 
-Clock = 
+channel hours_out_hours_second_digit : {42} 
+
+Hours(hours_in) = 
 	let
-		minutes = 10
+		hours = hours_in.val/3600
+		hours_first_temp = hours/10
+		hours_second_temp = hours%10
 	within
-		clock_out_val ! minutes -> SKIP
+		hours_out_hours_first_digit ! hours_first_temp -> 
+hours_out_hours_second_digit ! hours_second_temp -> 
+SKIP

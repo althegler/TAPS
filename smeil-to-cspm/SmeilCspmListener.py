@@ -58,7 +58,7 @@ class SmeilCspmListener(SmeilListener) :
                     within_variables += (x.name().getText().replace(".", "_")
                                          + ' ! '
                                          + x.expression().getText()
-                                         + ' -> '
+                                         + ' -> \n'
                                          )
                 else:
                     let_variables += ('\t'
