@@ -4,5 +4,7 @@
   "test/test_Smeil.py::test_channel", 
   "test/test_Smeil.py::test_several_channels", 
   "test/test_Smeil.py::test_process_input_variable", 
-  "test/test_Smeil.py::test_process_empty_statement"
+  "test/test_Smeil.py::test_process_empty_statement", 
+  "test/test_Smeil.py::test_process_statement", 
+  "test/test_Smeil.py::test_process_communication"
 ]

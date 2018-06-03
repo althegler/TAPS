@@ -120,4 +120,22 @@ def test_process_statement():
     print test_output
     assert output == test_output
 
+def test_process_communication():
+    test_input = ("proc clock() bus clock_out {val: int;}; var hour : int ;" +
+                  " { minutes = 10; clock_out.val = minutes;}")
+    test_output = ("channel clock_out_val : {42} \n\nClock = \n\t" +
+                   "let\n\t\tminutes = 10\n\twithin\n\t\t" +
+                   "clock_out_val ! minutes -> SKIP")
+    lexer = SmeilLexer(InputStream(test_input))
+    stream = CommonTokenStream(lexer)
+    parser = SmeilParser(stream)
+    tree = parser.process()
+    printer = SmeilCspmListener()
+    walker = ParseTreeWalker()
+    walker.walk(printer, tree)
+    output = printer.get_channel() + printer.get_process()
+    # print output
+    # print test_output
+    assert output == test_output
+
 

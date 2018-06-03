@@ -1,1 +1,4 @@
-{}
+{
+  "test/test_Smeil.py::test_process_communication": true, 
+  "test/test_Smeil.py::test_process_statement": true
+}
