@@ -1,0 +1,60 @@
+proc hours (in hours_in)
+    bus hours_out {hours_first_digit: i2 range 0 to 1;
+                   hours_second_digit: i4 range 0 to 6;};
+    var hours: i6 range 0 to 16;
+    var hours_first_temp: i2 range 0 to 1;
+    var hours_second_temp: i4 range 0 to 6;
+{
+    hours = hours_in.val / 3600;
+    trace("hours was {}", hours);
+    hours_first_temp = hours / 10;
+    hours_second_temp = hours % 10;
+    hours_out.hours_first_digit = hours_first_temp;
+    hours_out.hours_second_digit = hours_second_temp;
+}
+
+proc seconds (in seconds_in)
+    bus seconds_out {seconds_first_digit: i4 range 0 to 5;
+                     seconds_second_digit: i4 range 0 to 4;};
+    var seconds: i7 range 0 to 54;
+    var seconds_first_temp: i4 range 0 to 5;
+    var seconds_second_temp: i4 range 0 to 4;
+{
+    seconds = seconds_in.val % 60;
+    trace("seconds was {}", seconds);
+    seconds_first_temp = seconds / 10;
+    seconds_second_temp = seconds % 10;
+    seconds_out.seconds_first_digit = seconds_first_temp;
+    seconds_out.seconds_second_digit = seconds_second_temp;
+}
+
+proc minutes (in minutes_in)
+    bus minutes_out {minutes_first_digit: i4 range 0 to 4;
+                     minutes_second_digit: i5 range 0 to 8;};
+    var minutes_second_temp: i5 range 0 to 8;
+    var minutes_first_temp: i4 range 0 to 4;
+    var minutes: i7 range 0 to 48;
+{
+    minutes = (minutes_in.val / 60) % 60;
+    trace("minutes was {}", minutes);
+    minutes_first_temp = minutes / 10;
+    minutes_second_temp = minutes % 10;
+    minutes_out.minutes_first_digit = minutes_first_temp;
+    minutes_out.minutes_second_digit = minutes_second_temp;
+}
+
+network clock_network ()
+{
+    instance g of clock();
+    instance m of minutes(g.clock_out);
+    instance s of seconds(g.clock_out);
+    instance h of hours(g.clock_out);
+}
+proc clock ()
+    bus clock_out {val: i17 range 0 to 60535;};
+    var i: i17 = 60533 range 0 to 60535;
+{
+    trace("iteration {}", i);
+    i = i + 1;
+    clock_out.val = i;
+}
