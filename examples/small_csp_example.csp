@@ -1,0 +1,16 @@
+channel input : {60533}
+
+channel hours_first_digit, hours_second_digit : {0..15}
+
+Hours(variable) =
+let
+hours = variable / 3600
+first_hours = hours / 10
+second_hours = hours % 10
+within
+hours_first_digit ! first_hours ->
+hours_second_digit ! second_hours -> SKIP
+
+P = input ? x -> Hours(x)
+
+assert SKIP [FD= P \ Events
