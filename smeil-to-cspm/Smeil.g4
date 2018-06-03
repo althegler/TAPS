@@ -61,7 +61,7 @@ expression : name
            ;
 
 name : ident
-     /*| name '.' name*/
+     | name '.' name
      ;
 
 ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;

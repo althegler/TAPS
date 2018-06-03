@@ -54,15 +54,23 @@ class SmeilCspmListener(SmeilListener) :
         # Statements
         if ctx.statement():
             for x in ctx.statement():
-                # if x.name() == #TODO handle communications (bus.channel = x)
-                let_variables += ('\t'
-                                  + x.name().getText()
-                                  + ' = '
-                                  + x.expression().getText()
-                                  +  '\n\t')
+                if (x.name().getChildCount() > 1):
+                    within_variables += (x.name().getText().replace(".", "_")
+                                         + ' ! '
+                                         + x.expression().getText()
+                                         + ' -> '
+                                         )
+                else:
+                    let_variables += ('\t'
+                                      + x.name().getText()
+                                      + ' = '
+                                      + x.expression().getText()
+                                      +  '\n\t')
             self.process += 'let\n\t'
             self.process += let_variables
             self.process += 'within\n\t\t'
+            if len(within_variables) > 1:
+                within_variables += 'SKIP'
             self.process += within_variables
 
         # print "ending process"

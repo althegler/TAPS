@@ -2,6 +2,6 @@ channel clock_out_val : {42}
 
 Clock = 
 	let
-		minutes_first_temp = 10
+		minutes = 10
 	within
-		
+		clock_out_val ! minutes -> SKIP

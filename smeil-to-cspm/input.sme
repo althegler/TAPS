@@ -3,5 +3,6 @@ proc clock()
     val : int;
   };
   {
-      minutes_first_temp = 10;
+      minutes = 10;
+      clock_out.val = minutes;
   }
