@@ -1,7 +1,9 @@
-proc clock(in hours_in)
+proc clock()
   bus clock_out {
     val1 : int;
     val2 : int;
   };
-  var hour : int ;
-
+  var hour : int = 10;
+  var hour1 : int = 12;
+  var hour1 : int = 123;
+  { }

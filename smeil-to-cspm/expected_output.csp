@@ -1,6 +1,6 @@
-channel clock_out_val1: {42}
-
-channel clock_out_val2: {42}
+channel clock_out_val: {42}
 
 Clock =
-	hour : 
+	hour :
+    let
+    within

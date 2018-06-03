@@ -5,18 +5,18 @@ entity : process
        /*| network*/
        ;
 
-process : 'proc' ident '(' params? ')' busdecl* vardecl* ;
+process : 'proc' ident '(' params? ')' declaration* '{' statement* '}';
 
 /*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
 
-/*declaration : vardecl*/
-            /*| constdecl*/
-            /*| busdecl*/
+declaration : vardecl
+            | busdecl
+            /*| constdecl
             /*| enum*/
             /*| function*/
             /*| instance */
             /*| generate*/
-            /*;*/
+            ;
 
 params : param (',' param)* ;
 
@@ -27,7 +27,7 @@ direction : 'in'
           | 'const'
           ;
 
-/*statement : name '=' expression ';'*/
+statement : name '=' expression ';'
           /*| 'if' '(' condition ')' '{' statement* '}' elifblock* elseblock?*/
           /*| 'for' ident '=' expression 'to' expression '{' statement* '}'*/
           /*| 'while' condition '{' statement* '}'*/
@@ -37,7 +37,8 @@ direction : 'in'
           /*| 'barrier' ';'*/
           /*| 'break' ';'*/
           /*| 'return' expression? ';'*/
-          /*;*/
+          ;
+
 busdecl : 'exposed'? 'bus' ident '{' bussignaldecls '}' ';' ;
 
 bussignaldecls : bussignaldecl bussignaldecl* ;

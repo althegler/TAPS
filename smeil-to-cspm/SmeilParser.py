@@ -8,49 +8,57 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"\34\u0089\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
+        buf.write(u"\34\u0099\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
         buf.write(u"\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t")
-        buf.write(u"\r\4\16\t\16\4\17\t\17\3\2\3\2\3\3\3\3\3\3\3\3\5\3%\n")
-        buf.write(u"\3\3\3\3\3\7\3)\n\3\f\3\16\3,\13\3\3\3\7\3/\n\3\f\3\16")
-        buf.write(u"\3\62\13\3\3\4\3\4\3\4\7\4\67\n\4\f\4\16\4:\13\4\3\5")
-        buf.write(u"\3\5\7\5>\n\5\f\5\16\5A\13\5\3\5\7\5D\n\5\f\5\16\5G\13")
-        buf.write(u"\5\3\5\3\5\3\5\3\6\3\6\3\7\5\7O\n\7\3\7\3\7\3\7\3\7\3")
-        buf.write(u"\7\3\7\3\7\3\b\3\b\7\bZ\n\b\f\b\16\b]\13\b\3\t\3\t\3")
-        buf.write(u"\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\5\nj\n\n\3\n\5\nm")
-        buf.write(u"\n\n\3\n\3\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3")
-        buf.write(u"\r\3\r\7\r|\n\r\f\r\16\r\177\13\r\3\r\3\r\5\r\u0083\n")
-        buf.write(u"\r\3\16\3\16\3\17\3\17\3\17\2\2\20\2\4\6\b\n\f\16\20")
-        buf.write(u"\22\24\26\30\32\34\2\4\3\2\t\13\3\2\27\33\2\u0086\2\36")
-        buf.write(u"\3\2\2\2\4 \3\2\2\2\6\63\3\2\2\2\bE\3\2\2\2\nK\3\2\2")
-        buf.write(u"\2\fN\3\2\2\2\16W\3\2\2\2\20^\3\2\2\2\22c\3\2\2\2\24")
-        buf.write(u"p\3\2\2\2\26r\3\2\2\2\30\u0082\3\2\2\2\32\u0084\3\2\2")
-        buf.write(u"\2\34\u0086\3\2\2\2\36\37\5\4\3\2\37\3\3\2\2\2 !\7\3")
-        buf.write(u"\2\2!\"\5\34\17\2\"$\7\4\2\2#%\5\6\4\2$#\3\2\2\2$%\3")
-        buf.write(u"\2\2\2%&\3\2\2\2&*\7\5\2\2\')\5\f\7\2(\'\3\2\2\2),\3")
-        buf.write(u"\2\2\2*(\3\2\2\2*+\3\2\2\2+\60\3\2\2\2,*\3\2\2\2-/\5")
-        buf.write(u"\22\n\2.-\3\2\2\2/\62\3\2\2\2\60.\3\2\2\2\60\61\3\2\2")
-        buf.write(u"\2\61\5\3\2\2\2\62\60\3\2\2\2\638\5\b\5\2\64\65\7\6\2")
-        buf.write(u"\2\65\67\5\b\5\2\66\64\3\2\2\2\67:\3\2\2\28\66\3\2\2")
-        buf.write(u"\289\3\2\2\29\7\3\2\2\2:8\3\2\2\2;?\7\7\2\2<>\5\30\r")
-        buf.write(u"\2=<\3\2\2\2>A\3\2\2\2?=\3\2\2\2?@\3\2\2\2@B\3\2\2\2")
-        buf.write(u"A?\3\2\2\2BD\7\b\2\2C;\3\2\2\2DG\3\2\2\2EC\3\2\2\2EF")
-        buf.write(u"\3\2\2\2FH\3\2\2\2GE\3\2\2\2HI\5\n\6\2IJ\5\34\17\2J\t")
-        buf.write(u"\3\2\2\2KL\t\2\2\2L\13\3\2\2\2MO\7\f\2\2NM\3\2\2\2NO")
-        buf.write(u"\3\2\2\2OP\3\2\2\2PQ\7\r\2\2QR\5\34\17\2RS\7\16\2\2S")
-        buf.write(u"T\5\16\b\2TU\7\17\2\2UV\7\20\2\2V\r\3\2\2\2W[\5\20\t")
-        buf.write(u"\2XZ\5\20\t\2YX\3\2\2\2Z]\3\2\2\2[Y\3\2\2\2[\\\3\2\2")
-        buf.write(u"\2\\\17\3\2\2\2][\3\2\2\2^_\5\34\17\2_`\7\21\2\2`a\5")
-        buf.write(u"\24\13\2ab\7\20\2\2b\21\3\2\2\2cd\7\22\2\2de\5\34\17")
-        buf.write(u"\2ef\7\21\2\2fi\5\24\13\2gh\7\23\2\2hj\5\30\r\2ig\3\2")
-        buf.write(u"\2\2ij\3\2\2\2jl\3\2\2\2km\5\26\f\2lk\3\2\2\2lm\3\2\2")
-        buf.write(u"\2mn\3\2\2\2no\7\20\2\2o\23\3\2\2\2pq\7\24\2\2q\25\3")
-        buf.write(u"\2\2\2rs\7\25\2\2st\5\30\r\2tu\7\26\2\2uv\5\30\r\2v\27")
-        buf.write(u"\3\2\2\2w\u0083\5\32\16\2xy\5\32\16\2y}\7\4\2\2z|\5\30")
-        buf.write(u"\r\2{z\3\2\2\2|\177\3\2\2\2}{\3\2\2\2}~\3\2\2\2~\u0080")
-        buf.write(u"\3\2\2\2\177}\3\2\2\2\u0080\u0081\7\5\2\2\u0081\u0083")
-        buf.write(u"\3\2\2\2\u0082w\3\2\2\2\u0082x\3\2\2\2\u0083\31\3\2\2")
-        buf.write(u"\2\u0084\u0085\5\34\17\2\u0085\33\3\2\2\2\u0086\u0087")
-        buf.write(u"\t\3\2\2\u0087\35\3\2\2\2\16$*\608?EN[il}\u0082")
+        buf.write(u"\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\3\2\3\2\3")
+        buf.write(u"\3\3\3\3\3\3\3\5\3)\n\3\3\3\3\3\7\3-\n\3\f\3\16\3\60")
+        buf.write(u"\13\3\3\3\3\3\7\3\64\n\3\f\3\16\3\67\13\3\3\3\3\3\3\4")
+        buf.write(u"\3\4\5\4=\n\4\3\5\3\5\3\5\7\5B\n\5\f\5\16\5E\13\5\3\6")
+        buf.write(u"\3\6\7\6I\n\6\f\6\16\6L\13\6\3\6\7\6O\n\6\f\6\16\6R\13")
+        buf.write(u"\6\3\6\3\6\3\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\t\5\t_\n")
+        buf.write(u"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\n\3\n\7\nj\n\n\f\n\16")
+        buf.write(u"\nm\13\n\3\13\3\13\3\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f")
+        buf.write(u"\3\f\5\fz\n\f\3\f\5\f}\n\f\3\f\3\f\3\r\3\r\3\16\3\16")
+        buf.write(u"\3\16\3\16\3\16\3\17\3\17\3\17\3\17\7\17\u008c\n\17\f")
+        buf.write(u"\17\16\17\u008f\13\17\3\17\3\17\5\17\u0093\n\17\3\20")
+        buf.write(u"\3\20\3\21\3\21\3\21\2\2\22\2\4\6\b\n\f\16\20\22\24\26")
+        buf.write(u"\30\32\34\36 \2\4\3\2\13\r\3\2\27\33\2\u0095\2\"\3\2")
+        buf.write(u"\2\2\4$\3\2\2\2\6<\3\2\2\2\b>\3\2\2\2\nP\3\2\2\2\fV\3")
+        buf.write(u"\2\2\2\16X\3\2\2\2\20^\3\2\2\2\22g\3\2\2\2\24n\3\2\2")
+        buf.write(u"\2\26s\3\2\2\2\30\u0080\3\2\2\2\32\u0082\3\2\2\2\34\u0092")
+        buf.write(u"\3\2\2\2\36\u0094\3\2\2\2 \u0096\3\2\2\2\"#\5\4\3\2#")
+        buf.write(u"\3\3\2\2\2$%\7\3\2\2%&\5 \21\2&(\7\4\2\2\')\5\b\5\2(")
+        buf.write(u"\'\3\2\2\2()\3\2\2\2)*\3\2\2\2*.\7\5\2\2+-\5\6\4\2,+")
+        buf.write(u"\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\61\3\2\2\2")
+        buf.write(u"\60.\3\2\2\2\61\65\7\6\2\2\62\64\5\16\b\2\63\62\3\2\2")
+        buf.write(u"\2\64\67\3\2\2\2\65\63\3\2\2\2\65\66\3\2\2\2\668\3\2")
+        buf.write(u"\2\2\67\65\3\2\2\289\7\7\2\29\5\3\2\2\2:=\5\26\f\2;=")
+        buf.write(u"\5\20\t\2<:\3\2\2\2<;\3\2\2\2=\7\3\2\2\2>C\5\n\6\2?@")
+        buf.write(u"\7\b\2\2@B\5\n\6\2A?\3\2\2\2BE\3\2\2\2CA\3\2\2\2CD\3")
+        buf.write(u"\2\2\2D\t\3\2\2\2EC\3\2\2\2FJ\7\t\2\2GI\5\34\17\2HG\3")
+        buf.write(u"\2\2\2IL\3\2\2\2JH\3\2\2\2JK\3\2\2\2KM\3\2\2\2LJ\3\2")
+        buf.write(u"\2\2MO\7\n\2\2NF\3\2\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2")
+        buf.write(u"\2QS\3\2\2\2RP\3\2\2\2ST\5\f\7\2TU\5 \21\2U\13\3\2\2")
+        buf.write(u"\2VW\t\2\2\2W\r\3\2\2\2XY\5\36\20\2YZ\7\16\2\2Z[\5\34")
+        buf.write(u"\17\2[\\\7\17\2\2\\\17\3\2\2\2]_\7\20\2\2^]\3\2\2\2^")
+        buf.write(u"_\3\2\2\2_`\3\2\2\2`a\7\21\2\2ab\5 \21\2bc\7\6\2\2cd")
+        buf.write(u"\5\22\n\2de\7\7\2\2ef\7\17\2\2f\21\3\2\2\2gk\5\24\13")
+        buf.write(u"\2hj\5\24\13\2ih\3\2\2\2jm\3\2\2\2ki\3\2\2\2kl\3\2\2")
+        buf.write(u"\2l\23\3\2\2\2mk\3\2\2\2no\5 \21\2op\7\22\2\2pq\5\30")
+        buf.write(u"\r\2qr\7\17\2\2r\25\3\2\2\2st\7\23\2\2tu\5 \21\2uv\7")
+        buf.write(u"\22\2\2vy\5\30\r\2wx\7\16\2\2xz\5\34\17\2yw\3\2\2\2y")
+        buf.write(u"z\3\2\2\2z|\3\2\2\2{}\5\32\16\2|{\3\2\2\2|}\3\2\2\2}")
+        buf.write(u"~\3\2\2\2~\177\7\17\2\2\177\27\3\2\2\2\u0080\u0081\7")
+        buf.write(u"\24\2\2\u0081\31\3\2\2\2\u0082\u0083\7\25\2\2\u0083\u0084")
+        buf.write(u"\5\34\17\2\u0084\u0085\7\26\2\2\u0085\u0086\5\34\17\2")
+        buf.write(u"\u0086\33\3\2\2\2\u0087\u0093\5\36\20\2\u0088\u0089\5")
+        buf.write(u"\36\20\2\u0089\u008d\7\4\2\2\u008a\u008c\5\34\17\2\u008b")
+        buf.write(u"\u008a\3\2\2\2\u008c\u008f\3\2\2\2\u008d\u008b\3\2\2")
+        buf.write(u"\2\u008d\u008e\3\2\2\2\u008e\u0090\3\2\2\2\u008f\u008d")
+        buf.write(u"\3\2\2\2\u0090\u0091\7\5\2\2\u0091\u0093\3\2\2\2\u0092")
+        buf.write(u"\u0087\3\2\2\2\u0092\u0088\3\2\2\2\u0093\35\3\2\2\2\u0094")
+        buf.write(u"\u0095\5 \21\2\u0095\37\3\2\2\2\u0096\u0097\t\3\2\2\u0097")
+        buf.write(u"!\3\2\2\2\17(.\65<CJP^ky|\u008d\u0092")
         return buf.getvalue()
 
 
@@ -64,10 +72,10 @@ class SmeilParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'proc'", u"'('", u"')'", u"','", u"'['", 
-                     u"']'", u"'in'", u"'out'", u"'const'", u"'exposed'", 
-                     u"'bus'", u"'{'", u"'}'", u"';'", u"':'", u"'var'", 
-                     u"'='", u"'int'", u"'range'", u"'to'", u"'_'", u"'-'" ]
+    literalNames = [ u"<INVALID>", u"'proc'", u"'('", u"')'", u"'{'", u"'}'", 
+                     u"','", u"'['", u"']'", u"'in'", u"'out'", u"'const'", 
+                     u"'='", u"';'", u"'exposed'", u"'bus'", u"':'", u"'var'", 
+                     u"'int'", u"'range'", u"'to'", u"'_'", u"'-'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
@@ -79,22 +87,25 @@ class SmeilParser ( Parser ):
 
     RULE_entity = 0
     RULE_process = 1
-    RULE_params = 2
-    RULE_param = 3
-    RULE_direction = 4
-    RULE_busdecl = 5
-    RULE_bussignaldecls = 6
-    RULE_bussignaldecl = 7
-    RULE_vardecl = 8
-    RULE_typename = 9
-    RULE_ranges = 10
-    RULE_expression = 11
-    RULE_name = 12
-    RULE_ident = 13
+    RULE_declaration = 2
+    RULE_params = 3
+    RULE_param = 4
+    RULE_direction = 5
+    RULE_statement = 6
+    RULE_busdecl = 7
+    RULE_bussignaldecls = 8
+    RULE_bussignaldecl = 9
+    RULE_vardecl = 10
+    RULE_typename = 11
+    RULE_ranges = 12
+    RULE_expression = 13
+    RULE_name = 14
+    RULE_ident = 15
 
-    ruleNames =  [ u"entity", u"process", u"params", u"param", u"direction", 
-                   u"busdecl", u"bussignaldecls", u"bussignaldecl", u"vardecl", 
-                   u"typename", u"ranges", u"expression", u"name", u"ident" ]
+    ruleNames =  [ u"entity", u"process", u"declaration", u"params", u"param", 
+                   u"direction", u"statement", u"busdecl", u"bussignaldecls", 
+                   u"bussignaldecl", u"vardecl", u"typename", u"ranges", 
+                   u"expression", u"name", u"ident" ]
 
     EOF = Token.EOF
     T__0=1
@@ -162,7 +173,7 @@ class SmeilParser ( Parser ):
         self.enterRule(localctx, 0, self.RULE_entity)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 28
+            self.state = 32
             self.process()
         except RecognitionException as re:
             localctx.exception = re
@@ -186,18 +197,18 @@ class SmeilParser ( Parser ):
             return self.getTypedRuleContext(SmeilParser.ParamsContext,0)
 
 
-        def busdecl(self, i=None):
+        def declaration(self, i=None):
             if i is None:
-                return self.getTypedRuleContexts(SmeilParser.BusdeclContext)
+                return self.getTypedRuleContexts(SmeilParser.DeclarationContext)
             else:
-                return self.getTypedRuleContext(SmeilParser.BusdeclContext,i)
+                return self.getTypedRuleContext(SmeilParser.DeclarationContext,i)
 
 
-        def vardecl(self, i=None):
+        def statement(self, i=None):
             if i is None:
-                return self.getTypedRuleContexts(SmeilParser.VardeclContext)
+                return self.getTypedRuleContexts(SmeilParser.StatementContext)
             else:
-                return self.getTypedRuleContext(SmeilParser.VardeclContext,i)
+                return self.getTypedRuleContext(SmeilParser.StatementContext,i)
 
 
         def getRuleIndex(self):
@@ -221,41 +232,102 @@ class SmeilParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 30
-            self.match(SmeilParser.T__0)
-            self.state = 31
-            self.ident()
-            self.state = 32
-            self.match(SmeilParser.T__1)
             self.state = 34
+            self.match(SmeilParser.T__0)
+            self.state = 35
+            self.ident()
+            self.state = 36
+            self.match(SmeilParser.T__1)
+            self.state = 38
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__4) | (1 << SmeilParser.T__6) | (1 << SmeilParser.T__7) | (1 << SmeilParser.T__8))) != 0):
-                self.state = 33
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__6) | (1 << SmeilParser.T__8) | (1 << SmeilParser.T__9) | (1 << SmeilParser.T__10))) != 0):
+                self.state = 37
                 self.params()
 
 
-            self.state = 36
-            self.match(SmeilParser.T__2)
             self.state = 40
+            self.match(SmeilParser.T__2)
+            self.state = 44
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==SmeilParser.T__9 or _la==SmeilParser.T__10:
-                self.state = 37
-                self.busdecl()
-                self.state = 42
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__13) | (1 << SmeilParser.T__14) | (1 << SmeilParser.T__16))) != 0):
+                self.state = 41
+                self.declaration()
+                self.state = 46
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 46
+            self.state = 47
+            self.match(SmeilParser.T__3)
+            self.state = 51
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==SmeilParser.T__15:
-                self.state = 43
-                self.vardecl()
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__20) | (1 << SmeilParser.T__21) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
                 self.state = 48
+                self.statement()
+                self.state = 53
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
+
+            self.state = 54
+            self.match(SmeilParser.T__4)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class DeclarationContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SmeilParser.DeclarationContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def vardecl(self):
+            return self.getTypedRuleContext(SmeilParser.VardeclContext,0)
+
+
+        def busdecl(self):
+            return self.getTypedRuleContext(SmeilParser.BusdeclContext,0)
+
+
+        def getRuleIndex(self):
+            return SmeilParser.RULE_declaration
+
+        def enterRule(self, listener):
+            if hasattr(listener, "enterDeclaration"):
+                listener.enterDeclaration(self)
+
+        def exitRule(self, listener):
+            if hasattr(listener, "exitDeclaration"):
+                listener.exitDeclaration(self)
+
+
+
+
+    def declaration(self):
+
+        localctx = SmeilParser.DeclarationContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_declaration)
+        try:
+            self.state = 58
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [SmeilParser.T__16]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 56
+                self.vardecl()
+                pass
+            elif token in [SmeilParser.T__13, SmeilParser.T__14]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 57
+                self.busdecl()
+                pass
+            else:
+                raise NoViableAltException(self)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -295,21 +367,21 @@ class SmeilParser ( Parser ):
     def params(self):
 
         localctx = SmeilParser.ParamsContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_params)
+        self.enterRule(localctx, 6, self.RULE_params)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 49
+            self.state = 60
             self.param()
-            self.state = 54
+            self.state = 65
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==SmeilParser.T__3:
-                self.state = 50
-                self.match(SmeilParser.T__3)
-                self.state = 51
+            while _la==SmeilParser.T__5:
+                self.state = 61
+                self.match(SmeilParser.T__5)
+                self.state = 62
                 self.param()
-                self.state = 56
+                self.state = 67
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -359,35 +431,35 @@ class SmeilParser ( Parser ):
     def param(self):
 
         localctx = SmeilParser.ParamContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 6, self.RULE_param)
+        self.enterRule(localctx, 8, self.RULE_param)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 67
+            self.state = 78
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==SmeilParser.T__4:
-                self.state = 57
-                self.match(SmeilParser.T__4)
-                self.state = 61
+            while _la==SmeilParser.T__6:
+                self.state = 68
+                self.match(SmeilParser.T__6)
+                self.state = 72
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__20) | (1 << SmeilParser.T__21) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
-                    self.state = 58
+                    self.state = 69
                     self.expression()
-                    self.state = 63
+                    self.state = 74
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 64
-                self.match(SmeilParser.T__5)
-                self.state = 69
+                self.state = 75
+                self.match(SmeilParser.T__7)
+                self.state = 80
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 70
+            self.state = 81
             self.direction()
-            self.state = 71
+            self.state = 82
             self.ident()
         except RecognitionException as re:
             localctx.exception = re
@@ -421,17 +493,67 @@ class SmeilParser ( Parser ):
     def direction(self):
 
         localctx = SmeilParser.DirectionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 8, self.RULE_direction)
+        self.enterRule(localctx, 10, self.RULE_direction)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 73
+            self.state = 84
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__6) | (1 << SmeilParser.T__7) | (1 << SmeilParser.T__8))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__8) | (1 << SmeilParser.T__9) | (1 << SmeilParser.T__10))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class StatementContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SmeilParser.StatementContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def name(self):
+            return self.getTypedRuleContext(SmeilParser.NameContext,0)
+
+
+        def expression(self):
+            return self.getTypedRuleContext(SmeilParser.ExpressionContext,0)
+
+
+        def getRuleIndex(self):
+            return SmeilParser.RULE_statement
+
+        def enterRule(self, listener):
+            if hasattr(listener, "enterStatement"):
+                listener.enterStatement(self)
+
+        def exitRule(self, listener):
+            if hasattr(listener, "exitStatement"):
+                listener.exitStatement(self)
+
+
+
+
+    def statement(self):
+
+        localctx = SmeilParser.StatementContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_statement)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 86
+            self.name()
+            self.state = 87
+            self.match(SmeilParser.T__11)
+            self.state = 88
+            self.expression()
+            self.state = 89
+            self.match(SmeilParser.T__12)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -471,30 +593,30 @@ class SmeilParser ( Parser ):
     def busdecl(self):
 
         localctx = SmeilParser.BusdeclContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_busdecl)
+        self.enterRule(localctx, 14, self.RULE_busdecl)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 76
+            self.state = 92
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==SmeilParser.T__9:
-                self.state = 75
-                self.match(SmeilParser.T__9)
+            if _la==SmeilParser.T__13:
+                self.state = 91
+                self.match(SmeilParser.T__13)
 
 
-            self.state = 78
-            self.match(SmeilParser.T__10)
-            self.state = 79
+            self.state = 94
+            self.match(SmeilParser.T__14)
+            self.state = 95
             self.ident()
-            self.state = 80
-            self.match(SmeilParser.T__11)
-            self.state = 81
+            self.state = 96
+            self.match(SmeilParser.T__3)
+            self.state = 97
             self.bussignaldecls()
-            self.state = 82
+            self.state = 98
+            self.match(SmeilParser.T__4)
+            self.state = 99
             self.match(SmeilParser.T__12)
-            self.state = 83
-            self.match(SmeilParser.T__13)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -533,19 +655,19 @@ class SmeilParser ( Parser ):
     def bussignaldecls(self):
 
         localctx = SmeilParser.BussignaldeclsContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_bussignaldecls)
+        self.enterRule(localctx, 16, self.RULE_bussignaldecls)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 85
+            self.state = 101
             self.bussignaldecl()
-            self.state = 89
+            self.state = 105
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__20) | (1 << SmeilParser.T__21) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
-                self.state = 86
+                self.state = 102
                 self.bussignaldecl()
-                self.state = 91
+                self.state = 107
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -588,17 +710,17 @@ class SmeilParser ( Parser ):
     def bussignaldecl(self):
 
         localctx = SmeilParser.BussignaldeclContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_bussignaldecl)
+        self.enterRule(localctx, 18, self.RULE_bussignaldecl)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 92
+            self.state = 108
             self.ident()
-            self.state = 93
-            self.match(SmeilParser.T__14)
-            self.state = 94
+            self.state = 109
+            self.match(SmeilParser.T__15)
+            self.state = 110
             self.typename()
-            self.state = 95
-            self.match(SmeilParser.T__13)
+            self.state = 111
+            self.match(SmeilParser.T__12)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -646,38 +768,38 @@ class SmeilParser ( Parser ):
     def vardecl(self):
 
         localctx = SmeilParser.VardeclContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_vardecl)
+        self.enterRule(localctx, 20, self.RULE_vardecl)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 97
-            self.match(SmeilParser.T__15)
-            self.state = 98
+            self.state = 113
+            self.match(SmeilParser.T__16)
+            self.state = 114
             self.ident()
-            self.state = 99
-            self.match(SmeilParser.T__14)
-            self.state = 100
+            self.state = 115
+            self.match(SmeilParser.T__15)
+            self.state = 116
             self.typename()
-            self.state = 103
+            self.state = 119
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==SmeilParser.T__16:
-                self.state = 101
-                self.match(SmeilParser.T__16)
-                self.state = 102
+            if _la==SmeilParser.T__11:
+                self.state = 117
+                self.match(SmeilParser.T__11)
+                self.state = 118
                 self.expression()
 
 
-            self.state = 106
+            self.state = 122
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==SmeilParser.T__18:
-                self.state = 105
+                self.state = 121
                 self.ranges()
 
 
-            self.state = 108
-            self.match(SmeilParser.T__13)
+            self.state = 124
+            self.match(SmeilParser.T__12)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -710,10 +832,10 @@ class SmeilParser ( Parser ):
     def typename(self):
 
         localctx = SmeilParser.TypenameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 18, self.RULE_typename)
+        self.enterRule(localctx, 22, self.RULE_typename)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 110
+            self.state = 126
             self.match(SmeilParser.T__17)
         except RecognitionException as re:
             localctx.exception = re
@@ -753,16 +875,16 @@ class SmeilParser ( Parser ):
     def ranges(self):
 
         localctx = SmeilParser.RangesContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 20, self.RULE_ranges)
+        self.enterRule(localctx, 24, self.RULE_ranges)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 112
+            self.state = 128
             self.match(SmeilParser.T__18)
-            self.state = 113
+            self.state = 129
             self.expression()
-            self.state = 114
+            self.state = 130
             self.match(SmeilParser.T__19)
-            self.state = 115
+            self.state = 131
             self.expression()
         except RecognitionException as re:
             localctx.exception = re
@@ -806,35 +928,35 @@ class SmeilParser ( Parser ):
     def expression(self):
 
         localctx = SmeilParser.ExpressionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 22, self.RULE_expression)
+        self.enterRule(localctx, 26, self.RULE_expression)
         self._la = 0 # Token type
         try:
-            self.state = 128
+            self.state = 144
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,12,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 117
+                self.state = 133
                 self.name()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 118
+                self.state = 134
                 self.name()
-                self.state = 119
+                self.state = 135
                 self.match(SmeilParser.T__1)
-                self.state = 123
+                self.state = 139
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__20) | (1 << SmeilParser.T__21) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
-                    self.state = 120
+                    self.state = 136
                     self.expression()
-                    self.state = 125
+                    self.state = 141
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 126
+                self.state = 142
                 self.match(SmeilParser.T__2)
                 pass
 
@@ -874,10 +996,10 @@ class SmeilParser ( Parser ):
     def name(self):
 
         localctx = SmeilParser.NameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 24, self.RULE_name)
+        self.enterRule(localctx, 28, self.RULE_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 130
+            self.state = 146
             self.ident()
         except RecognitionException as re:
             localctx.exception = re
@@ -919,11 +1041,11 @@ class SmeilParser ( Parser ):
     def ident(self):
 
         localctx = SmeilParser.IdentContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 26, self.RULE_ident)
+        self.enterRule(localctx, 30, self.RULE_ident)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 132
+            self.state = 148
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__20) | (1 << SmeilParser.T__21) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0)):
                 self._errHandler.recoverInline(self)

@@ -20,12 +20,13 @@ class SmeilCspmListener(SmeilListener) :
         return self.channel
 
     def enterProcess(self, ctx):
+        let_variables = ''
+        within_variables = ''
+        # print "in process"
         # ctx.text = ctx.ident().getText()
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
         self.process += (ctx.ident().getText().capitalize())
-        # print ctx.params().getChildCount()
-
         if ctx.params():
             self.process += '('
             for x in ctx.params().children:
@@ -33,11 +34,35 @@ class SmeilCspmListener(SmeilListener) :
                 # print x.ident().getText()
                 self.process += x.ident().getText()
             self.process += ')'
-        self.process += (' = ')
+        self.process += (' = \n\t')
+
+        if ctx.declaration():
+            for x in ctx.declaration():
+                # print type(x.children)
+                # print x
+                # print x.children
+                # print x.getChildCount()
+                for y in x.children:
+                    if isinstance(y, SmeilParser.VardeclContext) is True:
+                        if y.expression():
+                            let_variables += ('\t'
+                                              + y.ident().getText()
+                                              + ' = '
+                                              + y.expression().getText()
+                                              + '\n\t')
+        if ctx.statement():
+            print ctx.getText()
+            self.process += 'let\n\t'
+            self.process += let_variables
+            self.process += 'within\n\t\t'
+            self.process += within_variables
+
+        # print "ending process"
         # print type(ctx)
 
 
     def enterBusdecl(self, ctx):
+        # print "in busdecl"
         channel_name = (ctx.ident().getText() + '_')
         # get all bus declarations in order to create all channels
         for child in ctx.bussignaldecls().children:
@@ -49,10 +74,11 @@ class SmeilCspmListener(SmeilListener) :
             # else:
             #     text += child.getText()
 
-    def enterVardecl(self, ctx):
-        self.process += ('\n')
-        self.process += ('\t')
-        self.process += ctx.ident().getText() + ' : '
+    # def enterVardecl(self, ctx):
+    #     print "in vardecl"
+    #     self.process += ('\n')
+    #     self.process += ('\t')
+    #     self.process += ctx.ident().getText() + ' : '
 
         # for x in ctx.bussignaldecls():
         #     print x
