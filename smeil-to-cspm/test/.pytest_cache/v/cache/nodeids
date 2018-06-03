@@ -3,5 +3,6 @@
   "test_Smeil.py::test_variables", 
   "test_Smeil.py::test_channel", 
   "test_Smeil.py::test_several_channels", 
-  "test_Smeil.py::test_process_input_variable"
+  "test_Smeil.py::test_process_input_variable", 
+  "test_Smeil.py::test_process_empty_statement"
 ]
