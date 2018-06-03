@@ -1,4 +1,4 @@
-proc clock()
+proc clock(in hours_in)
   bus clock_out {
     val1 : int;
     val2 : int;

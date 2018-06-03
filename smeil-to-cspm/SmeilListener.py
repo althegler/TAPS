@@ -22,6 +22,33 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#params.
+    def enterParams(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#params.
+    def exitParams(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#param.
+    def enterParam(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#param.
+    def exitParam(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#direction.
+    def enterDirection(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#direction.
+    def exitDirection(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#busdecl.
     def enterBusdecl(self, ctx):
         pass

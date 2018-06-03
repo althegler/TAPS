@@ -5,7 +5,7 @@ entity : process
        /*| network*/
        ;
 
-process : 'proc' ident '()'? busdecl* vardecl* ;
+process : 'proc' ident '(' params? ')' busdecl* vardecl* ;
 
 /*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
 
@@ -18,14 +18,14 @@ process : 'proc' ident '()'? busdecl* vardecl* ;
             /*| generate*/
             /*;*/
 
-/*params : param (',' param)* ;*/
+params : param (',' param)* ;
 
-/*param : ('[' expression* ']')* direction ident ;*/
+param : ('[' expression* ']')* direction ident ;
 
-/*direction : 'in'
+direction : 'in'
           | 'out'
           | 'const'
-          ;*/
+          ;
 
 /*statement : name '=' expression ';'*/
           /*| 'if' '(' condition ')' '{' statement* '}' elifblock* elseblock?*/

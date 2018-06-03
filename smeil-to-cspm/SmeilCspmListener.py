@@ -24,6 +24,15 @@ class SmeilCspmListener(SmeilListener) :
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
         self.process += (ctx.ident().getText().capitalize())
+        # print ctx.params().getChildCount()
+
+        if ctx.params():
+            self.process += '('
+            for x in ctx.params().children:
+                #TODO This should also be able to handle an expression
+                # print x.ident().getText()
+                self.process += x.ident().getText()
+            self.process += ')'
         self.process += (' = ')
         # print type(ctx)
 
