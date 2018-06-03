@@ -2,5 +2,6 @@
   "test_Smeil.py::test_proc_name", 
   "test_Smeil.py::test_variables", 
   "test_Smeil.py::test_channel", 
-  "test_Smeil.py::test_several_channels"
+  "test_Smeil.py::test_several_channels", 
+  "test_Smeil.py::test_process_input_variable"
 ]
