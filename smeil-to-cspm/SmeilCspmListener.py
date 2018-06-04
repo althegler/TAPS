@@ -22,11 +22,13 @@ class SmeilCspmListener(SmeilListener) :
     def enterProcess(self, ctx):
         let_variables = ''
         within_variables = ''
+        assert_processes = ''
         # print "in process"
         # ctx.text = ctx.ident().getText()
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
         self.process += (ctx.ident().getText().capitalize())
+
         # Parameters
         if ctx.params():
             self.process += '('
@@ -35,7 +37,8 @@ class SmeilCspmListener(SmeilListener) :
                 # print x.ident().getText()
                 self.process += x.ident().getText()
             self.process += ')'
-        self.process += (' = \n\t')
+        self.process += (' = \n')
+
         # Declarations
         if ctx.declaration():
             for x in ctx.declaration():
@@ -46,11 +49,10 @@ class SmeilCspmListener(SmeilListener) :
                 for y in x.children:
                     if isinstance(y, SmeilParser.VardeclContext) is True:
                         if y.expression():
-                            let_variables += ('\t'
-                                              + y.ident().getText()
+                            let_variables += (y.ident().getText()
                                               + ' = '
                                               + y.expression().getText()
-                                              + '\n\t')
+                                              + '\n')
         # Statements
         if ctx.statement():
             for x in ctx.statement():
@@ -60,21 +62,35 @@ class SmeilCspmListener(SmeilListener) :
                                          + x.expression().getText()
                                          + ' -> \n'
                                          )
+                    assert_processes += (x.name().getText().replace(".", "_")
+                                         + '_assert'
+                                         + '(c) = c ? x -> if x > 10 then STOP else SKIP'
+                                         + '\n\n'
+                                         )
                 else:
-                    let_variables += ('\t'
-                                      + x.name().getText()
+                    # expression_val = x.expression()
+                    # print expression_val
+                    # print type(x.expression())
+                    let_variables += (x.name().getText()
                                       + ' = '
                                       + x.expression().getText()
-                                      +  '\n\t')
-            self.process += 'let\n\t'
+                                      +  '\n')
+            self.process += 'let\n'
             self.process += let_variables
-            self.process += 'within\n\t\t'
+            self.process += 'within\n'
             if len(within_variables) > 1:
-                within_variables += 'SKIP'
-            self.process += within_variables
+                within_variables += 'SKIP\n'
+                self.process += within_variables
+                self.process += '\n\n'
+                self.process += assert_processes
 
         # print "ending process"
         # print type(ctx)
+
+    # def enterExpression(self, ctx):
+    #     self.channel += ctx.getText()
+    #     # print ctx.getText()
+    #     # print 'heeehooo'
 
 
     def enterBusdecl(self, ctx):
