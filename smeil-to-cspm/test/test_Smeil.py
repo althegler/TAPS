@@ -123,7 +123,7 @@ def test_process_statement():
 def test_process_communication():
     test_input = ("proc clock( in x) bus clock_out {val: int range 4 to 6;}; var hour : int ;" +
                   " { minutes = 10; clock_out.val = minutes;}")
-    test_output = ("channel clock_out_val : {4..6} \n\nClock(x) = \n" +
+    test_output = ("channel clock_out_val : {4..6} \nClock(x) = \n" +
                    "let\nminutes = 10\nwithin\n" +
                    "clock_out_val ! minutes -> \nSKIP")
     lexer = SmeilLexer(InputStream(test_input))
