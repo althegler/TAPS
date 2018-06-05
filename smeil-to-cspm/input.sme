@@ -1,8 +1,8 @@
 proc clock ()
     bus clock_out {
-        val: int range 0 to 60535;
+        val: u4 range 0 to 60535;
     };
-    var i: int = 60533 range 0 to 60535;
+    var i: u4 = 60533 range 0 to 60535;
 {
     i = i / 1;
     clock_out.val = i;
@@ -10,15 +10,29 @@ proc clock ()
 
 
 proc hours (in hours_in)
-    bus hours_out {hours_first_digit: int range 0 to 1;
-                   hours_second_digit: int range 0 to 6;};
-    var hours: int range 0 to 16;
-    var hours_first_temp: int range 0 to 1;
-    var hours_second_temp: int range 0 to 6;
+    bus hours_out {hours_first_digit: u4 range 0 to 1;
+                   hours_second_digit: u4 range 0 to 6;};
+    var hours: u4 range 0 to 16;
+    var hours_first_temp: u4 range 0 to 1;
+    var hours_second_temp: u4 range 0 to 6;
 {
     hours = hours_in.val / 3600;
     hours_first_temp = hours / 10;
     hours_second_temp = hours % 10;
     hours_out.hours_first_digit = hours_first_temp;
     hours_out.hours_second_digit = hours_second_temp;
+}
+
+proc seconds (in seconds_in)
+    bus seconds_out {seconds_first_digit: u4 range 0 to 5;
+                     seconds_second_digit: u4 range 0 to 4;};
+    var seconds: u4 range 0 to 54;
+    var seconds_first_temp: u4 range 0 to 5;
+    var seconds_second_temp: u4 range 0 to 4;
+{
+    seconds = seconds_in.val % 60;
+    seconds_first_temp = seconds / 10;
+    seconds_second_temp = seconds % 10;
+    seconds_out.seconds_first_digit = seconds_first_temp;
+    seconds_out.seconds_second_digit = seconds_second_temp;
 }

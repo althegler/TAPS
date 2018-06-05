@@ -15,7 +15,7 @@ null
 'bus'
 ':'
 'var'
-'int'
+'u4'
 'range'
 'to'
 '/'

@@ -78,7 +78,7 @@ class SmeilParser ( Parser ):
 
     literalNames = [ u"<INVALID>", u"'proc'", u"'('", u"')'", u"'{'", u"'}'", 
                      u"','", u"'in'", u"'out'", u"'const'", u"'='", u"';'", 
-                     u"'exposed'", u"'bus'", u"':'", u"'var'", u"'int'", 
+                     u"'exposed'", u"'bus'", u"':'", u"'var'", u"'u4'", 
                      u"'range'", u"'to'", u"'/'", u"'%'", u"'.'", u"'_'", 
                      u"'-'" ]
 

@@ -48,7 +48,7 @@ bussignaldecl : ident ':' typename ('=' expression )? ranges ';' ;
 
 vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;
 
-typename : 'int' ;// not finished
+typename : 'u4' ;// not finished
 
 ranges : 'range' expression 'to' expression ;
 

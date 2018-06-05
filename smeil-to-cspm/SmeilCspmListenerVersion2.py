@@ -22,10 +22,12 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         ctx.let_variables = ''
         ctx.within_variables = ''
         ctx.assert_processes = ''
+        ctx.variables = {}
+        ctx.channels = {}
 
     def exitProcess(self, ctx):
         # There will always be a process name
-        ctx.variables = {}
+
 
         # print ctx.children
         params_val = next((x.getText() for x in ctx.children if isinstance(x, SmeilParser.ParamsContext)), None)
@@ -47,6 +49,20 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 if len(ctx.within_variables) > 1:
                     ctx.within_variables += 'SKIP'
                 self.process += ctx.within_variables
+                self.process += '\n\n'
+                # Create assertion processes
+                # TODO make this better!!
+                for channel in ctx.channels.items():
+                    assertion = (channel[0]
+                                + '(c) = c ? x -> if '
+                                +  channel[1][0]
+                                + ' <= x <= '
+                                + channel[1][1]
+                                + ' then STOP else SKIP\n')
+                    ctx.assert_processes += assertion
+                self.process += ctx.assert_processes
+                self.process += '\n\n'
+
 
     def exitStatement(self, ctx):
         # TODO currently only handle name = expression
@@ -58,10 +74,13 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             if hasattr(ctx.name(), 'com_text'):
                 # print ctx.parentCtx.within_variables
                 ctx.parentCtx.within_variables += (ctx.name().com_text
-                                    + ' ! '
-                                    + expression
-                                    + ' -> \n'
-                                    )
+                                               + ' ! '
+                                               + expression
+                                               + ' -> \n'
+                                               )
+                # ctx.parentCtx.assert_processes += (ctx.name().com_text
+                #                                   + '(c) = c ? x ->'
+                #                                   +  )
             else:
                 name = ctx.name().text
                 ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
@@ -72,6 +91,9 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         for child in ctx.children:
             if isinstance(child, SmeilParser.BusdeclContext) is True:
                 self.channel += child.text
+                self.channel += '\n'
+                ctx.parentCtx.channels = child.channels
+                # ctx.parentCtx.channels[]
             elif isinstance(child, SmeilParser.VardeclContext) is True:
                 #TODO what happens with several expressions in one?
                 expression = next((x.text for x in child.children if
@@ -81,7 +103,9 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                     ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
 
     def exitBusdecl(self, ctx):
+        ctx.channels = {}
         text = ''
+        # print ctx.parentCtx.parentCtx.getText()
         bus_name = ctx.ident().getText() + '_'
         # get all channel declarations within the bus declaration
         # in order to create all channels
@@ -98,6 +122,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             else:
                 range += ranges[0] + '..' + ranges[1] + '}'
             text += ('channel ' + bus_name + channel_name + ' : ' + range +' \n')
+            ctx.channels[(bus_name + channel_name)] = [ranges[0], ranges[1]]
         ctx.text = text
 
 
@@ -125,6 +150,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is True:
                 ctx.text = ctx.name()[0].getText()
             else:
+                # channel name
                 ctx.com_text = ctx.getText().replace(".", "_")
         else:
             ctx.text = ctx.ident().getText()
