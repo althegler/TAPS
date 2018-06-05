@@ -9,6 +9,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         self.process = ''
         self.network = ''
         self.channel = ''
+        self.processes = {}
     def get_process(self):
         return self.process
 
@@ -24,16 +25,20 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         ctx.assert_processes = ''
         ctx.variables = {}
         ctx.channels = {}
+        process_name = ctx.ident().getText()
+        self.processes[process_name] = []
+
+    # exitNetwork(self,ctx):
+
 
     def exitProcess(self, ctx):
-        # There will always be a process name
 
-
-        # print ctx.children
         params_val = next((x.getText() for x in ctx.children if isinstance(x, SmeilParser.ParamsContext)), None)
         # If there is no params we want to create an input channels, which is
         # done automatically because we dont add anything else than channels
         if params_val != None :
+            # There will always be a process name, but we only want it printed
+            # when there is params in the process name
             self.process += ctx.ident().getText().capitalize()
             self.process += '('
             self.process += ctx.params().text
@@ -78,9 +83,6 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                                                + expression
                                                + ' -> \n'
                                                )
-                # ctx.parentCtx.assert_processes += (ctx.name().com_text
-                #                                   + '(c) = c ? x ->'
-                #                                   +  )
             else:
                 name = ctx.name().text
                 ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
@@ -93,20 +95,27 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 self.channel += child.text
                 self.channel += '\n'
                 ctx.parentCtx.channels = child.channels
-                # ctx.parentCtx.channels[]
+                process_name = ctx.parentCtx.ident().getText()
+                processes = self.processes[process_name]
+                for elem in child.channel_names:
+                    processes.append(elem)
+                self.processes[process_name] = processes
+                print self.processes
             elif isinstance(child, SmeilParser.VardeclContext) is True:
                 #TODO what happens with several expressions in one?
                 expression = next((x.text for x in child.children if
                     isinstance(x, SmeilParser.ExpressionContext)), None)
                 if expression != None:
                     name = child.ident().getText()
-                    ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
+                    ctx.parentCtx.let_variables += (name + ' = ' + expression
+                                                   + '\n')
 
     def exitBusdecl(self, ctx):
         ctx.channels = {}
         text = ''
         # print ctx.parentCtx.parentCtx.getText()
         bus_name = ctx.ident().getText() + '_'
+        ctx.channel_names = []
         # get all channel declarations within the bus declaration
         # in order to create all channels
         for child in ctx.bussignaldecls().children:
@@ -123,6 +132,8 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 range += ranges[0] + '..' + ranges[1] + '}'
             text += ('channel ' + bus_name + channel_name + ' : ' + range +' \n')
             ctx.channels[(bus_name + channel_name)] = [ranges[0], ranges[1]]
+            ctx.channel_names.append(bus_name + channel_name)
+        # ctx.busses.append(ctx.channel_names)
         ctx.text = text
 
 
@@ -141,8 +152,6 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             # elif isinstance(child, SmeilParser.BinopContext) is True:
             # ctx.text = child.text
 
-
-
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
         # print ctx.getText()
@@ -154,15 +163,6 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 ctx.com_text = ctx.getText().replace(".", "_")
         else:
             ctx.text = ctx.ident().getText()
-
-
-    #
-    # if (x.name().getChildCount() > 1):
-    #     within_variables += (x.name().getText().replace(".", "_")
-    #                          + ' ! '
-    #                          + x.expression().getText()
-    #                          + ' -> \n'
-    #                          )
 
     def enterParams(self, ctx):
         text = ''

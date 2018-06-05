@@ -6,5 +6,6 @@
   "test/test_Smeil.py::test_process_input_variable", 
   "test/test_Smeil.py::test_process_empty_statement", 
   "test/test_Smeil.py::test_process_statement", 
-  "test/test_Smeil.py::test_process_communication"
+  "test/test_Smeil.py::test_input_process", 
+  "test/test_Smeil.py::test_assertion_process"
 ]

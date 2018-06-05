@@ -3,9 +3,6 @@ channel clock_out_val : {0..60535}
 channel hours_out_hours_first_digit : {0..1} 
 channel hours_out_hours_second_digit : {0..6} 
 
-channel seconds_out_seconds_first_digit : {0..5} 
-channel seconds_out_seconds_second_digit : {0..4} 
-
 Hours(hours_in) = 
 let
 hours = 3600
@@ -18,19 +15,5 @@ SKIP
 
 hours_out_hours_second_digit(c) = c ? x -> if 0 <= x <= 6 then STOP else SKIP
 hours_out_hours_first_digit(c) = c ? x -> if 0 <= x <= 1 then STOP else SKIP
-
-
-Seconds(seconds_in) = 
-let
-seconds = 60
-seconds_first_temp = 10
-seconds_second_temp = 10
-within
-seconds_out_seconds_first_digit ! seconds_first_temp -> 
-seconds_out_seconds_second_digit ! seconds_second_temp -> 
-SKIP
-
-seconds_out_seconds_second_digit(c) = c ? x -> if 0 <= x <= 4 then STOP else SKIP
-seconds_out_seconds_first_digit(c) = c ? x -> if 0 <= x <= 5 then STOP else SKIP
 
 
