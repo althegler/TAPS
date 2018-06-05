@@ -27,10 +27,6 @@ class SmeilCspmListener(SmeilListener) :
         # ctx.text = ctx.ident().getText()
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
-<<<<<<< HEAD
-=======
-        self.process += (ctx.ident().getText().capitalize())
->>>>>>> 68cba63e5e581e5dff067abd6f5446759921560d
 
         # Parameters
         if ctx.params():
@@ -42,7 +38,6 @@ class SmeilCspmListener(SmeilListener) :
                 # print x.ident().getText()
                 self.process += x.ident().getText()
             self.process += ')'
-<<<<<<< HEAD
             self.process += (' = \n\t')
             # Declarations
             if ctx.declaration():
@@ -95,30 +90,8 @@ class SmeilCspmListener(SmeilListener) :
             #             #     for b in x.children:
             #             #         print b
 
-=======
-        self.process += (' = \n')
-
-        # Declarations
-        if ctx.declaration():
->>>>>>> 68cba63e5e581e5dff067abd6f5446759921560d
             for x in ctx.declaration():
                 for y in x.children:
-<<<<<<< HEAD
-                        print "HERE"
-                        if isinstance(y, SmeilParser.BusdeclContext) is True:
-                            print "enter bus in process"
-                            ctx.enterRule(self.enterBusdecl(y)) 
-                            # self.enterBusdecl(y)
-                            print "exit bus in process"
-            self.channel += "\n\nIt worked!"
-
-
-    def exitProcess(self,ctx):
-        print "exit process"
-
-    def exitBusdecl(Self, ctx):
-        print "exit busdecl"
-=======
                     if isinstance(y, SmeilParser.VardeclContext) is True:
                         if y.expression():
                             let_variables += (y.ident().getText()
@@ -164,7 +137,6 @@ class SmeilCspmListener(SmeilListener) :
     #     # print ctx.getText()
     #     # print 'heeehooo'
 
->>>>>>> 68cba63e5e581e5dff067abd6f5446759921560d
 
     def enterBusdecl(self, ctx):
         print "in busdecl"
