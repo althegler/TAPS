@@ -2,8 +2,20 @@ grammar Smeil;
 
 
 entity : process+
-       /*| network*/
+       | network
        ;
+
+network : 'network' ident '(' params? ')' '{' networkdecl '}';
+
+networkdecl : instance
+            /* | busdecl */
+            ;
+
+/* NOTE! This is not how the original grammar is */
+instance : 'instance' instancename 'of' ident '(' name '.' name ')' ';' ;
+
+/* NOTE! Not completed */
+instancename : ident ;
 
 process : 'proc' ident '(' params? ')' declaration* '{' statement* '}';
 
@@ -48,7 +60,11 @@ bussignaldecl : ident ':' typename ('=' expression )? ranges ';' ;
 
 vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;
 
-typename : 'u4' ;// not finished
+typename : 'u2'
+         | 'u4'
+         | 'u6'
+         | 'u7'
+         | 'u17';// not finished
 
 ranges : 'range' expression 'to' expression ;
 

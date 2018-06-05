@@ -13,6 +13,42 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#network.
+    def enterNetwork(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#network.
+    def exitNetwork(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#networkdecl.
+    def enterNetworkdecl(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#networkdecl.
+    def exitNetworkdecl(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#instance.
+    def enterInstance(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#instance.
+    def exitInstance(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#instancename.
+    def enterInstancename(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#instancename.
+    def exitInstancename(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#process.
     def enterProcess(self, ctx):
         pass

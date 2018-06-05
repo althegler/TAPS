@@ -16,8 +16,8 @@ hours_out_hours_first_digit ! hours_first_temp ->
 hours_out_hours_second_digit ! hours_second_temp -> 
 SKIP
 
-hours_out_hours_second_digit(c) = c ? x -> 0 <= x <= 6 -> then STOP else SKIP
-hours_out_hours_first_digit(c) = c ? x -> 0 <= x <= 1 -> then STOP else SKIP
+hours_out_hours_second_digit(c) = c ? x -> if 0 <= x <= 6 then STOP else SKIP
+hours_out_hours_first_digit(c) = c ? x -> if 0 <= x <= 1 then STOP else SKIP
 
 
 Seconds(seconds_in) = 
@@ -30,7 +30,7 @@ seconds_out_seconds_first_digit ! seconds_first_temp ->
 seconds_out_seconds_second_digit ! seconds_second_temp -> 
 SKIP
 
-seconds_out_seconds_second_digit(c) = c ? x -> 0 <= x <= 4 -> then STOP else SKIP
-seconds_out_seconds_first_digit(c) = c ? x -> 0 <= x <= 5 -> then STOP else SKIP
+seconds_out_seconds_second_digit(c) = c ? x -> if 0 <= x <= 4 then STOP else SKIP
+seconds_out_seconds_first_digit(c) = c ? x -> if 0 <= x <= 5 then STOP else SKIP
 
 

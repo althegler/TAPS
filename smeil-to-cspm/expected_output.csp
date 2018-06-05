@@ -5,3 +5,10 @@ Clock =
         minutes = 10
     within
         clock_out_val ! minutes -> SKIP
+
+
+P_hours = input ? variable ->
+          (Hours(variable)
+          [| {| hours_first_digit |} |]
+          Hours_first_digit_assert(hours_first_digit))
+          
