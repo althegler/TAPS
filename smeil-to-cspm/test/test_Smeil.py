@@ -25,7 +25,7 @@ def test_proc_name():
 
 
 def test_variables():
-    test_input = "proc clock(in x)var hour : int ; { }"
+    test_input = "proc clock(in x)var hour : u4 ; { }"
     test_output = "Clock(x) = \n"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
@@ -41,8 +41,8 @@ def test_variables():
 
 
 def test_channel():
-    test_input = "proc clock(in x) bus clock_out {val: int range 0 to 2;};var hour : int ; { }"
-    test_output = "channel clock_out_val : {0..2} \nClock(x) = \n"
+    test_input = "proc clock(in x) bus clock_out {val: u4 range 0 to 2;};var hour : u4 ; { }"
+    test_output = "channel clock_out_val : {0..2} \n\nClock(x) = \n"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -57,10 +57,10 @@ def test_channel():
 
 
 def test_several_channels():
-    test_input = ("proc clock( in x) bus clock_out {val1: int range 0 to 1; val2: int range 0 to 3;}; " +
-                  "var hour : int ; {}")
+    test_input = ("proc clock( in x) bus clock_out {val1: u4 range 0 to 1; val2: u4 range 0 to 3;}; " +
+                  "var hour : u4 ; {}")
     test_output = ("channel clock_out_val1 : {0..1} " +
-                  "\nchannel clock_out_val2 : {0..3} \nClock(x) = \n")
+                  "\nchannel clock_out_val2 : {0..3} \n\nClock(x) = \n")
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -89,8 +89,8 @@ def test_process_input_variable():
     assert output == test_output
 
 def test_process_empty_statement():
-    test_input = "proc clock(in x) bus clock_out {val: int range 10 to 20;}; var hour : int ; { }"
-    test_output = "channel clock_out_val : {10..20} \nClock(x) = \n"
+    test_input = "proc clock(in x) bus clock_out {val: u4 range 10 to 20;}; var hour : u4 ; { }"
+    test_output = "channel clock_out_val : {10..20} \n\nClock(x) = \n"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -99,15 +99,18 @@ def test_process_empty_statement():
     walker = ParseTreeWalker()
     walker.walk(printer, tree)
     output = printer.get_channel() + printer.get_process()
-    # print output
-    # print test_output
+    print output
+    print test_output
     assert output == test_output
 
+#TODO this should not be a valid process definition. it has no communication
+# but still creates an assertion process
 def test_process_statement():
-    test_input = ("proc clock(in x) bus clock_out {val: int range 42 to 43;}; var hour : int ;" +
+    test_input = ("proc clock(in x) bus clock_out {val: u4 range 42 to 43;}; var hour : u4 ;" +
                   " { minutes_first_temp = 10; }")
-    test_output = ("channel clock_out_val : {42..43} \nClock(x) = \n" +
-                   "let\nminutes_first_temp = 10\nwithin\n")
+    test_output = ("channel clock_out_val : {42..43} \n\nClock(x) = \n" +
+                   "let\nminutes_first_temp = 10\nwithin\n\n\n" +
+                   "clock_out_val(c) = c ? x -> if 42 <= x <= 43 then STOP else SKIP\n\n\n")
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -120,28 +123,49 @@ def test_process_statement():
     print test_output
     assert output == test_output
 
-def test_process_communication():
-    test_input = ("proc clock( in x) bus clock_out {val: int range 4 to 6;}; var hour : int ;" +
-                  " { minutes = 10; clock_out.val = minutes;}")
-    test_output = ("channel clock_out_val : {4..6} \nClock(x) = \n" +
-                   "let\nminutes = 10\nwithin\n" +
-                   "clock_out_val ! minutes -> \nSKIP")
-    lexer = SmeilLexer(InputStream(test_input))
-    stream = CommonTokenStream(lexer)
-    parser = SmeilParser(stream)
-    tree = parser.process()
-    printer = SmeilCspmListenerVersion2()
-    walker = ParseTreeWalker()
-    walker.walk(printer, tree)
-    output = printer.get_channel() + printer.get_process()
-    print output
-    print test_output
-    assert output == test_output
+# NOTE the same as assertion process (I realised it when I added those)
+# Right not is asserts that it is not equal
+# def test_process_communication():
+#     test_input = ("proc clock( in x) bus clock_out {val: u4 range 4 to 6;}; var hour : u4 ;" +
+#                   " { minutes = 10; clock_out.val = minutes;}")
+#     test_output = ("channel clock_out_val : {4..6} \n\nClock(x) = \n" +
+#                    "let\nminutes = 10\nwithin\n" +
+#                    "clock_out_val ! minutes -> \nSKIP\n\n")
+#     lexer = SmeilLexer(InputStream(test_input))
+#     stream = CommonTokenStream(lexer)
+#     parser = SmeilParser(stream)
+#     tree = parser.process()
+#     printer = SmeilCspmListenerVersion2()
+#     walker = ParseTreeWalker()
+#     walker.walk(printer, tree)
+#     output = printer.get_channel() + printer.get_process()
+#     print output
+#     print test_output
+#     assert output != test_output
 
 def test_input_process():
-    test_input = ("proc clock() bus clock_out {val: int range 4 to 6;}; var hour : int ;" +
+    test_input = ("proc clock() bus clock_out {val: u4 range 4 to 6;}; var hour : u4 ;" +
                   " { minutes = 10; clock_out.val = minutes;}")
-    test_output = ("channel clock_out_val : {4..6} \n")
+    test_output = ("channel clock_out_val : {4..6} \n\n")
+    lexer = SmeilLexer(InputStream(test_input))
+    stream = CommonTokenStream(lexer)
+    parser = SmeilParser(stream)
+    tree = parser.process()
+    printer = SmeilCspmListenerVersion2()
+    walker = ParseTreeWalker()
+    walker.walk(printer, tree)
+    output = printer.get_channel() + printer.get_process()
+    print output
+    print test_output
+    assert output == test_output
+
+def test_assertion_process():
+    test_input = ("proc clock( in x) bus clock_out {val: u4 range 4 to 6;}; var hour : u4 ;" +
+                  " { minutes = 10; clock_out.val = minutes;}")
+    test_output = ("channel clock_out_val : {4..6} \n\nClock(x) = \n" +
+                   "let\nminutes = 10\nwithin\n" +
+                   "clock_out_val ! minutes -> \nSKIP\n\n" +
+                   "clock_out_val(c) = c ? x -> if 4 <= x <= 6 then STOP else SKIP\n\n\n")
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
