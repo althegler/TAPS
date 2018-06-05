@@ -26,59 +26,88 @@ class SmeilCspmListener(SmeilListener) :
         # ctx.text = ctx.ident().getText()
         # ctx.text = ctx.ident().getText().capitalize()
         # ctx.text += ' = '
-        self.process += (ctx.ident().getText().capitalize())
+
         # Parameters
         if ctx.params():
+            print "I AM IN PARAMS\n"
+            self.process += (ctx.ident().getText().capitalize())
             self.process += '('
             for x in ctx.params().children:
                 #TODO This should also be able to handle an expression
                 # print x.ident().getText()
                 self.process += x.ident().getText()
             self.process += ')'
-        self.process += (' = \n\t')
-        # Declarations
-        if ctx.declaration():
+            self.process += (' = \n\t')
+            # Declarations
+            if ctx.declaration():
+                for x in ctx.declaration():
+                    # print type(x.children)
+                    # print x
+                    # print x.children
+                    # print x.getChildCount()
+                    for y in x.children:
+                        if isinstance(y, SmeilParser.VardeclContext) is True:
+                            if y.expression():
+                                let_variables += ('\t'
+                                                  + y.ident().getText()
+                                                  + ' = '
+                                                  + y.expression().getText()
+                                                  + '\n\t')
+            # Statements
+            if ctx.statement():
+                for x in ctx.statement():
+                    if (x.name().getChildCount() > 1):
+                        within_variables += (x.name().getText().replace(".", "_")
+                                             + ' ! '
+                                             + x.expression().getText()
+                                             + ' -> \n'
+                                             )
+                    else:
+                        let_variables += ('\t'
+                                          + x.name().getText()
+                                          + ' = '
+                                          + x.expression().getText()
+                                          +  '\n\t')
+                self.process += 'let\n\t'
+                self.process += let_variables
+                self.process += 'within\n\t\t'
+                if len(within_variables) > 1:
+                    within_variables += 'SKIP'
+                self.process += within_variables
+
+            # print "ending process"
+            # print type(ctx)
+        else:
+            print "I AM IN NO PARAMS\n"
+            # self.channel += ctx.ident().getText() + '_'
+            # for x in ctx.declaration():
+            #     for y in x.children:
+            #         if isinstance(y, SmeilParser.BusdeclContext) is True:
+            #             self.channel += y.ident().getText() + '_'
+            #             print y.bussignaldecls().getText()
+            #             # for z in y.bussignaldecls():
+            #             #     for b in x.children:
+            #             #         print b
+
             for x in ctx.declaration():
-                # print type(x.children)
-                # print x
-                # print x.children
-                # print x.getChildCount()
                 for y in x.children:
-                    if isinstance(y, SmeilParser.VardeclContext) is True:
-                        if y.expression():
-                            let_variables += ('\t'
-                                              + y.ident().getText()
-                                              + ' = '
-                                              + y.expression().getText()
-                                              + '\n\t')
-        # Statements
-        if ctx.statement():
-            for x in ctx.statement():
-                if (x.name().getChildCount() > 1):
-                    within_variables += (x.name().getText().replace(".", "_")
-                                         + ' ! '
-                                         + x.expression().getText()
-                                         + ' -> \n'
-                                         )
-                else:
-                    let_variables += ('\t'
-                                      + x.name().getText()
-                                      + ' = '
-                                      + x.expression().getText()
-                                      +  '\n\t')
-            self.process += 'let\n\t'
-            self.process += let_variables
-            self.process += 'within\n\t\t'
-            if len(within_variables) > 1:
-                within_variables += 'SKIP'
-            self.process += within_variables
+                        print "HERE"
+                        if isinstance(y, SmeilParser.BusdeclContext) is True:
+                            print "enter bus in process"
+                            ctx.enterRule(self.enterBusdecl(y)) 
+                            # self.enterBusdecl(y)
+                            print "exit bus in process"
+            self.channel += "\n\nIt worked!"
 
-        # print "ending process"
-        # print type(ctx)
 
+    def exitProcess(self,ctx):
+        print "exit process"
+
+    def exitBusdecl(Self, ctx):
+        print "exit busdecl"
 
     def enterBusdecl(self, ctx):
-        # print "in busdecl"
+        print "in busdecl"
         channel_name = (ctx.ident().getText() + '_')
         # get all bus declarations in order to create all channels
         for child in ctx.bussignaldecls().children:

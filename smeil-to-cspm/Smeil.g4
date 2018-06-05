@@ -1,11 +1,13 @@
 grammar Smeil;
 
 
-entity : process
+entity : process+
        /*| network*/
        ;
 
 process : 'proc' ident '(' params? ')' declaration* '{' statement* '}';
+
+/* process : 'proc' ident '(' params? ')' declaration* '{' statement* '}'; */
 
 /*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
 
@@ -20,7 +22,9 @@ declaration : vardecl
 
 params : param (',' param)* ;
 
-param : ('[' expression* ']')* direction ident ;
+param : direction ident ;
+
+/* param : ('[' expression* ']')* direction ident ; */
 
 direction : 'in'
           | 'out'
@@ -43,7 +47,7 @@ busdecl : 'exposed'? 'bus' ident '{' bussignaldecls '}' ';' ;
 
 bussignaldecls : bussignaldecl bussignaldecl* ;
 
-bussignaldecl : ident ':' typename ';' ;// not finished
+bussignaldecl : ident ':' typename ('=' expression )? ranges ';' ;
 
 vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;
 
@@ -54,18 +58,18 @@ ranges : 'range' expression 'to' expression ;
 
 expression : name
            /*| litteral*/
-           | expression binop expression
+           /* | expression binop expression */
            /*| unop expression*/
-           | name '(' expression* ')'
+           /* | name '(' expression* ')' */
            /*| '(' expression ')'*/
            ;
 
-binop : '/'
+/* binop : '/'
       | '%'
-      ;
+      ; */
 
 name : ident
-     | name '.' name
+     /* | name '.' name */
      ;
 
 ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;
