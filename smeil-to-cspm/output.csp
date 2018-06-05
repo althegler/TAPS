@@ -1,3 +1,9 @@
-channel x_val : {0..10}
-channel x_val2 : {0..10}
-Hours(hours_in) =
+channel x_val : {0..10} 
+channel x_val2 : {0..10} 
+Hours(hours_in) = 
+let
+i = 42
+i = 30
+within
+x_val ! i -> 
+SKIP

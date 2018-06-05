@@ -9,10 +9,6 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         self.process = ''
         self.network = ''
         self.channel = ''
-        # Private variables
-        self.let_variables = ''
-        self.within_variables = ''
-        self.assert_processes = ''
     def get_process(self):
         return self.process
 
@@ -21,6 +17,11 @@ class SmeilCspmListenerVersion2(SmeilListener) :
 
     def get_channel(self):
         return self.channel
+
+    def enterProcess(self, ctx):
+        ctx.let_variables = ''
+        ctx.within_variables = ''
+        ctx.assert_processes = ''
 
     def exitProcess(self, ctx):
         # There will always be a process name
@@ -40,12 +41,28 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             # not used (since it is only used in statements)
             if ctx.statement():
                 self.process += 'let\n'
-                self.process += self.let_variables
+                self.process += ctx.let_variables
                 self.process += 'within\n'
-                if len(self.within_variables) > 1:
-                    self.within_variables += 'SKIP'
-                self.process += self.within_variables
+                if len(ctx.within_variables) > 1:
+                    ctx.within_variables += 'SKIP'
+                self.process += ctx.within_variables
 
+    def exitStatement(self, ctx):
+        # TODO currently only handle name = expression
+        #TODO what happens with several expressions in one?
+        expression = next((x.text for x in ctx.children if
+            isinstance(x, SmeilParser.ExpressionContext)), None)
+        if expression != None:
+            if hasattr(ctx.name(), 'com_text'):
+                # print ctx.parentCtx.within_variables
+                ctx.parentCtx.within_variables += (ctx.name().com_text
+                                    + ' ! '
+                                    + expression
+                                    + ' -> \n'
+                                    )
+            else:
+                name = ctx.name().text
+                ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
 
 
 
@@ -59,7 +76,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                     isinstance(x, SmeilParser.ExpressionContext)), None)
                 if expression != None:
                     name = child.ident().getText()
-                    self.let_variables += (name + ' = ' + expression + '\n')
+                    ctx.parentCtx.let_variables += (name + ' = ' + expression + '\n')
 
     def exitBusdecl(self, ctx):
         text = ''
@@ -71,6 +88,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             range = '{'
             ranges = []
             for expression in child.ranges().children:
+                # print type(expression)
                 if hasattr(expression, 'text'):
                     ranges.append(expression.text)
             if len(ranges) > 2:
@@ -83,16 +101,26 @@ class SmeilCspmListenerVersion2(SmeilListener) :
 
     def exitExpression(self,ctx):
         #TODO can only handle one child currently
+        # print "expression"
         for child in ctx.children:
             ctx.text = child.text
 
 
     def exitName(self, ctx):
-        if ctx.ident():
-            ctx.text = ctx.ident().getText()
+        # TODO can only handle part of the grammar
+        if ctx.getChildCount() > 1:
+            ctx.com_text = ctx.getText().replace(".", "_")
         else:
-            # TODO what if it is not an ident?
-            print ctx.children
+            ctx.text = ctx.ident().getText()
+
+
+    #
+    # if (x.name().getChildCount() > 1):
+    #     within_variables += (x.name().getText().replace(".", "_")
+    #                          + ' ! '
+    #                          + x.expression().getText()
+    #                          + ' -> \n'
+    #                          )
 
     def enterParams(self, ctx):
         text = ''

@@ -8,7 +8,7 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"\32\u0089\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
+        buf.write(u"\33\u0092\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7")
         buf.write(u"\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t")
         buf.write(u"\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\3\2\6\2$\n")
         buf.write(u"\2\r\2\16\2%\3\3\3\3\3\3\3\3\5\3,\n\3\3\3\3\3\7\3\60")
@@ -19,37 +19,42 @@ def serializedATN():
         buf.write(u"\n\n\f\n\16\nc\13\n\3\13\3\13\3\13\3\13\3\13\5\13j\n")
         buf.write(u"\13\3\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\5\fu\n\f\3")
         buf.write(u"\f\5\fx\n\f\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16")
-        buf.write(u"\3\17\3\17\3\20\3\20\3\21\3\21\3\21\2\2\22\2\4\6\b\n")
-        buf.write(u"\f\16\20\22\24\26\30\32\34\36 \2\4\3\2\t\13\3\2\25\31")
-        buf.write(u"\2\u0083\2#\3\2\2\2\4\'\3\2\2\2\6?\3\2\2\2\bA\3\2\2\2")
-        buf.write(u"\nI\3\2\2\2\fL\3\2\2\2\16N\3\2\2\2\20T\3\2\2\2\22]\3")
-        buf.write(u"\2\2\2\24d\3\2\2\2\26n\3\2\2\2\30{\3\2\2\2\32}\3\2\2")
-        buf.write(u"\2\34\u0082\3\2\2\2\36\u0084\3\2\2\2 \u0086\3\2\2\2\"")
-        buf.write(u"$\5\4\3\2#\"\3\2\2\2$%\3\2\2\2%#\3\2\2\2%&\3\2\2\2&\3")
-        buf.write(u"\3\2\2\2\'(\7\3\2\2()\5 \21\2)+\7\4\2\2*,\5\b\5\2+*\3")
-        buf.write(u"\2\2\2+,\3\2\2\2,-\3\2\2\2-\61\7\5\2\2.\60\5\6\4\2/.")
-        buf.write(u"\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62\64")
-        buf.write(u"\3\2\2\2\63\61\3\2\2\2\648\7\6\2\2\65\67\5\16\b\2\66")
-        buf.write(u"\65\3\2\2\2\67:\3\2\2\28\66\3\2\2\289\3\2\2\29;\3\2\2")
-        buf.write(u"\2:8\3\2\2\2;<\7\7\2\2<\5\3\2\2\2=@\5\26\f\2>@\5\20\t")
-        buf.write(u"\2?=\3\2\2\2?>\3\2\2\2@\7\3\2\2\2AF\5\n\6\2BC\7\b\2\2")
-        buf.write(u"CE\5\n\6\2DB\3\2\2\2EH\3\2\2\2FD\3\2\2\2FG\3\2\2\2G\t")
-        buf.write(u"\3\2\2\2HF\3\2\2\2IJ\5\f\7\2JK\5 \21\2K\13\3\2\2\2LM")
-        buf.write(u"\t\2\2\2M\r\3\2\2\2NO\5\36\20\2OP\7\f\2\2PQ\5\34\17\2")
-        buf.write(u"QR\7\r\2\2R\17\3\2\2\2SU\7\16\2\2TS\3\2\2\2TU\3\2\2\2")
-        buf.write(u"UV\3\2\2\2VW\7\17\2\2WX\5 \21\2XY\7\6\2\2YZ\5\22\n\2")
-        buf.write(u"Z[\7\7\2\2[\\\7\r\2\2\\\21\3\2\2\2]a\5\24\13\2^`\5\24")
-        buf.write(u"\13\2_^\3\2\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2\2\2b\23\3\2")
-        buf.write(u"\2\2ca\3\2\2\2de\5 \21\2ef\7\20\2\2fi\5\30\r\2gh\7\f")
-        buf.write(u"\2\2hj\5\34\17\2ig\3\2\2\2ij\3\2\2\2jk\3\2\2\2kl\5\32")
-        buf.write(u"\16\2lm\7\r\2\2m\25\3\2\2\2no\7\21\2\2op\5 \21\2pq\7")
-        buf.write(u"\20\2\2qt\5\30\r\2rs\7\f\2\2su\5\34\17\2tr\3\2\2\2tu")
-        buf.write(u"\3\2\2\2uw\3\2\2\2vx\5\32\16\2wv\3\2\2\2wx\3\2\2\2xy")
-        buf.write(u"\3\2\2\2yz\7\r\2\2z\27\3\2\2\2{|\7\22\2\2|\31\3\2\2\2")
-        buf.write(u"}~\7\23\2\2~\177\5\34\17\2\177\u0080\7\24\2\2\u0080\u0081")
-        buf.write(u"\5\34\17\2\u0081\33\3\2\2\2\u0082\u0083\5\36\20\2\u0083")
-        buf.write(u"\35\3\2\2\2\u0084\u0085\5 \21\2\u0085\37\3\2\2\2\u0086")
-        buf.write(u"\u0087\t\3\2\2\u0087!\3\2\2\2\r%+\618?FTaitw")
+        buf.write(u"\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20\7\20\u008b\n")
+        buf.write(u"\20\f\20\16\20\u008e\13\20\3\21\3\21\3\21\2\3\36\22\2")
+        buf.write(u"\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \2\4\3\2\t\13\3")
+        buf.write(u"\2\26\32\2\u008d\2#\3\2\2\2\4\'\3\2\2\2\6?\3\2\2\2\b")
+        buf.write(u"A\3\2\2\2\nI\3\2\2\2\fL\3\2\2\2\16N\3\2\2\2\20T\3\2\2")
+        buf.write(u"\2\22]\3\2\2\2\24d\3\2\2\2\26n\3\2\2\2\30{\3\2\2\2\32")
+        buf.write(u"}\3\2\2\2\34\u0082\3\2\2\2\36\u0084\3\2\2\2 \u008f\3")
+        buf.write(u"\2\2\2\"$\5\4\3\2#\"\3\2\2\2$%\3\2\2\2%#\3\2\2\2%&\3")
+        buf.write(u"\2\2\2&\3\3\2\2\2\'(\7\3\2\2()\5 \21\2)+\7\4\2\2*,\5")
+        buf.write(u"\b\5\2+*\3\2\2\2+,\3\2\2\2,-\3\2\2\2-\61\7\5\2\2.\60")
+        buf.write(u"\5\6\4\2/.\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3")
+        buf.write(u"\2\2\2\62\64\3\2\2\2\63\61\3\2\2\2\648\7\6\2\2\65\67")
+        buf.write(u"\5\16\b\2\66\65\3\2\2\2\67:\3\2\2\28\66\3\2\2\289\3\2")
+        buf.write(u"\2\29;\3\2\2\2:8\3\2\2\2;<\7\7\2\2<\5\3\2\2\2=@\5\26")
+        buf.write(u"\f\2>@\5\20\t\2?=\3\2\2\2?>\3\2\2\2@\7\3\2\2\2AF\5\n")
+        buf.write(u"\6\2BC\7\b\2\2CE\5\n\6\2DB\3\2\2\2EH\3\2\2\2FD\3\2\2")
+        buf.write(u"\2FG\3\2\2\2G\t\3\2\2\2HF\3\2\2\2IJ\5\f\7\2JK\5 \21\2")
+        buf.write(u"K\13\3\2\2\2LM\t\2\2\2M\r\3\2\2\2NO\5\36\20\2OP\7\f\2")
+        buf.write(u"\2PQ\5\34\17\2QR\7\r\2\2R\17\3\2\2\2SU\7\16\2\2TS\3\2")
+        buf.write(u"\2\2TU\3\2\2\2UV\3\2\2\2VW\7\17\2\2WX\5 \21\2XY\7\6\2")
+        buf.write(u"\2YZ\5\22\n\2Z[\7\7\2\2[\\\7\r\2\2\\\21\3\2\2\2]a\5\24")
+        buf.write(u"\13\2^`\5\24\13\2_^\3\2\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2")
+        buf.write(u"\2\2b\23\3\2\2\2ca\3\2\2\2de\5 \21\2ef\7\20\2\2fi\5\30")
+        buf.write(u"\r\2gh\7\f\2\2hj\5\34\17\2ig\3\2\2\2ij\3\2\2\2jk\3\2")
+        buf.write(u"\2\2kl\5\32\16\2lm\7\r\2\2m\25\3\2\2\2no\7\21\2\2op\5")
+        buf.write(u" \21\2pq\7\20\2\2qt\5\30\r\2rs\7\f\2\2su\5\34\17\2tr")
+        buf.write(u"\3\2\2\2tu\3\2\2\2uw\3\2\2\2vx\5\32\16\2wv\3\2\2\2wx")
+        buf.write(u"\3\2\2\2xy\3\2\2\2yz\7\r\2\2z\27\3\2\2\2{|\7\22\2\2|")
+        buf.write(u"\31\3\2\2\2}~\7\23\2\2~\177\5\34\17\2\177\u0080\7\24")
+        buf.write(u"\2\2\u0080\u0081\5\34\17\2\u0081\33\3\2\2\2\u0082\u0083")
+        buf.write(u"\5\36\20\2\u0083\35\3\2\2\2\u0084\u0085\b\20\1\2\u0085")
+        buf.write(u"\u0086\5 \21\2\u0086\u008c\3\2\2\2\u0087\u0088\f\3\2")
+        buf.write(u"\2\u0088\u0089\7\25\2\2\u0089\u008b\5\36\20\4\u008a\u0087")
+        buf.write(u"\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2\2\2\u008c")
+        buf.write(u"\u008d\3\2\2\2\u008d\37\3\2\2\2\u008e\u008c\3\2\2\2\u008f")
+        buf.write(u"\u0090\t\3\2\2\u0090!\3\2\2\2\16%+\618?FTaitw\u008c")
         return buf.getvalue()
 
 
@@ -66,14 +71,15 @@ class SmeilParser ( Parser ):
     literalNames = [ u"<INVALID>", u"'proc'", u"'('", u"')'", u"'{'", u"'}'", 
                      u"','", u"'in'", u"'out'", u"'const'", u"'='", u"';'", 
                      u"'exposed'", u"'bus'", u"':'", u"'var'", u"'int'", 
-                     u"'range'", u"'to'", u"'_'", u"'-'" ]
+                     u"'range'", u"'to'", u"'.'", u"'_'", u"'-'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"ALPHA", u"NUM", u"ALPHANUM", u"WHITESPACE" ]
+                      u"<INVALID>", u"<INVALID>", u"ALPHA", u"NUM", u"ALPHANUM", 
+                      u"WHITESPACE" ]
 
     RULE_entity = 0
     RULE_process = 1
@@ -118,10 +124,11 @@ class SmeilParser ( Parser ):
     T__17=18
     T__18=19
     T__19=20
-    ALPHA=21
-    NUM=22
-    ALPHANUM=23
-    WHITESPACE=24
+    T__20=21
+    ALPHA=22
+    NUM=23
+    ALPHANUM=24
+    WHITESPACE=25
 
     def __init__(self, input, output=sys.stdout):
         super(SmeilParser, self).__init__(input, output=output)
@@ -265,7 +272,7 @@ class SmeilParser ( Parser ):
             self.state = 54
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__18) | (1 << SmeilParser.T__19) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__19) | (1 << SmeilParser.T__20) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
                 self.state = 51
                 self.statement()
                 self.state = 56
@@ -519,7 +526,7 @@ class SmeilParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 76
-            self.name()
+            self.name(0)
             self.state = 77
             self.match(SmeilParser.T__9)
             self.state = 78
@@ -636,7 +643,7 @@ class SmeilParser ( Parser ):
             self.state = 95
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__18) | (1 << SmeilParser.T__19) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__19) | (1 << SmeilParser.T__20) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0):
                 self.state = 92
                 self.bussignaldecl()
                 self.state = 97
@@ -918,7 +925,7 @@ class SmeilParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 128
-            self.name()
+            self.name(0)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -937,6 +944,13 @@ class SmeilParser ( Parser ):
             return self.getTypedRuleContext(SmeilParser.IdentContext,0)
 
 
+        def name(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SmeilParser.NameContext)
+            else:
+                return self.getTypedRuleContext(SmeilParser.NameContext,i)
+
+
         def getRuleIndex(self):
             return SmeilParser.RULE_name
 
@@ -950,21 +964,46 @@ class SmeilParser ( Parser ):
 
 
 
-
-    def name(self):
-
-        localctx = SmeilParser.NameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 28, self.RULE_name)
+    def name(self, _p=0):
+        _parentctx = self._ctx
+        _parentState = self.state
+        localctx = SmeilParser.NameContext(self, self._ctx, _parentState)
+        _prevctx = localctx
+        _startState = 28
+        self.enterRecursionRule(localctx, 28, self.RULE_name, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 130
+            self.state = 131
             self.ident()
+            self._ctx.stop = self._input.LT(-1)
+            self.state = 138
+            self._errHandler.sync(self)
+            _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
+                    if self._parseListeners is not None:
+                        self.triggerExitRuleEvent()
+                    _prevctx = localctx
+                    localctx = SmeilParser.NameContext(self, _parentctx, _parentState)
+                    self.pushNewRecursionContext(localctx, _startState, self.RULE_name)
+                    self.state = 133
+                    if not self.precpred(self._ctx, 1):
+                        from antlr4.error.Errors import FailedPredicateException
+                        raise FailedPredicateException(self, "self.precpred(self._ctx, 1)")
+                    self.state = 134
+                    self.match(SmeilParser.T__18)
+                    self.state = 135
+                    self.name(2) 
+                self.state = 140
+                self._errHandler.sync(self)
+                _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
             self._errHandler.recover(self, re)
         finally:
-            self.exitRule()
+            self.unrollRecursionContexts(_parentctx)
         return localctx
 
     class IdentContext(ParserRuleContext):
@@ -1003,9 +1042,9 @@ class SmeilParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 132
+            self.state = 141
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__18) | (1 << SmeilParser.T__19) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SmeilParser.T__19) | (1 << SmeilParser.T__20) | (1 << SmeilParser.ALPHA) | (1 << SmeilParser.NUM) | (1 << SmeilParser.ALPHANUM))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1018,6 +1057,22 @@ class SmeilParser ( Parser ):
             self.exitRule()
         return localctx
 
+
+
+    def sempred(self, localctx, ruleIndex, predIndex):
+        if self._predicates == None:
+            self._predicates = dict()
+        self._predicates[14] = self.name_sempred
+        pred = self._predicates.get(ruleIndex, None)
+        if pred is None:
+            raise Exception("No predicate with index:" + str(ruleIndex))
+        else:
+            return pred(localctx, predIndex)
+
+    def name_sempred(self, localctx, predIndex):
+            if predIndex == 0:
+                return self.precpred(self._ctx, 1)
+         
 
 
 

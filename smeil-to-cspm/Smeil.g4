@@ -7,8 +7,6 @@ entity : process+
 
 process : 'proc' ident '(' params? ')' declaration* '{' statement* '}';
 
-/* process : 'proc' ident '(' params? ')' declaration* '{' statement* '}'; */
-
 /*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
 
 declaration : vardecl
@@ -23,7 +21,6 @@ declaration : vardecl
 params : param (',' param)* ;
 
 param : direction ident ;
-
 /* param : ('[' expression* ']')* direction ident ; */
 
 direction : 'in'
@@ -69,7 +66,7 @@ expression : name
       ; */
 
 name : ident
-     /* | name '.' name */
+     | name '.' name
      ;
 
 ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;

@@ -5,7 +5,8 @@ bus x {
 };
 var i: int = 42 range 0 to 60535;
 {
-
+    i = 30;
+    x.val = i;
 }
 
 
