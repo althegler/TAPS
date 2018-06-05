@@ -5,9 +5,6 @@ minutes_first_digit, minutes_second_digit,
 seconds_first_digit, seconds_second_digit : {0..15}
 
 
-Hours_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
-Hours_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
-
 Hours(variable) =
   let
     hours = variable / 3600
@@ -17,8 +14,8 @@ Hours(variable) =
     hours_first_digit ! first_hours ->
     hours_second_digit ! second_hours -> SKIP
 
-Minutes_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
-Minutes_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
+Hours_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
+Hours_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
 
 
 Minutes(variable) =
@@ -30,10 +27,9 @@ Minutes(variable) =
     minutes_first_digit ! first_minute ->
     minutes_second_digit ! second_minute -> SKIP
 
+Minutes_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
+Minutes_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
 
-
-Seconds_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
-Seconds_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
 
 Seconds(variable) =
   let
@@ -43,6 +39,10 @@ Seconds(variable) =
   within
     seconds_first_digit ! first_second ->
     seconds_second_digit ! second_second -> SKIP
+
+Seconds_first_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
+Seconds_second_digit_assert(c) = c ? x -> if x > 9 then STOP else SKIP
+
 
 P_hours = input ? variable ->
           (Hours(variable)
