@@ -51,7 +51,9 @@ network clock_network ()
     instance h of hours(g.clock_out);
 }
 proc clock ()
-    bus clock_out {val: i17 range 0 to 60535;};
+    bus clock_out {
+        val: i17 range 0 to 60535;
+    };
     var i: i17 = 60533 range 0 to 60535;
 {
     trace("iteration {}", i);
