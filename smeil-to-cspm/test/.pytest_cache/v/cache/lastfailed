@@ -1,1 +1,10 @@
-{}
+{
+  "test_Smeil.py::test_channel": true, 
+  "test_Smeil.py::test_proc_name": true, 
+  "test_Smeil.py::test_process_communication": true, 
+  "test_Smeil.py::test_process_empty_statement": true, 
+  "test_Smeil.py::test_process_input_variable": true, 
+  "test_Smeil.py::test_process_statement": true, 
+  "test_Smeil.py::test_several_channels": true, 
+  "test_Smeil.py::test_variables": true
+}
