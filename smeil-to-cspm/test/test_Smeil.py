@@ -75,7 +75,7 @@ def test_several_channels():
 
 def test_process_input_variable():
     test_input = "proc clock( in hours_in ) { }"
-    test_output = "Clock(hours_in) = \n\t"
+    test_output = "Clock(hours_in) = \n"
     lexer = SmeilLexer(InputStream(test_input))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
@@ -134,8 +134,8 @@ def test_process_communication():
     walker = ParseTreeWalker()
     walker.walk(printer, tree)
     output = printer.get_channel() + printer.get_process()
-    # print output
-    # print test_output
+    print output
+    print test_output
     assert output == test_output
 
 

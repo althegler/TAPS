@@ -22,6 +22,7 @@ class SmeilCspmListener(SmeilListener) :
     def enterProcess(self, ctx):
         let_variables = ''
         within_variables = ''
+        assert_processes = ''
         # print "in process"
         # ctx.text = ctx.ident().getText()
         # ctx.text = ctx.ident().getText().capitalize()
@@ -91,20 +92,51 @@ class SmeilCspmListener(SmeilListener) :
 
             for x in ctx.declaration():
                 for y in x.children:
-                        print "HERE"
-                        if isinstance(y, SmeilParser.BusdeclContext) is True:
-                            print "enter bus in process"
-                            ctx.enterRule(self.enterBusdecl(y)) 
-                            # self.enterBusdecl(y)
-                            print "exit bus in process"
-            self.channel += "\n\nIt worked!"
+                    if isinstance(y, SmeilParser.VardeclContext) is True:
+                        if y.expression():
+                            let_variables += (y.ident().getText()
+                                              + ' = '
+                                              + y.expression().getText()
+                                              + '\n')
+        # Statements
+        if ctx.statement():
+            for x in ctx.statement():
+                if (x.name().getChildCount() > 1):
+                    within_variables += (x.name().getText().replace(".", "_")
+                                         + ' ! '
+                                         + x.expression().getText()
+                                         + ' -> \n'
+                                         )
+                    assert_processes += (x.name().getText().replace(".", "_")
+                                         + '_assert'
+                                         + '(c) = c ? x -> if x > 10 then STOP else SKIP'
+                                         + '\n\n'
+                                         )
+                else:
+                    # expression_val = x.expression()
+                    # print expression_val
+                    # print type(x.expression())
+                    let_variables += (x.name().getText()
+                                      + ' = '
+                                      + x.expression().getText()
+                                      +  '\n')
+            self.process += 'let\n'
+            self.process += let_variables
+            self.process += 'within\n'
+            if len(within_variables) > 1:
+                within_variables += 'SKIP\n'
+                self.process += within_variables
+                self.process += '\n\n'
+                self.process += assert_processes
 
+        # print "ending process"
+        # print type(ctx)
 
-    def exitProcess(self,ctx):
-        print "exit process"
+    # def enterExpression(self, ctx):
+    #     self.channel += ctx.getText()
+    #     # print ctx.getText()
+    #     # print 'heeehooo'
 
-    def exitBusdecl(Self, ctx):
-        print "exit busdecl"
 
     def enterBusdecl(self, ctx):
         print "in busdecl"
