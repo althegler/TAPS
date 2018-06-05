@@ -58,6 +58,15 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#statement.
+    def enterStatement(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#statement.
+    def exitStatement(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#busdecl.
     def enterBusdecl(self, ctx):
         pass

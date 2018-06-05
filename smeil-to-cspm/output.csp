@@ -1,19 +1,6 @@
-channel hours_out_hours_first_digit : {42} 
-
-channel hours_out_hours_second_digit : {42}
-
-Hours(hours_in) =
+channel x_val : {0..10}
+channel x_val2 : {0..10}
+Hours(hours_in) = 
 let
-hours = hours_in.val/3600
-hours_first_temp = hours/10
-hours_second_temp = hours%10
+i = 42
 within
-hours_out_hours_first_digit ! hours_first_temp ->
-hours_out_hours_second_digit ! hours_second_temp ->
-SKIP
-
-
-hours_out_hours_first_digit_assert(c) = c ? x -> if x > 10 then STOP else SKIP
-
-hours_out_hours_second_digit_assert(c) = c ? x -> if x > 10 then STOP else SKIP
-

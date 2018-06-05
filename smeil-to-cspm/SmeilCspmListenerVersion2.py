@@ -9,7 +9,10 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         self.process = ''
         self.network = ''
         self.channel = ''
-
+        # Private variables
+        self.let_variables = ''
+        self.within_variables = ''
+        self.assert_processes = ''
     def get_process(self):
         return self.process
 
@@ -32,12 +35,16 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             self.process += ctx.params().text
             self.process += ')'
             self.process += ' = \n'
-            self.process += 'let\n'
-            self.process += let_variables
-            self.process += 'within\n'
-            if len(within_variables) > 1:
-                within_variables += 'SKIP'
-            self.process += within_variables
+            # If something is defined in declaration but there is no Statements
+            # we dont care about the stuff defined in declaration because it is
+            # not used (since it is only used in statements)
+            if ctx.statement():
+                self.process += 'let\n'
+                self.process += self.let_variables
+                self.process += 'within\n'
+                if len(self.within_variables) > 1:
+                    self.within_variables += 'SKIP'
+                self.process += self.within_variables
 
 
 
@@ -47,8 +54,12 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             if isinstance(child, SmeilParser.BusdeclContext) is True:
                 self.channel += child.text
             elif isinstance(child, SmeilParser.VardeclContext) is True:
-                print "VardeclContext"
-                # print child.text
+                #TODO what happens with several expressions in one?
+                expression = next((x.text for x in child.children if
+                    isinstance(x, SmeilParser.ExpressionContext)), None)
+                if expression != None:
+                    name = child.ident().getText()
+                    self.let_variables += (name + ' = ' + expression + '\n')
 
     def exitBusdecl(self, ctx):
         text = ''
@@ -66,7 +77,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 print "ERROR: not allowed more than two expressions in range"
             else:
                 range += ranges[0] + '..' + ranges[1] + '}'
-            text += ('channel ' + bus_name + channel_name + ' : ' + range +'\n')
+            text += ('channel ' + bus_name + channel_name + ' : ' + range +' \n')
         ctx.text = text
 
 
