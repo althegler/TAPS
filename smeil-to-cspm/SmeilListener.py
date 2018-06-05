@@ -130,6 +130,15 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#binop.
+    def enterBinop(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#binop.
+    def exitBinop(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#name.
     def enterName(self, ctx):
         pass

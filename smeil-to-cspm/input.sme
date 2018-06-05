@@ -1,12 +1,24 @@
-proc hours(in hours_in)
-bus x {
-  val: int range 0 to 10;
-  val2: int range 0 to 10;
-};
-var i: int = 42 range 0 to 60535;
+proc clock ()
+    bus clock_out {
+        val: int range 0 to 60535;
+    };
+    var i: int = 60533 range 0 to 60535;
 {
-    i = 30;
-    x.val = i;
+    i = i / 1;
+    clock_out.val = i;
 }
 
 
+proc hours (in hours_in)
+    bus hours_out {hours_first_digit: int range 0 to 1;
+                   hours_second_digit: int range 0 to 6;};
+    var hours: int range 0 to 16;
+    var hours_first_temp: int range 0 to 1;
+    var hours_second_temp: int range 0 to 6;
+{
+    hours = hours_in.val / 3600;
+    hours_first_temp = hours / 10;
+    hours_second_temp = hours % 10;
+    hours_out.hours_first_digit = hours_first_temp;
+    hours_out.hours_second_digit = hours_second_temp;
+}

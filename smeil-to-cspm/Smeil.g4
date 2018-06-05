@@ -55,15 +55,15 @@ ranges : 'range' expression 'to' expression ;
 
 expression : name
            /*| litteral*/
-           /* | expression binop expression */
+           | expression binop expression
            /*| unop expression*/
            /* | name '(' expression* ')' */
            /*| '(' expression ')'*/
            ;
 
-/* binop : '/'
+binop : '/'
       | '%'
-      ; */
+      ;
 
 name : ident
      | name '.' name

@@ -1,9 +1,12 @@
-channel x_val : {0..10} 
-channel x_val2 : {0..10} 
+channel clock_out_val : {0..60535} 
+channel hours_out_hours_first_digit : {0..1} 
+channel hours_out_hours_second_digit : {0..6} 
 Hours(hours_in) = 
 let
-i = 42
-i = 30
+hours = 3600
+hours_first_temp = 10
+hours_second_temp = 10
 within
-x_val ! i -> 
+hours_out_hours_first_digit ! hours_first_temp -> 
+hours_out_hours_second_digit ! hours_second_temp -> 
 SKIP

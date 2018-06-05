@@ -25,13 +25,14 @@ class SmeilCspmListenerVersion2(SmeilListener) :
 
     def exitProcess(self, ctx):
         # There will always be a process name
-        self.process += ctx.ident().getText().capitalize()
+        ctx.variables = {}
+
         # print ctx.children
         params_val = next((x.getText() for x in ctx.children if isinstance(x, SmeilParser.ParamsContext)), None)
-        if params_val == None :
-            # If there is no params we want to create an input channels
-            print "no params"
-        else:
+        # If there is no params we want to create an input channels, which is
+        # done automatically because we dont add anything else than channels
+        if params_val != None :
+            self.process += ctx.ident().getText().capitalize()
             self.process += '('
             self.process += ctx.params().text
             self.process += ')'
@@ -50,6 +51,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
     def exitStatement(self, ctx):
         # TODO currently only handle name = expression
         #TODO what happens with several expressions in one?
+        # print ctx.children
         expression = next((x.text for x in ctx.children if
             isinstance(x, SmeilParser.ExpressionContext)), None)
         if expression != None:
@@ -100,16 +102,30 @@ class SmeilCspmListenerVersion2(SmeilListener) :
 
 
     def exitExpression(self,ctx):
+        # print ctx.getText()
         #TODO can only handle one child currently
         # print "expression"
         for child in ctx.children:
-            ctx.text = child.text
+            # print type(child)
+            if isinstance(child, SmeilParser.NameContext) is True:
+                ctx.text = child.text
+            else:
+                ctx.text = child.getText()
+            # elif isinstance(child, SmeilParser.ExpressionContext) is True:
+            #     # TODO. maaske noget med at appende expressions og saa bygge det op derfra?
+            # elif isinstance(child, SmeilParser.BinopContext) is True:
+            # ctx.text = child.text
+
 
 
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
+        # print ctx.getText()
         if ctx.getChildCount() > 1:
-            ctx.com_text = ctx.getText().replace(".", "_")
+            if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is True:
+                ctx.text = ctx.name()[0].getText()
+            else:
+                ctx.com_text = ctx.getText().replace(".", "_")
         else:
             ctx.text = ctx.ident().getText()
 
