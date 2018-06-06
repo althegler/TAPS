@@ -4,6 +4,15 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by SmeilParser.
 class SmeilListener(ParseTreeListener):
 
+    # Enter a parse tree produced by SmeilParser#module.
+    def enterModule(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#module.
+    def exitModule(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#entity.
     def enterEntity(self, ctx):
         pass

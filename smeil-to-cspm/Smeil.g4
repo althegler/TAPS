@@ -1,18 +1,19 @@
 grammar Smeil;
 
+module : entity entity* ;
 
-entity : process+
+entity : process process*
        | network
        ;
 
 network : 'network' ident '(' params? ')' '{' networkdecl '}';
 
-networkdecl : instance
+networkdecl : instance*
             /* | busdecl */
             ;
 
 /* NOTE! This is not how the original grammar is */
-instance : 'instance' instancename 'of' ident '(' name '.' name ')' ';' ;
+instance : 'instance' instancename 'of' ident '(' (name '.' name)? ')' ';' ;
 
 /* NOTE! Not completed */
 instancename : ident ;

@@ -9,6 +9,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         self.process = ''
         self.network = ''
         self.channel = ''
+        self.networks = {}
         self.processes = {}
     def get_process(self):
         return self.process
@@ -26,13 +27,78 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         ctx.variables = {}
         ctx.channels = {}
         process_name = ctx.ident().getText()
-        self.processes[process_name] = []
+        self.processes[process_name] = {}
 
-    # exitNetwork(self,ctx):
+    # def enterNetwork(self, ctx):
+    #     print "hehe3"
+
+    def exitNetwork(self, ctx):
+        network_process = ''
+        for key, value in self.networks.iteritems():
+            if len(value[1]) > 0:
+
+                process_network_name = 'P_' + value[0]
+                # print Process_network_name
+                process_and_channel = value[1].split(".")
+                process_name = self.networks.get(process_and_channel[0])
+                busses = self.processes[process_name[0]]
+
+                for key in busses:
+                    # print busses[key]
+                    # print key
+                    input_name = (key + busses[key][0])
+                # print input_name
+                # Begin to create network process
+                network_process += process_network_name + ' = '
+                network_process += input_name + ' ? variable -> '
+                # this should be possible to do recursively
+                network_process += value[0] + '(variable)'
+                # Begin to create syncronization with assertion process
+                network_process += '[| {| '
+                for key in self.processes.get(value[0]):
+                    # print self.processes.get(value[0])[key]
+                    # print key
+                    channel_name = (key + self.processes.get(value[0])[key][0])
+                # print channel_name
+                network_process += channel_name
+                network_process += '|} |] '
+                # Add assertion process
+                network_process += channel_name + '_assert'
+                network_process += '(' + channel_name + ')'
+
+        self.network += network_process
+
+
+                # print self.network[process_and_channel[0]]
+            # print key, value
+            # print len(value[1])
+
+    # def exitNetworkdecl(self,ctx):
+        # for child in ctx.children:
+
+
+
+    def exitInstance(self,ctx):
+        instance_name = ctx.instancename().text
+        process_name = ctx.ident().getText()
+        #TODO: this is ugly
+        com_name = ''
+        for elem in ctx.name():
+            com_name += elem.getText()
+            if elem != ctx.name()[-1]:
+                com_name += '.'
+        self.networks[instance_name] = [process_name, com_name]
+        # print self.networks
+
+    # NOTE grammar not finished for this parser.
+    def exitInstancename(self,ctx):
+        # Can currently only handle one ident in this parser
+        ctx.text = ctx.ident().getText()
+
+
 
 
     def exitProcess(self, ctx):
-
         params_val = next((x.getText() for x in ctx.children if isinstance(x, SmeilParser.ParamsContext)), None)
         # If there is no params we want to create an input channels, which is
         # done automatically because we dont add anything else than channels
@@ -59,6 +125,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 # TODO make this better!!
                 for channel in ctx.channels.items():
                     assertion = (channel[0]
+                                + '_assert'
                                 + '(c) = c ? x -> if '
                                 +  channel[1][0]
                                 + ' <= x <= '
@@ -97,10 +164,9 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 ctx.parentCtx.channels = child.channels
                 process_name = ctx.parentCtx.ident().getText()
                 processes = self.processes[process_name]
-                for elem in child.channel_names:
-                    processes.append(elem)
-                self.processes[process_name] = processes
-                print self.processes
+                for key, value in child.busses.iteritems():
+                    processes[key] = value
+                # print self.processes
             elif isinstance(child, SmeilParser.VardeclContext) is True:
                 #TODO what happens with several expressions in one?
                 expression = next((x.text for x in child.children if
@@ -112,10 +178,10 @@ class SmeilCspmListenerVersion2(SmeilListener) :
 
     def exitBusdecl(self, ctx):
         ctx.channels = {}
-        text = ''
-        # print ctx.parentCtx.parentCtx.getText()
-        bus_name = ctx.ident().getText() + '_'
+        ctx.busses = {}
         ctx.channel_names = []
+        text = ''
+        bus_name = ctx.ident().getText() + '_'
         # get all channel declarations within the bus declaration
         # in order to create all channels
         for child in ctx.bussignaldecls().children:
@@ -123,17 +189,16 @@ class SmeilCspmListenerVersion2(SmeilListener) :
             range = '{'
             ranges = []
             for expression in child.ranges().children:
-                # print type(expression)
                 if hasattr(expression, 'text'):
                     ranges.append(expression.text)
             if len(ranges) > 2:
                 print "ERROR: not allowed more than two expressions in range"
             else:
                 range += ranges[0] + '..' + ranges[1] + '}'
-            text += ('channel ' + bus_name + channel_name + ' : ' + range +' \n')
+                text += ('channel ' + bus_name + channel_name + ' : ' + range +' \n')
             ctx.channels[(bus_name + channel_name)] = [ranges[0], ranges[1]]
-            ctx.channel_names.append(bus_name + channel_name)
-        # ctx.busses.append(ctx.channel_names)
+            ctx.channel_names.append(channel_name)
+        ctx.busses[bus_name] = ctx.channel_names
         ctx.text = text
 
 

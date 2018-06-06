@@ -1,7 +1,6 @@
 channel clock_out_val : {0..60535} 
 
 channel hours_out_hours_first_digit : {0..1} 
-channel hours_out_hours_second_digit : {0..6} 
 
 Hours(hours_in) = 
 let
@@ -13,7 +12,7 @@ hours_out_hours_first_digit ! hours_first_temp ->
 hours_out_hours_second_digit ! hours_second_temp -> 
 SKIP
 
-hours_out_hours_second_digit(c) = c ? x -> if 0 <= x <= 6 then STOP else SKIP
-hours_out_hours_first_digit(c) = c ? x -> if 0 <= x <= 1 then STOP else SKIP
+hours_out_hours_first_digit_assert(c) = c ? x -> if 0 <= x <= 1 then STOP else SKIP
 
 
+P_hours = clock_out_val ? variable -> hours(variable)[| {| hours_out_hours_first_digit|} |] hours_out_hours_first_digit_assert(hours_out_hours_first_digit)
