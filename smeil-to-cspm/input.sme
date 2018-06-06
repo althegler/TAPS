@@ -1,6 +1,6 @@
 proc clock ()
     bus clock_out {
-        val: u4 range 0 to 60535;
+        val: u4 range 60520 to 60535;
     };
     var i: u4 = 60533 range 0 to 60535;
 {
@@ -10,16 +10,28 @@ proc clock ()
 
 
 proc hours (in hours_in)
-    bus hours_out {hours_first_digit: u4 range 0 to 1;};
+    bus hours_out {hours_first_digit: u4 range 0 to 9;};
     var hours: u4 range 0 to 16;
     var hours_first_temp: u4 range 0 to 1;
     var hours_second_temp: u4 range 0 to 6;
 {
-    hours = hours_in.val / 3600;
+    hours = hours_in / 3600;
     hours_first_temp = hours / 10;
     hours_second_temp = hours % 10;
     hours_out.hours_first_digit = hours_first_temp;
-    hours_out.hours_second_digit = hours_second_temp;
+}
+
+proc minutes (in minutes_in)
+    bus minutes_out {minutes_first_digit: u4 range 0 to 9;
+                    };
+    var minutes_second_temp: u4 range 0 to 8;
+    var minutes_first_temp: u4 range 0 to 4;
+    var minutes: u7 range 0 to 48;
+{
+    minutes = minutes_in / 60 % 60;
+    minutes_first_temp = minutes / 10;
+    minutes_second_temp = minutes % 10;
+    minutes_out.minutes_first_digit = minutes_first_temp;
 }
 
 
@@ -27,4 +39,5 @@ network clock_network ()
 {
     instance g of clock();
     instance h of hours(g.clock_out);
+    instance m of minutes(g.clock_out);
 }

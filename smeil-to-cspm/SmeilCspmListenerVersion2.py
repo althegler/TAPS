@@ -52,7 +52,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 network_process += process_network_name + ' = '
                 network_process += input_name + ' ? variable -> '
                 # this should be possible to do recursively
-                network_process += value[0] + '(variable)'
+                network_process += value[0].capitalize() + '(variable)'
                 # Begin to create syncronization with assertion process
                 network_process += '[| {| '
                 for key in self.processes.get(value[0]):
@@ -63,9 +63,11 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 network_process += channel_name
                 network_process += '|} |] '
                 # Add assertion process
-                network_process += channel_name + '_assert'
+                network_process += channel_name.capitalize() + '_assert'
                 network_process += '(' + channel_name + ')'
-
+                network_process += '\n\n'
+                network_process += 'assert SKIP [FD= ' + process_network_name
+                network_process += ' \ Events \n\n'
         self.network += network_process
 
 
@@ -124,13 +126,14 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 # Create assertion processes
                 # TODO make this better!!
                 for channel in ctx.channels.items():
-                    assertion = (channel[0]
+                    assertion = (channel[0].capitalize()
                                 + '_assert'
                                 + '(c) = c ? x -> if '
                                 +  channel[1][0]
-                                + ' <= x <= '
+                                + ' <= x'
+                                + ' and x <= '
                                 + channel[1][1]
-                                + ' then STOP else SKIP\n')
+                                + ' then SKIP else STOP\n')
                     ctx.assert_processes += assertion
                 self.process += ctx.assert_processes
                 self.process += '\n\n'
@@ -206,12 +209,14 @@ class SmeilCspmListenerVersion2(SmeilListener) :
         # print ctx.getText()
         #TODO can only handle one child currently
         # print "expression"
+        text = ''
         for child in ctx.children:
             # print type(child)
             if isinstance(child, SmeilParser.NameContext) is True:
-                ctx.text = child.text
+                text += child.text
             else:
-                ctx.text = child.getText()
+                text += child.getText()
+            ctx.text = text
             # elif isinstance(child, SmeilParser.ExpressionContext) is True:
             #     # TODO. maaske noget med at appende expressions og saa bygge det op derfra?
             # elif isinstance(child, SmeilParser.BinopContext) is True:
