@@ -9,6 +9,13 @@ def main():
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.module()
+    ##################### Example of the new structure###
+    # communication_mapper = SmeilCspmListenerVersion2()
+    # walker = ParseTreeWalker()
+    # walker.walk(communication_mapper, tree)
+    # printer = SmeilCspmListenerVersion2_2(communication_mapper)
+    # walker = ParseTreeWalker()
+    ##################### Example of the new structure###
     printer = SmeilCspmListenerVersion2()
     walker = ParseTreeWalker()
     walker.walk(printer, tree)
