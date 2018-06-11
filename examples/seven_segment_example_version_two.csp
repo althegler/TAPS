@@ -66,7 +66,9 @@ P_seconds = input ? variable ->
           Seconds_second_digit_assert(seconds_second_digit)
 
 
+-- Network = (P_hours [| {| input |} |] P_minutes) [| {| input |} |] P_seconds
 
+-- assert SKIP [FD= Network \ Events
 assert SKIP [FD= P_hours \ Events
 assert SKIP [FD= P_minutes \ Events
 assert SKIP [FD= P_seconds \ Events
