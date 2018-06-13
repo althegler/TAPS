@@ -6,21 +6,21 @@ entity : process process*
        | network
        ;
 
-network : 'network' ident '(' params? ')' '{' networkdecl '}';
+network : 'network' IDENT '(' params? ')' '{' networkdecl '}';
 
 networkdecl : instance*
             /* | busdecl */
             ;
 
 /* NOTE! This is not how the original grammar is */
-instance : 'instance' instancename 'of' ident '(' (name '.' name)? ')' ';' ;
+instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
 /* NOTE! Not completed */
-instancename : ident ;
+instancename : IDENT ;
 
-process : 'proc' ident '(' params? ')' declaration* '{' statement* '}';
+process : 'proc' IDENT '(' params? ')' declaration* '{' statement* '}';
 
-/*process : ('sync'|'async')? 'proc' ident '(' params? ')' declaration* '{' statement* '}';*/
+/*process : ('sync'|'async')? 'proc' IDENT '(' params? ')' declaration* '{' statement* '}';*/
 
 declaration : vardecl
             | busdecl
@@ -33,7 +33,7 @@ declaration : vardecl
 
 params : param (',' param)* ;
 
-param : direction ident ;
+param : direction IDENT ;
 /* param : ('[' expression* ']')* direction ident ; */
 
 direction : 'in'
@@ -46,26 +46,41 @@ statement : name '=' expression ';'
           /*| 'for' ident '=' expression 'to' expression '{' statement* '}'*/
           /*| 'while' condition '{' statement* '}'*/
           /*| 'switch' expression '{' switchcase switchcase* ('default' '{' statement statement* '}')? '}'*/
-          /*| 'trace' '(' formatstring '{' ','expression '}' ')' ';'*/
+          | 'trace' '(' formatstring (','expression)* ')' ';'
           /*| 'assert' '(' condition '{' ',' formatstring '}' ')' ';'*/
           /*| 'barrier' ';'*/
           /*| 'break' ';'*/
           /*| 'return' expression? ';'*/
           ;
 
-busdecl : 'exposed'? 'bus' ident '{' bussignaldecls '}' ';' ;
+formatstring : '"' (formatstringpart*) '"' ;
+
+/* TODO not completed */
+formatstringpart : '{}'
+                 | IDENT
+                 ;
+
+
+busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecls '}' ';' ;
 
 bussignaldecls : bussignaldecl bussignaldecl* ;
 
-bussignaldecl : ident ':' typename ('=' expression )? ranges ';' ;
+bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges ';' ;
 
-vardecl : 'var' ident ':' typename ('=' expression )? ranges? ';' ;
+vardecl : 'var' IDENT ':' TYPENAME ('=' expression )? ranges? ';' ;
 
-typename : 'u2'
+TYPENAME : ('i' NUM)
+         /* | 'int' - Should not be possible for simulated programs? */
+         | ('u' NUM)
+         /* | 'uint' - Should not be possible for simulated programs?*/
+         /* TODO not finished */
+         ;
+
+/* typename : 'u2'
          | 'u4'
          | 'u6'
          | 'u7'
-         | 'u17';// not finished
+         | 'u17';// not finished */
 
 ranges : 'range' expression 'to' expression ;
 
@@ -80,18 +95,42 @@ expression : name
 
 binop : '/'
       | '%'
+      | '+'
+      | '-'
       ;
 
-name : ident
+name : IDENT
+     | NUM
      | name '.' name
      ;
 
-ident : (ALPHANUM | ALPHA | NUM | '_' | '-') ;
+IDENT : (ALPHA (ALPHA | NUM)*) ;
 
-ALPHA : [A-Za-z]+ ;
 
-NUM : [0-9]+ ;
+fragment
+Nondigit
+    :   [a-zA-Z_\-]
+    ;
 
-ALPHANUM : [A-Za-z0-9\-_]+;
+fragment
+Digit
+    :   [0-9]
+    ;
+
+
+ALPHA :
+    Nondigit+
+    ;
+
+NUM : Digit+
+    ;
+
+/* ALPHA : [A-Za-z]+ ; */
+
+/* NUM : [0-9]+ ; */
+
+/* ALPHANUM : [A-Za-z0-9\-_]+; */
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
+
+

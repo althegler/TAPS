@@ -7,6 +7,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface SmeilListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link SmeilParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void enterModule(SmeilParser.ModuleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void exitModule(SmeilParser.ModuleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SmeilParser#entity}.
 	 * @param ctx the parse tree
 	 */
@@ -16,6 +26,46 @@ public interface SmeilListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEntity(SmeilParser.EntityContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SmeilParser#network}.
+	 * @param ctx the parse tree
+	 */
+	void enterNetwork(SmeilParser.NetworkContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#network}.
+	 * @param ctx the parse tree
+	 */
+	void exitNetwork(SmeilParser.NetworkContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SmeilParser#networkdecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterNetworkdecl(SmeilParser.NetworkdeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#networkdecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitNetworkdecl(SmeilParser.NetworkdeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SmeilParser#instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterInstance(SmeilParser.InstanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitInstance(SmeilParser.InstanceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SmeilParser#instancename}.
+	 * @param ctx the parse tree
+	 */
+	void enterInstancename(SmeilParser.InstancenameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#instancename}.
+	 * @param ctx the parse tree
+	 */
+	void exitInstancename(SmeilParser.InstancenameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SmeilParser#process}.
 	 * @param ctx the parse tree
@@ -77,6 +127,26 @@ public interface SmeilListener extends ParseTreeListener {
 	 */
 	void exitStatement(SmeilParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SmeilParser#formatstring}.
+	 * @param ctx the parse tree
+	 */
+	void enterFormatstring(SmeilParser.FormatstringContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#formatstring}.
+	 * @param ctx the parse tree
+	 */
+	void exitFormatstring(SmeilParser.FormatstringContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SmeilParser#formatstringpart}.
+	 * @param ctx the parse tree
+	 */
+	void enterFormatstringpart(SmeilParser.FormatstringpartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SmeilParser#formatstringpart}.
+	 * @param ctx the parse tree
+	 */
+	void exitFormatstringpart(SmeilParser.FormatstringpartContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SmeilParser#busdecl}.
 	 * @param ctx the parse tree
 	 */
@@ -117,16 +187,6 @@ public interface SmeilListener extends ParseTreeListener {
 	 */
 	void exitVardecl(SmeilParser.VardeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SmeilParser#typename}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypename(SmeilParser.TypenameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SmeilParser#typename}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypename(SmeilParser.TypenameContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SmeilParser#ranges}.
 	 * @param ctx the parse tree
 	 */
@@ -166,14 +226,4 @@ public interface SmeilListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitName(SmeilParser.NameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SmeilParser#ident}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdent(SmeilParser.IdentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SmeilParser#ident}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdent(SmeilParser.IdentContext ctx);
 }

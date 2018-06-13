@@ -15,6 +15,18 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterModule(SmeilParser.ModuleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitModule(SmeilParser.ModuleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterEntity(SmeilParser.EntityContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -22,6 +34,54 @@ public class SmeilBaseListener implements SmeilListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitEntity(SmeilParser.EntityContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNetwork(SmeilParser.NetworkContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNetwork(SmeilParser.NetworkContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNetworkdecl(SmeilParser.NetworkdeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNetworkdecl(SmeilParser.NetworkdeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInstance(SmeilParser.InstanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInstance(SmeilParser.InstanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInstancename(SmeilParser.InstancenameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInstancename(SmeilParser.InstancenameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -99,6 +159,30 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFormatstring(SmeilParser.FormatstringContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFormatstring(SmeilParser.FormatstringContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFormatstringpart(SmeilParser.FormatstringpartContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFormatstringpart(SmeilParser.FormatstringpartContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBusdecl(SmeilParser.BusdeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -147,18 +231,6 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTypename(SmeilParser.TypenameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTypename(SmeilParser.TypenameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterRanges(SmeilParser.RangesContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -202,18 +274,6 @@ public class SmeilBaseListener implements SmeilListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitName(SmeilParser.NameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdent(SmeilParser.IdentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdent(SmeilParser.IdentContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

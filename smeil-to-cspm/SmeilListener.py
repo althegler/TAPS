@@ -112,6 +112,24 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SmeilParser#formatstring.
+    def enterFormatstring(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#formatstring.
+    def exitFormatstring(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#formatstringpart.
+    def enterFormatstringpart(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#formatstringpart.
+    def exitFormatstringpart(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by SmeilParser#busdecl.
     def enterBusdecl(self, ctx):
         pass
@@ -148,15 +166,6 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#typename.
-    def enterTypename(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#typename.
-    def exitTypename(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by SmeilParser#ranges.
     def enterRanges(self, ctx):
         pass
@@ -190,15 +199,6 @@ class SmeilListener(ParseTreeListener):
 
     # Exit a parse tree produced by SmeilParser#name.
     def exitName(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by SmeilParser#ident.
-    def enterIdent(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#ident.
-    def exitIdent(self, ctx):
         pass
 
 
