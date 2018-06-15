@@ -63,7 +63,7 @@ class SmeilCspmListenerVersion2(SmeilListener) :
                 network_process += channel_name.capitalize() + '_assert'
                 network_process += '(' + channel_name + ')'
                 network_process += '\n\n'
-                network_process += 'assert SKIP [FD= ' + process_network_name
+                network_process += 'assert SKIP [T= ' + process_network_name
                 network_process += ' \ Events \n\n'
         self.network += network_process
 

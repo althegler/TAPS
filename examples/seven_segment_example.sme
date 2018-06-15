@@ -1,8 +1,8 @@
 proc clock()
   bus clock_out {
-    val: int;
+    val: uint;
   };
-  var i: int = 599999;
+  var i: uint = 0;
 {
   trace("iteration {}", i);
   i = i + 1;
@@ -11,47 +11,47 @@ proc clock()
 
 proc hours(in hours_in)
   bus hours_out {
-    hours_first_digit: int;
-    hours_second_digit: int;
+    first_digit: uint; // = 60000; // range 5 to 7;
+    second_digit: uint;
   };
-  var hours: int;
-  var hours_first_temp: int;
-  var hours_second_temp: int;
+  var hours: uint;
+  var hours_first_temp: uint;
+  var hours_second_temp: uint;
 {
   hours = hours_in.val / 3600 % 24;
   trace ("hours was {}", hours);
   hours_first_temp = hours / 10;
   hours_second_temp = hours % 10;
-  hours_out.hours_first_digit = hours_first_temp;
-  hours_out.hours_second_digit = hours_second_temp;
+  hours_out.first_digit = hours_first_temp;
+  hours_out.second_digit = hours_second_temp;
 }
 
 
 proc minutes(in minutes_in)
   bus minutes_out {
-    minutes_first_digit: int;
-    minutes_second_digit: int;
+    first_digit: uint;
+    second_digit: uint;
   };
-  var minutes: int;
-  var minutes_first_temp: int;
-  var minutes_second_temp: int;
+  var minutes: uint;
+  var minutes_first_temp: uint;
+  var minutes_second_temp: uint;
   {
   minutes = minutes_in.val / 60 % 60;
   trace ("minutes was {}", minutes);
   minutes_first_temp = minutes / 10;
   minutes_second_temp = minutes % 10;
-  minutes_out.minutes_first_digit = minutes_first_temp;
-  minutes_out.minutes_second_digit = minutes_second_temp;
+  minutes_out.first_digit = minutes_first_temp;
+  minutes_out.second_digit = minutes_second_temp;
 }
 
 proc seconds(in seconds_in)
   bus seconds_out {
-    seconds_first_digit: int;
-    seconds_second_digit: int;
+    seconds_first_digit: uint;
+    seconds_second_digit: uint;
   };
-  var seconds: int;
-  var seconds_first_temp: int;
-  var seconds_second_temp: int;
+  var seconds: uint;
+  var seconds_first_temp: uint;
+  var seconds_second_temp: uint;
   {
   seconds = seconds_in.val % 60;
   trace ("seconds was {}", seconds);
