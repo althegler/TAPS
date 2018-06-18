@@ -1,7 +1,8 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
-from SmeilCspmListenerVersion2 import SmeilCspmListenerVersion2
+from SmeilCspmMapper import SmeilCspmMapper
+from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
 def main():
@@ -9,15 +10,13 @@ def main():
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.module()
-    ##################### Example of the new structure###
-    # communication_mapper = SmeilCspmListenerVersion2()
-    # walker = ParseTreeWalker()
-    # walker.walk(communication_mapper, tree)
-    # printer = SmeilCspmListenerVersion2_2(communication_mapper)
-    # walker = ParseTreeWalker()
-    ##################### Example of the new structure###
-    printer = SmeilCspmListenerVersion2()
+    communication_mapper = SmeilCspmMapper()
     walker = ParseTreeWalker()
+    walker.walk(communication_mapper, tree)
+    printer = SmeilCspmPrinter()
+    # printer = SmeilCspmPrinter(communication_mappe)
+    # walker = ParseTreeWalker() # I am not sure if I will need this
+    ##################### Example of the new structure###
     walker.walk(printer, tree)
     print printer.get_channel()
     print printer.get_process()

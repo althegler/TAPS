@@ -4,7 +4,7 @@ from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
 import sys
 
-class SmeilCspmListenerVersion2(SmeilListener) :
+class SmeilCspmMapper(SmeilListener) :
     def __init__(self):
         self.process = ''
         self.network = ''
