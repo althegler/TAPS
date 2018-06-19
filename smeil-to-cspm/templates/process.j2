@@ -1,0 +1,10 @@
+{{proc.name|capitalize}}({{proc.variable}}) =
+    let
+        {{for x in list_of_calculations:}}
+        {{calculation}}
+    within
+        {{for y in communications}}
+        {{channel_name}} ! {{variable_to_send}} ->
+        SKIP
+
+{{channel_name|capitalize}}_assert(c) =
