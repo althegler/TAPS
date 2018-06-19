@@ -16,7 +16,6 @@ def main():
     printer = SmeilCspmPrinter()
     # printer = SmeilCspmPrinter(communication_mappe)
     # walker = ParseTreeWalker() # I am not sure if I will need this
-    ##################### Example of the new structure###
     walker.walk(printer, tree)
     print printer.get_channel()
     print printer.get_process()

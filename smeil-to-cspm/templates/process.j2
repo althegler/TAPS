@@ -7,4 +7,8 @@
         {{channel_name}} ! {{variable_to_send}} ->
         SKIP
 
+{{for c in channel_names}}
 {{channel_name|capitalize}}_assert(c) =
+    c ? x -> if {{proc.lowerbound}} <= x and x <= {{proc.upperbound}}
+    then SKIP else STOP
+
