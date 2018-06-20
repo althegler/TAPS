@@ -1,0 +1,7 @@
+
+
+{% for channel in channels %}
+{% if channel.input_bus == 'alberte' %}
+channel {{channel.name}} : { {{channel.lowerbound}} .. {{channel.upperbound}}}
+{% endif %}
+{% endfor %}
