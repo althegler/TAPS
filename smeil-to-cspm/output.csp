@@ -1,65 +1,76 @@
-channel clock_out_val : {0..131071} 
+channel clock_out_val : {0..131071}
 
-channel hours_out_first_digit : {0..3} 
-channel hours_out_second_digit : {0..15} 
+channel hours_out_first_digit : {0..3}
+channel hours_out_second_digit : {0..15}
 
-channel minutes_out_first_digit : {0..7} 
-channel minutes_out_second_digit : {0..15} 
+channel minutes_out_first_digit : {0..7}
+channel minutes_out_second_digit : {0..15}
 
-channel seconds_out_first_digit : {0..7} 
-channel seconds_out_second_digit : {0..15} 
+channel seconds_out_first_digit : {0..7}
+channel seconds_out_second_digit : {0..15}
 
-Hours(hours_in) = 
+Hours(hours_in) =
 let
-hours = hours_in / 3600  % 24 
-hours_first_temp = hours / 10 
-hours_second_temp = hours % 10 
+hours = hours_in / 3600  % 24
+hours_first_temp = hours / 10
+hours_second_temp = hours % 10
 within
-hours_out_first_digit ! hours_first_temp -> 
-hours_out_second_digit ! hours_second_temp -> 
+hours_out_first_digit ! hours_first_temp ->
+hours_out_second_digit ! hours_second_temp ->
 SKIP
 
-Hours_out_second_digit_assert(c) = c ? x -> if 0 <= x and x <= 9 then SKIP else STOP
-Hours_out_first_digit_assert(c) = c ? x -> if 0 <= x and x <= 2 then SKIP else STOP
+Hours_out_second_digit_assert(c) =
+    c ? x -> if 0 <= x and x <= 9 then SKIP else STOP
+Hours_out_first_digit_assert(c) =
+    c ? x -> if 0 <= x and x <= 2 then SKIP else STOP
 
 
-Minutes(minutes_in) = 
+Minutes(minutes_in) =
 let
-minutes = minutes_in / 60  % 60 
-minutes_first_temp = minutes / 10 
-minutes_second_temp = minutes % 10 
+minutes = minutes_in / 60  % 60
+minutes_first_temp = minutes / 10
+minutes_second_temp = minutes % 10
 within
-minutes_out_first_digit ! minutes_first_temp -> 
-minutes_out_second_digit ! minutes_second_temp -> 
+minutes_out_first_digit ! minutes_first_temp ->
+minutes_out_second_digit ! minutes_second_temp ->
 SKIP
 
 Minutes_out_first_digit_assert(c) = c ? x -> if 0 <= x and x <= 5 then SKIP else STOP
 Minutes_out_second_digit_assert(c) = c ? x -> if 0 <= x and x <= 9 then SKIP else STOP
 
 
-Seconds(seconds_in) = 
+Seconds(seconds_in) =
 let
-seconds = seconds_in % 60 
-seconds_first_temp = seconds / 10 
-seconds_second_temp = seconds % 10 
+seconds = seconds_in % 60
+seconds_first_temp = seconds / 10
+seconds_second_temp = seconds % 10
 within
-seconds_out_first_digit ! seconds_first_temp -> 
-seconds_out_second_digit ! seconds_second_temp -> 
+seconds_out_first_digit ! seconds_first_temp ->
+seconds_out_second_digit ! seconds_second_temp ->
 SKIP
 
-Seconds_out_first_digit_assert(c) = c ? x -> if 0 <= x and x <= 5 then SKIP else STOP
-Seconds_out_second_digit_assert(c) = c ? x -> if 0 <= x and x <= 9 then SKIP else STOP
+Seconds_out_first_digit_assert(c) =
+    c ? x -> if 0 <= x and x <= 5 then SKIP else STOP
+Seconds_out_second_digit_assert(c) =
+    c ? x -> if 0 <= x and x <= 9 then SKIP else STOP
 
 
-P_hours = clock_out_val ? variable -> Hours(variable)[| {| hours_out_first_digit|} |] Hours_out_first_digit_assert(hours_out_first_digit)
+P_hours =
+    clock_out_val ? variable ->
+    (Hours(variable)
+    [| {| hours_out_first_digit|} |]
+    Hours_out_first_digit_assert(hours_out_first_digit))
+    [| {| hours_out_second_digit|} |]
+    Hours_out_second_digit_assert(hours_out_second_digit)
 
-assert SKIP [T= P_hours \ Events 
+
+assert SKIP [T= P_hours \ Events
 
 P_seconds = clock_out_val ? variable -> Seconds(variable)[| {| seconds_out_first_digit|} |] Seconds_out_first_digit_assert(seconds_out_first_digit)
 
-assert SKIP [T= P_seconds \ Events 
+assert SKIP [T= P_seconds \ Events
 
 P_minutes = clock_out_val ? variable -> Minutes(variable)[| {| minutes_out_first_digit|} |] Minutes_out_first_digit_assert(minutes_out_first_digit)
 
-assert SKIP [T= P_minutes \ Events 
+assert SKIP [T= P_minutes \ Events
 

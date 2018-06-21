@@ -1,14 +1,22 @@
+{% for proc in Processes %}
+
 {{proc.name|capitalize}}({{proc.variable}}) =
     let
-        {{for x in list_of_calculations:}}
-        {{calculation}}
+        {% for calc in calculations %}
+        {{calc}}
+        {% endfor %}
     within
-        {{for y in communications}}
-        {{channel_name}} ! {{variable_to_send}} ->
+        {% for channel in channels %}
+        {% for y in communications_variable %}
+        {{channe.name}} ! {{y}} ->
+        {% endfor %}
+        {% endfor %}
         SKIP
 
-{{for c in channel_names}}
-{{channel_name|capitalize}}_assert(c) =
-    c ? x -> if {{proc.lowerbound}} <= x and x <= {{proc.upperbound}}
+{% for channel in channels %}
+{{channel.assert_proc_name}}(c) =
+    c ? x ->
+    if {{channel.lowerbound}} <= x and x <= {{channel.upperbound}}
     then SKIP else STOP
-
+{% endfor %}
+{% endfor %}
