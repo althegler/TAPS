@@ -12,17 +12,19 @@ def main():
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.module()
-    communication_mapper = SmeilCspmMapper()
+    # Data structure
+    data = { network: [], channels: {}, processes: []}
+    # Extraction
+    network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()
-    walker.walk(communication_mapper, tree)
-    print communication_mapper.get_data()
+    walker.walk(network_mapper, tree)
     printer = SmeilCspmPrinter()
-    # printer = SmeilCspmPrinter(communication_mapper)
     # walker = ParseTreeWalker() # I am not sure if I will need this
     walker.walk(printer, tree)
-    print printer.get_channel()
-    print printer.get_process()
-    print printer.get_network()
+
+    # Transformation
+
+    # Load
     output = open("output.csp","w")
     output.write(printer.get_channel())
     output.write(printer.get_process())
