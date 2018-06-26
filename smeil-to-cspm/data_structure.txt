@@ -1,3 +1,5 @@
+%%%% Before transformation %%%%
+
 data = {
     network : [
         % Every element in the network is a process
@@ -5,19 +7,68 @@ data = {
             proc_name: x, % Must be unique %
             instance_name: x, % Must be unique %
             instance_input: x,
+         }
+    ],
+    channels : {
+        proc_name : {
+            bus_name: [
+                {
+                    channel_name: x,
+                    lowerbound: x,
+                    upperbound: x,
+                    type: x,
+                }
+            ]
+        }
+    },
+    processes : [
+        {
+            proc_name: x,
+            proc_input_variable: x,
+            calculations: [
+                x
+            ],
+            communication: [
+                (channel_name, value_to_send)
+            ]
+        }
+    ]
+}
+
+%%%% After transformation %%%%
+
+
+data = {
+    network :
+    {
+        proc_name:
+        {
+            proc_name: x, % Must be unique %
+            instance_name: x, % Must be unique %
+            instance_input: x, % tranformed to correct channel name
             syncronization: [
                 (channel_name, assert_process_name),
             ]
-         }
-    ]
+        },
+        instance_name:
+        {
+            proc_name: x, % Must be unique %
+            instance_name: x, % Must be unique %
+            instance_input: x, % tranformed to correct channel name
+            syncronization: [
+                (channel_name, assert_process_name),
+            ]
+        }
+    },
     channels : {
         % Must include input channels
         channel_name : (lowerbound, upperbound)
     }
-    assert_process : {
+    assert_processes : {
         assert_procces_name : (assert_lowerbound, assert_upperbound)
     }
-    process : [
+    processes :
+    [
         {
             proc_name: x,
             proc_input_variable: x,
