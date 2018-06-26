@@ -5,6 +5,8 @@ from SmeilCspmMapper import SmeilCspmMapper
 from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
+from CSPmTemplate import templating
+
 def main():
     lexer = SmeilLexer(StdinStream())
     stream = CommonTokenStream(lexer)
@@ -13,8 +15,9 @@ def main():
     communication_mapper = SmeilCspmMapper()
     walker = ParseTreeWalker()
     walker.walk(communication_mapper, tree)
+    print communication_mapper.get_data()
     printer = SmeilCspmPrinter()
-    # printer = SmeilCspmPrinter(communication_mappe)
+    # printer = SmeilCspmPrinter(communication_mapper)
     # walker = ParseTreeWalker() # I am not sure if I will need this
     walker.walk(printer, tree)
     print printer.get_channel()

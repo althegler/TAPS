@@ -1,0 +1,7 @@
+{% for proc in Processes %}
+{% if proc.instance_input != None %}
+{% for channel in proc.channels %}
+channel {{channel.name}} : { {{channel.lowerbound}} .. {{channel.upperbound}}}
+{% endfor %}
+{% endif %}
+{% endfor %}

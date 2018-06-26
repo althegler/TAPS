@@ -1,23 +1,37 @@
-Processes = [{'name': 'hours', % Must be unique %
-              'instance_name': 'h', % Must be unique %
-              'instance_input': 'g.clock_out',
-              'channels' : [{'name': 'hours_out_first_digit',
-                             'lower_bound': 0,
-                             'upper_bound': 3,
-                             'lower_assert': 0,
-                             'upper_assert': 2},
-                             'assert_proc_name': 'Hours_out_first_digit_assert',
-                             'communications_variable' : ['hours_first_temp']
-                            {'name': 'hours_out_second_digit',
-                             'lower_bound': 0,
-                             'upper_bound': 3,
-                             'lower_assert': 0,
-                             'upper_assert': 2,
-                             'assert_proc_name': 'Hours_out_second_digit_assert',
-                             'communications_variable' : ['hours_second_temp']
-                             }]
-              'input_variable': 'hours_in'
-              'calculations' : ["hours = hours_in / 3600 % 24",
-                                "hours_first_temp = hours / 10",
-                                "hours_second_temp = hours % 10"]
-              }]
+Processes = [{
+    'name': 'hours', % Must be unique %
+    'instance_name': 'h', % Must be unique %
+    'instance_input': 'g.clock_out',
+    'channels' :
+        [{
+        'name': 'hours_out_first_digit',
+        'lower_bound': 0,
+        'upper_bound': 3,
+        'lower_assert': 0,
+        'upper_assert': 2,
+        'assert_proc_name': 'Hours_out_first_digit_assert',
+        'communications_variable' :
+            [
+            'hours_first_temp'
+            ]
+        },
+        {
+        'name': 'hours_out_second_digit',
+        'lower_bound': 0,
+        'upper_bound': 3,
+        'lower_assert': 0,
+        'upper_assert': 2,
+        'assert_proc_name': 'Hours_out_second_digit_assert',
+        'communications_variable' :
+            [
+            'hours_second_temp'
+            ]
+        }]
+    'input_variable': 'hours_in'
+    'calculations' :
+        [
+        "hours = hours_in / 3600 % 24",
+        "hours_first_temp = hours / 10",
+        "hours_second_temp = hours % 10"
+        ]
+}]
