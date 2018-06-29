@@ -1,7 +1,7 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
-from SmeilCspmMapper import SmeilCspmMapper
+from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
 from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
@@ -13,7 +13,7 @@ def main():
     parser = SmeilParser(stream)
     tree = parser.module()
     # Data structure
-    data = { network: [], channels: {}, processes: []}
+    data = { 'network': [], 'channels': {}, 'processes': []}
     # Extraction
     network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()

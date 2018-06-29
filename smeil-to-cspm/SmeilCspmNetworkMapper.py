@@ -4,24 +4,13 @@ from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
 import sys
 
-class SmeilCspmMapper(SmeilListener, data) :
-    def __init__(self):
-        self.data = []
+class SmeilCspmNetworkMapper(SmeilListener):
+    def __init__(self, data):
+        self.data = data
 
-    def get_data(self):
-        return self.data
-
-    def enterProcess(self, ctx):
-        ctx.process = {}
-        # ctx.let_variables = ''
-        # ctx.within_variables = ''
-        # ctx.assert_processes = ''
-        # ctx.variables = {}
-        # ctx.channels = {}
-        # process_name = ctx.IDENT().getText()
-        # self.processes[process_name] = {}
 
     # def exitNetwork(self, ctx):
+    #     ctx.network =
     #     network_process = ''
     #     for key, value in self.networks.iteritems():
     #         if len(value[1]) > 0:
@@ -60,30 +49,40 @@ class SmeilCspmMapper(SmeilListener, data) :
     #     self.network += network_process
 
 
-    # def exitInstance(self,ctx):
-    #     instance_name = ctx.instancename().text
-    #     process_name = ctx.IDENT().getText()
-    #     #TODO: this is ugly
-    #     com_name = ''
-    #     for elem in ctx.name():
-    #         com_name += elem.getText()
-    #         if elem != ctx.name()[-1]:
-    #             com_name += '.'
-    #     self.networks[instance_name] = [process_name, com_name]
-    #     # print self.networks
+    def exitInstance(self,ctx):
+        instance = {}
+        instance_name = ctx.instancename().text
+        process_name = ctx.IDENT().getText()
+        #TODO: this is ugly
+        com_name = ''
+        for elem in ctx.name():
+            com_name += elem.getText()
+            if elem != ctx.name()[-1]:
+                com_name += '.'
+        if com_name == '':
+            com_name = None
+        instance['proc_name'] = process_name
+        instance['instance_name'] = instance_name
+        instance['instance_input'] = com_name
+        self.data['network'] = instance
+
+    # NOTE grammar not finished for this parser.
+    def exitInstancename(self,ctx):
+        # Can currently only handle one ident in this parser
+        ctx.text = ctx.IDENT().getText()
+
+
+
+
+
+
+    # def enterProcess(self, ctx):
+    #     ctx.process = {}
     #
-    # # NOTE grammar not finished for this parser.
-    # def exitInstancename(self,ctx):
-    #     # Can currently only handle one ident in this parser
-    #     ctx.text = ctx.IDENT().getText()
+    # def exitProcess(self, ctx):
+    #     ctx.process['proc_name'] = ctx.IDENT().getText()
 
-
-
-
-    def exitProcess(self, ctx):
-        ctx.process['name'] = ctx.IDENT().getText()
-
-        print ctx.process
+        # print ctx.process
         # params_val = next((x.getText() for x in ctx.children if isinstance(x, SmeilParser.ParamsContext)), None)
         # # If there is no params we want to create an input channels, which is
         # # done automatically because we dont add anything else than channels
@@ -120,6 +119,10 @@ class SmeilCspmMapper(SmeilListener, data) :
         #             ctx.assert_processes += assertion
         #         self.process += ctx.assert_processes
         #         self.process += '\n\n'
+
+
+
+
 
 
 #     def exitStatement(self, ctx):
