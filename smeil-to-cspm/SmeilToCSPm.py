@@ -2,6 +2,7 @@ from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
 from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
+from SmeilCspmChannelsMapper import SmeilCspmChannelsMapper
 from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
@@ -18,6 +19,9 @@ def main():
     network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()
     walker.walk(network_mapper, tree)
+    channels_mapper = SmeilCspmChannelsMapper(data)
+    walker = ParseTreeWalker()
+    walker.walk(channels_mapper, tree)
     # printer = SmeilCspmPrinter()
     # # walker = ParseTreeWalker() # I am not sure if I will need this
     # walker.walk(printer, tree)
@@ -30,8 +34,10 @@ def main():
     # output.write(printer.get_process())
     # output.write(printer.get_network())
     # output.close()
-    result = templating(data['network'])
-    print result
+    # result = templating(data['network'])
+    # print result
+
+    print data['channels']
 
 
 
