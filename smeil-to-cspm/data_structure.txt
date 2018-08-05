@@ -10,8 +10,8 @@ data = {
          }
     ],
     channels : {
-        proc_name : {
-            bus_name: [
+        real_proc_name : {
+            real_bus_name: [
                 {
                     channel_name: x,
                     lowerbound: x,
