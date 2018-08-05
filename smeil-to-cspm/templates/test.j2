@@ -1,0 +1,3 @@
+{% for n in network %}
+instance {{n.instance_name}} of {{n.proc_name}}({{n.instance_input}})
+{% endfor %}

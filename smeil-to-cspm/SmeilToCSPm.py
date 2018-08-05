@@ -18,18 +18,22 @@ def main():
     network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()
     walker.walk(network_mapper, tree)
-    printer = SmeilCspmPrinter()
-    # walker = ParseTreeWalker() # I am not sure if I will need this
-    walker.walk(printer, tree)
+    # printer = SmeilCspmPrinter()
+    # # walker = ParseTreeWalker() # I am not sure if I will need this
+    # walker.walk(printer, tree)
 
     # Transformation
 
     # Load
-    output = open("output.csp","w")
-    output.write(printer.get_channel())
-    output.write(printer.get_process())
-    output.write(printer.get_network())
-    output.close()
+    # output = open("output.csp","w")
+    # output.write(printer.get_channel())
+    # output.write(printer.get_process())
+    # output.write(printer.get_network())
+    # output.close()
+    result = templating(data['network'])
+    print result
+
+
 
 if __name__ == '__main__':
     main()

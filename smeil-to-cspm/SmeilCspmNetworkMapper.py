@@ -64,7 +64,7 @@ class SmeilCspmNetworkMapper(SmeilListener):
         instance['proc_name'] = process_name
         instance['instance_name'] = instance_name
         instance['instance_input'] = com_name
-        self.data['network'] = instance
+        self.data['network'].append(instance)
 
     # NOTE grammar not finished for this parser.
     def exitInstancename(self,ctx):
