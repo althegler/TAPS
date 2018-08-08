@@ -2,7 +2,7 @@ from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
 from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
-from SmeilCspmChannelsMapper import SmeilCspmChannelsMapper
+from SmeilCspmChannelMapper import SmeilCspmChannelMapper
 from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
