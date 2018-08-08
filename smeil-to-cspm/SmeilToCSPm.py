@@ -19,8 +19,8 @@ def main():
     network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()
     walker.walk(network_mapper, tree)
-    channels_mapper = SmeilCspmChannelsMapper(data)
-    walker = ParseTreeWalker()
+    channels_mapper = SmeilCspmChannelMapper(data)
+    # walker = ParseTreeWalker()
     walker.walk(channels_mapper, tree)
     # printer = SmeilCspmPrinter()
     # # walker = ParseTreeWalker() # I am not sure if I will need this
