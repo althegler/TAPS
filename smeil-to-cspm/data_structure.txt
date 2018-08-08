@@ -29,7 +29,7 @@ data = {
                 x
             ],
             communication: [
-                (channel_name, value_to_send)
+                (bus_name, channel_name, value_to_send)
             ]
         }
     ]

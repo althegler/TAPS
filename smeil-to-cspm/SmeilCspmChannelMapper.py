@@ -13,7 +13,6 @@ class SmeilCspmChannelMapper(SmeilListener):
         process = {}
         proc_name = ctx.IDENT().getText()
 
-        # process[bus_name] = []
         for key, value in ctx.buses.iteritems():
             process[key] = value
 

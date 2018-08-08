@@ -3,6 +3,7 @@ from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
 from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
 from SmeilCspmChannelMapper import SmeilCspmChannelMapper
+from SmeilCspmProcessMapper import SmeilCspmProcessMapper
 from SmeilCspmPrinter import SmeilCspmPrinter
 import sys
 
@@ -16,12 +17,13 @@ def main():
     # Data structure
     data = { 'network': [], 'channels': {}, 'processes': []}
     # Extraction
-    network_mapper = SmeilCspmNetworkMapper(data)
     walker = ParseTreeWalker()
+    network_mapper = SmeilCspmNetworkMapper(data)
     walker.walk(network_mapper, tree)
     channels_mapper = SmeilCspmChannelMapper(data)
-    # walker = ParseTreeWalker()
     walker.walk(channels_mapper, tree)
+    process_mapper = SmeilCspmProcessMapper(data)
+    walker.walk(process_mapper, tree)
     # printer = SmeilCspmPrinter()
     # # walker = ParseTreeWalker() # I am not sure if I will need this
     # walker.walk(printer, tree)
@@ -36,8 +38,11 @@ def main():
     # output.close()
     # result = templating(data['network'])
     # print result
-
+    print data['network']
+    print "-----------------------------------"
     print data['channels']
+    print "-----------------------------------"
+    # print data['processes']
 
 
 
