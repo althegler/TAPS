@@ -38,9 +38,6 @@ class SmeilCspmChannelMapper(SmeilListener):
             channel =  {}
             channel_name = child.IDENT().getText()
             type_name = child.TYPENAME().getText()
-            # type = type_name[0]
-            # type_bit = type_name[1:]
-            # type_range = max_bits(type, int(type_bit))
             ranges = []
             # get the range number from the ranges expressions
             for expression in child.ranges().children:
@@ -55,7 +52,6 @@ class SmeilCspmChannelMapper(SmeilListener):
                 channel['upper_bound'] = ranges[1]
                 channel['type'] = type_name
                 bus_signals.append(channel)
-                # print bus_signals
         ctx.buses[bus_name] = bus_signals
 
     def exitExpression(self,ctx):
@@ -76,7 +72,6 @@ class SmeilCspmChannelMapper(SmeilListener):
 
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
-        # print ctx.getText()
         if ctx.getChildCount() > 1:
             if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is True:
                 ctx.text = ctx.name()[0].getText()
