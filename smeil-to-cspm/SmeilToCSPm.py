@@ -38,11 +38,13 @@ def main():
     # output.close()
     # result = templating(data['network'])
     # print result
-    print data['network']
-    print "-----------------------------------"
-    print data['channels']
-    print "-----------------------------------"
+    # print data['network']
+    # print "-----------------------------------"
+    # print data['channels']
+    # print "-----------------------------------"
     # print data['processes']
+
+    print data
 
 
 
