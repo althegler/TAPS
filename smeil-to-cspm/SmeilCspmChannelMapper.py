@@ -48,8 +48,8 @@ class SmeilCspmChannelMapper(SmeilListener):
                 print "ERROR: not allowed more than two expressions in range"
             else:
                 channel['channel_name'] = channel_name
-                channel['lower_bound'] = ranges[0]
-                channel['upper_bound'] = ranges[1]
+                channel['lowerbound'] = ranges[0]
+                channel['upperbound'] = ranges[1]
                 channel['type'] = type_name
                 bus_signals.append(channel)
         ctx.buses[bus_name] = bus_signals

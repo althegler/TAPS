@@ -1,9 +1,9 @@
 proc clock ()
-    bus clock_out {val: u17 range 1 to 86401;};
+    bus c_out {val: u17 range 1 to 86401;};
     var i: u17 = 0 range 0 to 86401;
 {
     i = i + 1;
-    clock_out.val = i;
+    c_out.val = i;
 }
 
 proc hours (in hours_in)
@@ -20,32 +20,32 @@ proc hours (in hours_in)
     hours_out.second_digit = hours_second_temp;
 }
 
-proc minutes (in minutes_in)
-    bus minutes_out {first_digit: u3 range 0 to 5;
+proc minutes (in min_in)
+    bus min_out {first_digit: u3 range 0 to 5;
                      second_digit: u4 range 0 to 9;};
-    var minutes_second_temp: u4 range 0 to 9;
-    var minutes_first_temp: u3 range 0 to 5;
-    var minutes: u6 range 0 to 59;
+    var min_second_temp: u4 range 0 to 9;
+    var min_first_temp: u3 range 0 to 5;
+    var min: u6 range 0 to 59;
 {
-    minutes = minutes_in.val / 60 % 60;
-    minutes_first_temp = minutes / 10;
-    minutes_second_temp = minutes % 10;
-    minutes_out.first_digit = minutes_first_temp;
-    minutes_out.second_digit = minutes_second_temp;
+    min = min_in.val / 60 % 60;
+    min_first_temp = min / 10;
+    min_second_temp = min % 10;
+    min_out.first_digit = min_first_temp;
+    min_out.second_digit = min_second_temp;
 }
 
-proc seconds (in seconds_in)
-    bus seconds_out {first_digit: u3 range 0 to 5;
+proc seconds (in sec_in)
+    bus sec_out {first_digit: u3 range 0 to 5;
                      second_digit: u4 range 0 to 9;};
-    var seconds: u6 range 0 to 59;
-    var seconds_first_temp: u3 range 0 to 5;
-    var seconds_second_temp: u4 range 0 to 9;
+    var sec: u6 range 0 to 59;
+    var sec_first_temp: u3 range 0 to 5;
+    var sec_second_temp: u4 range 0 to 9;
 {
-    seconds = seconds_in.val % 60;
-    seconds_first_temp = seconds / 10;
-    seconds_second_temp = seconds % 10;
-    seconds_out.first_digit = seconds_first_temp;
-    seconds_out.second_digit = seconds_second_temp;
+    sec = sec_in.val % 60;
+    sec_first_temp = sec / 10;
+    sec_second_temp = sec % 10;
+    sec_out.first_digit = sec_first_temp;
+    sec_out.second_digit = sec_second_temp;
 }
 
 network clock_network ()

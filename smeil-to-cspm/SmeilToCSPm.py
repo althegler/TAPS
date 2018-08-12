@@ -29,7 +29,7 @@ def main():
     # walker.walk(printer, tree)
 
     # Transformation
-
+    result = transform_channels(data)
     # Load
     # output = open("output.csp","w")
     # output.write(printer.get_channel())
@@ -44,8 +44,23 @@ def main():
     # print "-----------------------------------"
     # print data['processes']
 
-    print data
+    # print data
 
+
+def transform_channels(data):
+    channels = {}
+    for process_name, process in data['channels'].iteritems():
+        for bus_name, bus in process.iteritems():
+            for channel in bus:
+                cspm_channel_name = (process_name + '_'
+                                  + bus_name + '_'
+                                  + channel['channel_name'])
+                cspm_channel_bounds = (channel['lowerbound'],
+                                       channel['upperbound'])
+                channels[cspm_channel_name] = (cspm_channel_bounds)
+                # print channel['channel_name']
+    print channels
+    return channels
 
 
 if __name__ == '__main__':
