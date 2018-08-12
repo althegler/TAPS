@@ -47,7 +47,7 @@ data = {
             instance_name: x, % Must be unique %
             instance_input: x, % tranformed to correct channel name
             syncronization: [
-                (channel_name, assert_process_name),
+                (channel_name, monitor_procces_name),
             ]
         },
         instance_name:
@@ -56,7 +56,7 @@ data = {
             instance_name: x, % Must be unique %
             instance_input: x, % tranformed to correct channel name
             syncronization: [
-                (channel_name, assert_process_name),
+                (channel_name, monitor_procces_name),
             ]
         }
     },
@@ -65,7 +65,7 @@ data = {
         channel_name : (lowerbound, upperbound)
     }
     monitor_processes : {
-        monitor_procces_name : (assert_lowerbound, assert_upperbound)
+        monitor_procces_name : (monitor_lowerbound, monitor_upperbound)
     }
     processes :
     [
