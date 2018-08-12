@@ -64,8 +64,8 @@ data = {
         % Must include input channels
         channel_name : (lowerbound, upperbound)
     }
-    assert_processes : {
-        assert_procces_name : (assert_lowerbound, assert_upperbound)
+    monitor_processes : {
+        monitor_procces_name : (assert_lowerbound, assert_upperbound)
     }
     processes :
     [
