@@ -16,6 +16,7 @@ def main():
     tree = parser.module()
     # Data structure
     data = { 'network': [], 'channels': {}, 'processes': []}
+    transformed_data = {}
     # Extraction
     walker = ParseTreeWalker()
     network_mapper = SmeilCspmNetworkMapper(data)
@@ -30,8 +31,19 @@ def main():
 
     # Transformation
     # result = transform_channels(data)
-    result = transform_monitor(data)
-    print result
+    transformed_data['processes'] = data['processes']
+    transformed_data['processes'][0]['input_value'] = 'input_hello'
+    transformed_data['channels'] = transform_channels(data)
+    transformed_data['monitor'] = transform_monitor(data)
+    transformed_data['channels_monitor'] = transform_channels_monitor(data)
+    # print transformed_data['channels_monitor']
+    # transformed_data['network'] = transform_network(data,
+    #                               transformed_data['channels_monitor'])
+
+
+
+    # result = transform_monitor(data)
+    # print result
     # Load
     # output = open("output.csp","w")
     # output.write(printer.get_channel())
@@ -47,6 +59,57 @@ def main():
     # print data['processes']
 
     # print data
+
+
+#
+# def transform_network(data, transformed_data_channel_monitor):
+#     network = {}
+#     process = {}
+#     for instance in data['network']:
+#         instance['synchronization'] = []
+#         communications = []
+#         # print instance
+#         # TODO: this will need some work. Can do it better
+#         for proc in data['processes']:
+#             if proc['proc_name'] == instance['proc_name']:
+#                 for tuple in proc['communication_list']:
+#                     communications.append(tuple[0])
+#         for name in communications:
+#             monitor = transformed_data_channel_monitor[name]
+#             instance['synchronization'].append((name, monitor))
+#             instance['instance_input'] = name
+#         print instance
+#         # print communications
+#         # process_communication = data['processes']
+#         # instance['synchronization'] =
+
+def transform_channels_monitor(data):
+    channels_monitor = {}
+    input_channels = []
+    for instance in data['network']:
+        if instance['instance_input'] == None:
+            # Find input channels
+            input_channels.append(instance['proc_name'])
+    for process_name, process in data['channels'].iteritems():
+        if process_name not in input_channels:
+            # Ignore processes without input bus
+            for bus_name, bus in process.iteritems():
+                for channel in bus:
+                    cspm_channel_name = (process_name + '_'
+                                      + bus_name + '_'
+                                      + channel['channel_name'])
+                    cspm_monitor_name = (cspm_channel_name
+                                      + '_monitor')
+                    channels_monitor[cspm_channel_name] = cspm_monitor_name
+        else:
+            for bus_name, bus in process.iteritems():
+                for channel in bus:
+                    cspm_channel_name = (process_name + '_'
+                                      + bus_name + '_'
+                                      + channel['channel_name'])
+                    channels_monitor[cspm_channel_name] = None
+    return channels_monitor
+
 
 
 def transform_channels(data):

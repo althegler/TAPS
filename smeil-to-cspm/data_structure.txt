@@ -46,7 +46,7 @@ data = {
             proc_name: x, % Must be unique %
             instance_name: x, % Must be unique %
             instance_input: x, % tranformed to correct channel name
-            syncronization: [
+            synchronization: [
                 (channel_name, monitor_procces_name),
             ]
         },
@@ -55,7 +55,7 @@ data = {
             proc_name: x, % Must be unique %
             instance_name: x, % Must be unique %
             instance_input: x, % tranformed to correct channel name
-            syncronization: [
+            synchronization: [
                 (channel_name, monitor_procces_name),
             ]
         }
@@ -64,18 +64,27 @@ data = {
         % Must include input channels
         channel_name : (lowerbound, upperbound)
     }
-    monitor_processes : {
+    monitor : {
         monitor_procces_name : (monitor_lowerbound, monitor_upperbound)
-    }
+    },
+
+    #Not sure if I need this
+    channels_monitor:  {
+        channel_name : monitor_procces_name
+    },
+
+
+
+
     processes :
     [
         {
             proc_name: x,
-            proc_input_variable: x,
+            input_variable: x,
             calculations: [
                 x
             ],
-            communication: [
+            communication_list: [
                 (channel_name, value_to_send)
             ]
         }
