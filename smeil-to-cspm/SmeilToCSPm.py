@@ -40,19 +40,12 @@ def main():
     transformed_data['channels_monitor'] = transform_channels_monitor(data)
     transformed_data['network'] = transform_network(data)
     # TODO: We need to update calculations in processes to match the csp version
-    # TODO: We might need to make a copy of the data because the channels
-    # transformation use the data process structure to change the data. or we
-    # need to change that last
     transformed_data['processes'] = data['processes']
-
     print transformed_data['network']
-
-
     # TODO: Make a function that goes through transformed_data['network']
     # and change the instance input to the correct channel name
-
-
-
+    transform_instance_input(transformed_data)
+    print transformed_data['network']
     # result = transform_monitor(data)
     # print result
     # Load
@@ -71,7 +64,28 @@ def main():
 
     # print data
 
+def transform_instance_input(transformed_data):
+    visited = []
+    for name, proc in transformed_data['network'].iteritems():
+        if proc['proc_name'] not in visited:
+            if proc['instance_input'] != None:
+                (input,channel) = proc['instance_input'].split('.')
+                input_proc = transformed_data['network'][input]
+                # TODO: We can only do this because we currently
+                # assume that if the instance is an input in another
+                # instance, then it has only one channel pr process.
+                # This should not be something we can assume.
+                (channel,_) = input_proc['synchronization'][0]
+                # print channel
+                proc['instance_input'] = channel
+            visited.append(proc['proc_name'])
+    return
 
+
+
+# Maybe we do not need this
+def transform_bus(data):
+    return
 
 def transform_network(data):
     network = {}
@@ -80,7 +94,6 @@ def transform_network(data):
         # Create a reference to the old network data. We are not reusing it
         process = instance
         process['synchronization'] = []
-        # print instance['proc_name']
         comm_list = \
             data['processes'][instance['proc_name']]['communication_list']
         for channel, _ in comm_list:

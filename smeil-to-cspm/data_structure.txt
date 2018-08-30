@@ -72,6 +72,20 @@ data = {
         channel_name : monitor_procces_name
     },
 
+#    % We assume that if the bus is a input to an instance, then there is only
+#    % one element in the list
+#    bus : {
+#        real_bus_name : [
+#                {
+#                    channel_name: x,
+#                    proc_name: x,
+#
+#                }
+#            ]
+#        }
+
+    }
+
 
 
 
