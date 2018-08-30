@@ -51,7 +51,7 @@ proc seconds (in sec_in)
 network clock_network ()
 {
     instance g of clock();
-    instance h of hours(g.clock_out);
-    instance m of minutes(g.clock_out);
-    instance s of seconds(g.clock_out);
+    instance h of hours(g.c_out);
+    instance m of minutes(g.c_out);
+    instance s of seconds(g.c_out);
 }
