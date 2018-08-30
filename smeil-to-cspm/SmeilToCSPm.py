@@ -15,7 +15,7 @@ def main():
     parser = SmeilParser(stream)
     tree = parser.module()
     # Data structure
-    data = { 'network': [], 'channels': {}, 'processes': []}
+    data = { 'network': [], 'channels': {}, 'processes': {}}
     transformed_data = {}
     # Extraction
     walker = ParseTreeWalker()
@@ -30,15 +30,26 @@ def main():
     # walker.walk(printer, tree)
 
     # Transformation
-    # result = transform_channels(data)
-    transformed_data['processes'] = data['processes']
-    transformed_data['processes'][0]['input_value'] = 'input_hello'
+
+
+
+    # print data['processes']
+    # transformed_data['processes'][0]['input_value'] = 'input_hello'
     transformed_data['channels'] = transform_channels(data)
     transformed_data['monitor'] = transform_monitor(data)
     transformed_data['channels_monitor'] = transform_channels_monitor(data)
-    # print transformed_data['channels_monitor']
-    # transformed_data['network'] = transform_network(data,
-    #                               transformed_data['channels_monitor'])
+    transformed_data['network'] = transform_network(data)
+    # TODO: We need to update calculations in processes to match the csp version
+    # TODO: We might need to make a copy of the data because the channels
+    # transformation use the data process structure to change the data. or we
+    # need to change that last
+    transformed_data['processes'] = data['processes']
+
+    print transformed_data['network']
+
+
+    # TODO: Make a function that goes through transformed_data['network']
+    # and change the instance input to the correct channel name
 
 
 
@@ -61,28 +72,31 @@ def main():
     # print data
 
 
-#
-# def transform_network(data, transformed_data_channel_monitor):
-#     network = {}
-#     process = {}
-#     for instance in data['network']:
-#         instance['synchronization'] = []
-#         communications = []
-#         # print instance
-#         # TODO: this will need some work. Can do it better
-#         for proc in data['processes']:
-#             if proc['proc_name'] == instance['proc_name']:
-#                 for tuple in proc['communication_list']:
-#                     communications.append(tuple[0])
-#         for name in communications:
-#             monitor = transformed_data_channel_monitor[name]
-#             instance['synchronization'].append((name, monitor))
-#             instance['instance_input'] = name
-#         print instance
-#         # print communications
-#         # process_communication = data['processes']
-#         # instance['synchronization'] =
 
+def transform_network(data):
+    network = {}
+    process = {}
+    for instance in data['network']:
+        # Create a reference to the old network data. We are not reusing it
+        process = instance
+        process['synchronization'] = []
+        # print instance['proc_name']
+        comm_list = \
+            data['processes'][instance['proc_name']]['communication_list']
+        for channel, _ in comm_list:
+            if instance['instance_input'] != None:
+                monitor = channel + "_monitor"
+                process['synchronization'].append((channel, monitor))
+            else:
+                process['synchronization'].append((channel, None))
+        # Add reference from process name
+        network[instance['proc_name']] = process
+        # Add reference from instance name
+        network[instance['instance_name']] = process
+    return network
+
+
+# TODO: This is not very efficient. Can this be done better?
 def transform_channels_monitor(data):
     channels_monitor = {}
     input_channels = []
@@ -111,7 +125,9 @@ def transform_channels_monitor(data):
     return channels_monitor
 
 
-
+# Creating unique channel name from process and bus nameself.
+# Also changing channel name to new channel name in processes data
+# in order to recognize the new channel name after transformation.
 def transform_channels(data):
     channels = {}
     for process_name, process in data['channels'].iteritems():
@@ -122,6 +138,12 @@ def transform_channels(data):
                                   + channel['channel_name'])
                 bounds = max_bits(channel['type'])
                 channels[cspm_channel_name] = bounds
+                process = data['processes'][process_name]
+                # Update the processes channel name to cspm channel name
+                for idx, comm in enumerate(process['communication_list']):
+                    if channel['channel_name'] in comm[0]:
+                        process['communication_list'][idx] = \
+                            (cspm_channel_name, comm[1])
     return channels
 
 def transform_monitor(data):
