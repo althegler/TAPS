@@ -1,6 +1,6 @@
-{% for proc in processes %}
+{% for proc_name, proc in data.network.iteritems() %}
 {% if proc.input_value != None  %}
-P_{{proc.name}} =
+P_{{proc_name}} =
     {{instance_input}} ? variable ->
 
     {# Can I do this better? (below) #}
