@@ -41,11 +41,12 @@ def main():
     transformed_data['network'] = transform_network(data)
     # TODO: We need to update calculations in processes to match the csp version
     transformed_data['processes'] = data['processes']
-    print transformed_data['network']
+    # print transformed_data['processes']
+    # print transformed_data['network']
     # TODO: Make a function that goes through transformed_data['network']
     # and change the instance input to the correct channel name
     transform_instance_input(transformed_data)
-    print transformed_data['network']
+    # print transformed_data['network']
     # result = transform_monitor(data)
     # print result
     # Load
@@ -54,15 +55,9 @@ def main():
     # output.write(printer.get_process())
     # output.write(printer.get_network())
     # output.close()
-    # result = templating(data['network'])
-    # print result
-    # print data['network']
-    # print "-----------------------------------"
-    # print data['channels']
-    # print "-----------------------------------"
-    # print data['processes']
+    result = templating(transformed_data)
+    print result
 
-    # print data
 
 def transform_instance_input(transformed_data):
     visited = []

@@ -1,15 +1,15 @@
-{% for proc_name, proc in processes.iteritems()%}
+{% for proc_name, proc in data.processes.iteritems()%}
 
-{{proc.name|capitalize}}({{proc.variable}}) =
+{% if proc.input_value != None  %}
+{{proc_name|capitalize}}({{proc.input_value}}) =
     let
-        {% for calc in calculations %}
-        {{calc}}
-        {% endfor %}
-    within
-        {% for channel in channels %}
-        {% for y in communications_variable %}
-        {{channel.name}} ! {{y}} ->
-        {% endfor %}
-        {% endfor %}
-        SKIP
-
+    {% for calc in proc.calculations_list %}
+    {{calc}}
+    {% endfor %}
+within
+    {% for channel, value in proc.communication_list %}
+    {{channel}} ! {{value}} ->
+    {% endfor %}
+    SKIP
+{% endif %}
+{% endfor %}

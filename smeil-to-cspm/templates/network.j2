@@ -1,5 +1,5 @@
 {% for proc in processes %}
-{% if channel.instance_input != None %}
+{% if proc.input_value != None  %}
 P_{{proc.name}} =
     {{instance_input}} ? variable ->
 

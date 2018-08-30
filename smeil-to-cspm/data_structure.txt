@@ -23,7 +23,7 @@ data = {
     },
     processes : {
         real_proc_name : {
-            input_variable: x,
+            input_value: x,
             calculations_list: [
                 x
             ],
@@ -86,13 +86,10 @@ data = {
 
     }
 
-
-
-
     processes : {
         real_proc_name : {
-            input_variable: x,
-            calculations: [
+            input_value: x,
+            calculations_list: [
                 x
             ],
             communication_list: [
