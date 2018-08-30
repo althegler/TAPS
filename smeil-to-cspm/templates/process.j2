@@ -1,4 +1,4 @@
-{% for proc in Processes %}
+{% for proc_name, proc in processes.iteritems()%}
 
 {{proc.name|capitalize}}({{proc.variable}}) =
     let
@@ -8,7 +8,7 @@
     within
         {% for channel in channels %}
         {% for y in communications_variable %}
-        {{channe.name}} ! {{y}} ->
+        {{channel.name}} ! {{y}} ->
         {% endfor %}
         {% endfor %}
         SKIP

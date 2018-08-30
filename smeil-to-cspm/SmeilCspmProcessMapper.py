@@ -24,12 +24,12 @@ class SmeilCspmProcessMapper(SmeilListener):
                 communication_list.append(child.communication)
             else:
                 calculations_list.append(child.calculation)
-        process['proc_name'] = proc_name
+        # process['proc_name'] = proc_name
         process['input_value'] = proc_input_variable
         process['calculations_list'] = calculations_list
         process['communication_list'] = communication_list
 
-        self.data['processes'].append(process)
+        self.data['processes'][proc_name] = process
 
     def exitStatement(self, ctx):
         # TODO currently only handling "name = expression ;"

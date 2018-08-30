@@ -21,9 +21,8 @@ data = {
             ]
         }
     },
-    processes : [
-        {
-            proc_name: x,
+    processes : {
+        real_proc_name : {
             input_variable: x,
             calculations_list: [
                 x
@@ -32,7 +31,7 @@ data = {
                 (communication, value_to_send)
             ]
         }
-    ]
+    }
 }
 
 %%%% After transformation %%%%
@@ -41,7 +40,7 @@ data = {
 data = {
     network :
     {
-        proc_name:
+        real_proc_name:
         {
             proc_name: x, % Must be unique %
             instance_name: x, % Must be unique %
@@ -76,10 +75,8 @@ data = {
 
 
 
-    processes :
-    [
-        {
-            proc_name: x,
+    processes : {
+        real_proc_name : {
             input_variable: x,
             calculations: [
                 x
@@ -88,5 +85,5 @@ data = {
                 (channel_name, value_to_send)
             ]
         }
-    ]
+    }
 }
