@@ -1,22 +1,18 @@
-{% for proc_name, proc in data.network.iteritems() %}
-{% if proc.input_value != None  %}
-P_{{proc_name}} =
-    {{instance_input}} ? variable ->
+{% for proc_name, proc in data.network_proc.iteritems() %}
+{% if proc.instance_input != None  %}
+N_{{proc_name}} =
+{{proc.instance_input}} ? variable ->
+{% for number in range(proc.synchronization|count-1) %}({% endfor %}
+{{proc_name|capitalize}}(variable)
+{% for channel, monitor in proc.synchronization %}
+[| {| {{channel}} |} |]
+{{monitor}}({{channel}}){% if loop.nextitem is defined %}){% endif%}
 
-    {# Can I do this better? (below) #}
-    {% for x in proc.channels|length %}
-    (
-    {% endfor %}
-    {##########}
+{% endfor %}
 
-    {{proc.name|capitalize}}(variable)
-    {% for channel in proc.channels %}
-    [| {| {{channel.name}} |} |]
-    {{channel.assert_proc_name}}({{channel.name}}))
-    {% endfor %}
+assert SKIP [F= N_{{proc_name}} \ Events
 
 
-assert SKIP [T= P_{{proc.name}} \ Events
 {% endif %}
 {% endfor %}
 
