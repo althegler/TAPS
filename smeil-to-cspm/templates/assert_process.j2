@@ -1,7 +1,0 @@
-{% for channel in channels %}
-{{channel.assert_proc_name}}(c) =
-    c ? x ->
-    if {{channel.lowerbound}} <= x and x <= {{channel.upperbound}}
-    then SKIP else STOP
-{% endfor %}
-{% endfor %}
