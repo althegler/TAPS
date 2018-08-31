@@ -38,7 +38,7 @@ data = {
 
 
 data = {
-    network :
+    network_proc :
     {
         real_proc_name:
         {
@@ -48,7 +48,10 @@ data = {
             synchronization: [
                 (channel_name, monitor_procces_name),
             ]
-        },
+        }
+    },
+    network_instance:
+    {
         instance_name:
         {
             proc_name: x, % Must be unique %

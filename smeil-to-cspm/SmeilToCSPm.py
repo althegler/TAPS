@@ -38,11 +38,11 @@ def main():
     transformed_data['channels'] = transform_channels(data)
     transformed_data['monitor'] = transform_monitor(data)
     transformed_data['channels_monitor'] = transform_channels_monitor(data)
-    transformed_data['network'] = transform_network(data)
+    transformed_data['network_proc'], transformed_data['network_instance'] = transform_network(data)
     # TODO: We need to update calculations in processes to match the csp version
     transformed_data['processes'] = data['processes']
     # print transformed_data['processes']
-    # print transformed_data['network']
+    # print transformed_data['network_instance']
     # TODO: Make a function that goes through transformed_data['network']
     # and change the instance input to the correct channel name
     transform_instance_input(transformed_data)
@@ -60,20 +60,21 @@ def main():
 
 
 def transform_instance_input(transformed_data):
-    visited = []
-    for name, proc in transformed_data['network'].iteritems():
-        if proc['proc_name'] not in visited:
+    for name, proc in transformed_data['network_proc'].iteritems():
             if proc['instance_input'] != None:
+                instance_name = proc['instance_name']
                 (input,channel) = proc['instance_input'].split('.')
-                input_proc = transformed_data['network'][input]
+                # Finding the process of the instance name
+                input_proc = transformed_data['network_instance'][input]
                 # TODO: We can only do this because we currently
                 # assume that if the instance is an input in another
                 # instance, then it has only one channel pr process.
                 # This should not be something we can assume.
                 (channel,_) = input_proc['synchronization'][0]
-                # print channel
+                # Update the channel name of both network_proc
+                # and network_instance (because it is a reference, a change
+                # in one is the same change in the other)
                 proc['instance_input'] = channel
-            visited.append(proc['proc_name'])
     return
 
 
@@ -83,7 +84,8 @@ def transform_bus(data):
     return
 
 def transform_network(data):
-    network = {}
+    network_instance = {}
+    network_proc = {}
     process = {}
     for instance in data['network']:
         # Create a reference to the old network data. We are not reusing it
@@ -98,10 +100,10 @@ def transform_network(data):
             else:
                 process['synchronization'].append((channel, None))
         # Add reference from process name
-        network[instance['proc_name']] = process
+        network_proc[instance['proc_name']] = process
         # Add reference from instance name
-        network[instance['instance_name']] = process
-    return network
+        network_instance[instance['instance_name']] = process
+    return network_proc, network_instance
 
 
 # TODO: This is not very efficient. Can this be done better?
