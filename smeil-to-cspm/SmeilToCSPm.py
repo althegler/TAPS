@@ -17,6 +17,7 @@ def main():
     # Data structure
     data = { 'network': [], 'channels': {}, 'processes': {}}
     transformed_data = {}
+
     # Extraction
     walker = ParseTreeWalker()
     network_mapper = SmeilCspmNetworkMapper(data)
@@ -25,38 +26,21 @@ def main():
     walker.walk(channels_mapper, tree)
     process_mapper = SmeilCspmProcessMapper(data)
     walker.walk(process_mapper, tree)
-    # printer = SmeilCspmPrinter()
-    # # walker = ParseTreeWalker() # I am not sure if I will need this
-    # walker.walk(printer, tree)
+
 
     # Transformation
-
-
-
-    # print data['processes']
-    # transformed_data['processes'][0]['input_value'] = 'input_hello'
     transformed_data['channels'] = transform_channels(data)
     transformed_data['monitor'] = transform_monitor(data)
     transformed_data['channels_monitor'] = transform_channels_monitor(data)
     transformed_data['network_proc'], transformed_data['network_instance'] = transform_network(data)
     # TODO: We need to update calculations in processes to match the csp version
     transformed_data['processes'] = data['processes']
-    # print transformed_data['processes']
-    # print transformed_data['network_instance']
-    # TODO: Make a function that goes through transformed_data['network']
-    # and change the instance input to the correct channel name
     transform_instance_input(transformed_data)
-    # print transformed_data['network']
-    # result = transform_monitor(data)
-    # print result
+
     # Load
-    # output = open("output.csp","w")
-    # output.write(printer.get_channel())
-    # output.write(printer.get_process())
-    # output.write(printer.get_network())
-    # output.close()
-    result = templating(transformed_data)
-    print result
+    output = open("output.csp","w")
+    output.write(templating(transformed_data))
+    output.close()
 
 
 def transform_instance_input(transformed_data):
