@@ -52,9 +52,11 @@ Seconds_out_second_digit_assert(c) = c ? x -> if 0 <= x and x <= 9 then SKIP els
 
 
 P_hours = clock_out_val ? variable ->
-    Hours(variable)
+    (Hours(variable)
     [| {| hours_out_first_digit|} |]
-    Hours_out_first_digit_assert(hours_out_first_digit)
+    Hours_out_first_digit_assert(hours_out_first_digit))
+    [| {| hours_out_second_digit|} |]
+    Hours_out_second_digit_assert(hours_out_second_digit)
 
 assert SKIP [T= P_hours \ Events
 
