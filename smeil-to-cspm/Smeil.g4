@@ -1,135 +1,165 @@
 grammar Smeil;
 
+/* NOTE! Not completed */
 module : entity entity* ;
 
-entity : process process*
-       | network
+entity : network
+       | process
        ;
 
 network : 'network' IDENT '(' params? ')' '{' networkdecl '}';
 
-networkdecl : instance*
-            /* | busdecl */
-            ;
-
-/* NOTE! This is not how the original grammar is */
-instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
-
 /* NOTE! Not completed */
-instancename : IDENT ;
-
 process : 'proc' IDENT '(' params? ')' declaration* '{' statement* '}';
 
-/*process : ('sync'|'async')? 'proc' IDENT '(' params? ')' declaration* '{' statement* '}';*/
+/* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' declaration* '{' statement* '}'; */
+
+networkdecl : instance* /* NOTE! Not how it is in the original grammer. I need to talk to Truls about this */
+            /* | busdecl */
+            /* | constdecl */
+            /* | gendecl */
+            ;
 
 declaration : vardecl
+            /* | constdecl */
             | busdecl
-            /*| constdecl
             /*| enum*/
-            /*| function*/
             /*| instance */
-            /*| generate*/
+            /*| gendecl*/
             ;
 
 params : param (',' param)* ;
 
+/* NOTE! Not completed */
 param : direction IDENT ;
-/* param : ('[' expression* ']')* direction ident ; */
+/* param : ('[' INTEGER? ']')? direction ident ; */
 
 direction : 'in'
           | 'out'
           | 'const'
           ;
 
-statement : name '=' expression ';'
-          /*| 'if' '(' condition ')' '{' statement* '}' elifblock* elseblock?*/
-          /*| 'for' ident '=' expression 'to' expression '{' statement* '}'*/
-          /*| 'while' condition '{' statement* '}'*/
-          /*| 'switch' expression '{' switchcase switchcase* ('default' '{' statement statement* '}')? '}'*/
-          | 'trace' '(' formatstring (','expression)* ')' ';'
-          /*| 'assert' '(' condition '{' ',' formatstring '}' ')' ';'*/
-          /*| 'barrier' ';'*/
-          /*| 'break' ';'*/
-          /*| 'return' expression? ';'*/
-          ;
+vardecl : 'var' IDENT ':' TYPENAME ('=' expression )? ranges? ';' ;
 
-formatstring : '"' (formatstringpart*) '"' ;
+ranges : 'range' expression 'to' expression ;
 
-/* TODO not completed */
-formatstringpart : '{}'
-                 | IDENT
-                 ;
+/* enum : 'enum' IDENT '{' enumfield (',' enumfield)* '}' ';' ; */
 
+/* enumfield : IDENT ('=' INTEGER)? ; */
+
+/* constdecl : 'const' IDENT ':' TYPENAME '=' expression ';' */
 
 busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecls '}' ';' ;
 
 bussignaldecls : bussignaldecl bussignaldecl* ;
 
-bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges ';' ;
+bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges? ';' ;
 
-vardecl : 'var' IDENT ':' TYPENAME ('=' expression )? ranges? ';' ;
+/* NOTE! This is not how the original grammar is */
+instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
-TYPENAME : ('i' NUM)
-         /* | 'int' - Should not be possible for simulated programs? */
-         | ('u' NUM)
-         /* | 'uint' - Should not be possible for simulated programs?*/
-         /* TODO not finished */
-         ;
+instancename : IDENT
+             /* | IDENT '[' expression ']' */
+             /* | '_' */
+             ;
+/* gendecl : 'generate' IDENT '=' expression 'to' expression '{' networkdecl* '}' ; */
 
-/* typename : 'u2'
-         | 'u4'
-         | 'u6'
-         | 'u7'
-         | 'u17';// not finished */
+statement : name '=' expression ';'
+          /*| 'if' '(' expression ')' '{' statement* '}' elifblock* elseblock?*/
+          /*| 'for' IDENT '=' expression 'to' expression '{' statement* '}'*/
+          /*| 'switch' expression '{' switchcase switchcase* ('default' '{' statement statement* '}')? '}'*/
+          | 'trace' '(' formatstring (','expression)* ')' ';'
+          /*| 'assert' '(' expression (',' LETTER)? ')' ';'*/
+          /*| 'break' ';'*/
+          ;
 
-ranges : 'range' expression 'to' expression ;
+/* switchcase : 'case' expression '{' statement* '}' ; */
 
+/* elifblock : 'elif' '(' expression ')' '{' statement* '}' ; */
+
+/* elseblock : 'else' '{' statement* '}' ; */
+
+formatstring : '"' (formatstringpart*) '"' ;
+
+/* NOTE! This is not how the original grammar is - should be changed*/
+formatstringpart : '{}'
+                 | LETTER
+                 ;
 
 expression : name
-           /*| litteral*/
+           | literal
            | expression binop expression
            /*| unop expression*/
-           /* | name '(' expression* ')' */
            /*| '(' expression ')'*/
            ;
 
-binop : '/'
-      | '%'
-      | '+'
+binop : '+'
       | '-'
+      | '*'
+      | '/'
+      | '%'
+      | '=='
+      | '!='
+      | '<<'
+      | '>>'
+      | '<'
+      | '>'
+      | '>='
+      | '<='
+      | '&'
+      | '|'
+      | '^'
+      | '&&'
+      | '||'
       ;
 
+unop : '-'
+      | '+'
+      | '!'
+      | '~'
+      ;
+
+/* NOTE! Not completed */
+literal : INTEGER
+        /* | floating */
+        /* | '[' INTEGER (',' INTEGER)* ']' */
+        /* | 'true' */
+        /* | 'false' */
+        /* | specialliteral */
+        ;
+
+TYPENAME : ('i' INTEGER)
+         /* | 'int' - Should not be possible for simulated programs? */
+         | ('u' INTEGER)
+         /* | 'uint' - Should not be possible for simulated programs?*/
+         /* | 'f32' */
+         /* | 'f64' */
+         /* | 'bool' */
+         /* | '[' expression? ']' TYPENAME */
+         ;
+
+
+IDENT : LETTER (LETTER | NUMBER | '_' | '-')* ;
+
 name : IDENT
-     | NUM
      | name '.' name
+     /* | name '[' arrayindex ']' */
      ;
 
-IDENT : (ALPHA (ALPHA | NUM)*) ;
+/* arrayindex : '*' */
+           /* | expression */
+           /* ; */
 
 
-fragment
-Nondigit
-    :   [a-zA-Z_\-]
+INTEGER : NUMBER+ ;
+
+LETTER : [a-z]
+       | [A-Z]
+       ;
+
+NUMBER : [0-9]
     ;
 
-fragment
-Digit
-    :   [0-9]
-    ;
-
-
-ALPHA :
-    Nondigit+
-    ;
-
-NUM : Digit+
-    ;
-
-/* ALPHA : [A-Za-z]+ ; */
-
-/* NUM : [0-9]+ ; */
-
-/* ALPHANUM : [A-Za-z0-9\-_]+; */
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
 

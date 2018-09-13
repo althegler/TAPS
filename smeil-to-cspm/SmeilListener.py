@@ -31,39 +31,21 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#networkdecl.
-    def enterNetworkdecl(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#networkdecl.
-    def exitNetworkdecl(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by SmeilParser#instance.
-    def enterInstance(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#instance.
-    def exitInstance(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by SmeilParser#instancename.
-    def enterInstancename(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#instancename.
-    def exitInstancename(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by SmeilParser#process.
     def enterProcess(self, ctx):
         pass
 
     # Exit a parse tree produced by SmeilParser#process.
     def exitProcess(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#networkdecl.
+    def enterNetworkdecl(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#networkdecl.
+    def exitNetworkdecl(self, ctx):
         pass
 
 
@@ -103,30 +85,21 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#statement.
-    def enterStatement(self, ctx):
+    # Enter a parse tree produced by SmeilParser#vardecl.
+    def enterVardecl(self, ctx):
         pass
 
-    # Exit a parse tree produced by SmeilParser#statement.
-    def exitStatement(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by SmeilParser#formatstring.
-    def enterFormatstring(self, ctx):
-        pass
-
-    # Exit a parse tree produced by SmeilParser#formatstring.
-    def exitFormatstring(self, ctx):
+    # Exit a parse tree produced by SmeilParser#vardecl.
+    def exitVardecl(self, ctx):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#formatstringpart.
-    def enterFormatstringpart(self, ctx):
+    # Enter a parse tree produced by SmeilParser#ranges.
+    def enterRanges(self, ctx):
         pass
 
-    # Exit a parse tree produced by SmeilParser#formatstringpart.
-    def exitFormatstringpart(self, ctx):
+    # Exit a parse tree produced by SmeilParser#ranges.
+    def exitRanges(self, ctx):
         pass
 
 
@@ -157,21 +130,48 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#vardecl.
-    def enterVardecl(self, ctx):
+    # Enter a parse tree produced by SmeilParser#instance.
+    def enterInstance(self, ctx):
         pass
 
-    # Exit a parse tree produced by SmeilParser#vardecl.
-    def exitVardecl(self, ctx):
+    # Exit a parse tree produced by SmeilParser#instance.
+    def exitInstance(self, ctx):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#ranges.
-    def enterRanges(self, ctx):
+    # Enter a parse tree produced by SmeilParser#instancename.
+    def enterInstancename(self, ctx):
         pass
 
-    # Exit a parse tree produced by SmeilParser#ranges.
-    def exitRanges(self, ctx):
+    # Exit a parse tree produced by SmeilParser#instancename.
+    def exitInstancename(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#statement.
+    def enterStatement(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#statement.
+    def exitStatement(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#formatstring.
+    def enterFormatstring(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#formatstring.
+    def exitFormatstring(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#formatstringpart.
+    def enterFormatstringpart(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#formatstringpart.
+    def exitFormatstringpart(self, ctx):
         pass
 
 
@@ -190,6 +190,24 @@ class SmeilListener(ParseTreeListener):
 
     # Exit a parse tree produced by SmeilParser#binop.
     def exitBinop(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#unop.
+    def enterUnop(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#unop.
+    def exitUnop(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#literal.
+    def enterLiteral(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#literal.
+    def exitLiteral(self, ctx):
         pass
 
 
