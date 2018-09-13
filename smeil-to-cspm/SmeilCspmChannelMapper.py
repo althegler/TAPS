@@ -69,6 +69,10 @@ class SmeilCspmChannelMapper(SmeilListener):
             # text = expression_text
         ctx.text = text
 
+    def exitLiteral(self, ctx):
+        # TODO can only handle part of the grammar
+        ctx.text = ctx.INTEGER().getText()
+
 
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
