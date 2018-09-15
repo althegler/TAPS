@@ -7,20 +7,20 @@ entity : network
        | process
        ;
 
-network : 'network' IDENT '(' params? ')' '{' networkdecl '}';
+network : 'network' IDENT '(' params? ')' '{' networkdecl* '}';
 
 /* NOTE! Not completed */
-process : 'proc' IDENT '(' params? ')' declaration* '{' statement* '}';
+process : 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}';
 
-/* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' declaration* '{' statement* '}'; */
+/* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}'; */
 
-networkdecl : instance* /* NOTE! Not how it is in the original grammer. I need to talk to Truls about this */
+networkdecl : instance
             /* | busdecl */
             /* | constdecl */
             /* | gendecl */
             ;
 
-declaration : vardecl
+processdecl : vardecl
             /* | constdecl */
             | busdecl
             /*| enum*/
@@ -69,7 +69,7 @@ statement : name '=' expression ';'
           /*| 'for' IDENT '=' expression 'to' expression '{' statement* '}'*/
           /*| 'switch' expression '{' switchcase switchcase* ('default' '{' statement statement* '}')? '}'*/
           | 'trace' '(' formatstring (','expression)* ')' ';'
-          /*| 'assert' '(' expression (',' LETTER)? ')' ';'*/
+          /*| 'assert' '(' expression (',' stringliteral)? ')' ';'*/
           /*| 'break' ';'*/
           ;
 
@@ -119,14 +119,16 @@ unop : '-'
       | '~'
       ;
 
-/* NOTE! Not completed */
 literal : INTEGER
         /* | floating */
+        /* | stringliteral */
         /* | '[' INTEGER (',' INTEGER)* ']' */
         /* | 'true' */
         /* | 'false' */
-        /* | specialliteral */
+        /* | 'U */
         ;
+
+stringliteral : '"' stringchar* '"'
 
 TYPENAME : ('i' INTEGER)
          /* | 'int' - Should not be possible for simulated programs? */
@@ -151,15 +153,31 @@ name : IDENT
            /* ; */
 
 
-INTEGER : NUMBER+ ;
+INTEGER : NUMBER+
+        | '0x' HEXDIGIT+
+        | '0o' OCTALDIGIT+
+        ;
+
+FLOATING : NUMBER* '.' NUMBER+
+
+NUMBER : [0-9]
+    ;
 
 LETTER : [a-z]
        | [A-Z]
        ;
 
-NUMBER : [0-9]
+HEXDIGIT : NUMBER
+       | [a-f]
+       | [A-F]
+       ;
+
+OCTALDIGIT : [0-8]
     ;
 
+
+/* NOTE! This is not how the original grammar is - should be changed*/
+STRINGCHAR : LETTER+
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
 
