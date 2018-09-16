@@ -49,12 +49,12 @@ class SmeilListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SmeilParser#declaration.
-    def enterDeclaration(self, ctx):
+    # Enter a parse tree produced by SmeilParser#processdecl.
+    def enterProcessdecl(self, ctx):
         pass
 
-    # Exit a parse tree produced by SmeilParser#declaration.
-    def exitDeclaration(self, ctx):
+    # Exit a parse tree produced by SmeilParser#processdecl.
+    def exitProcessdecl(self, ctx):
         pass
 
 
@@ -208,6 +208,15 @@ class SmeilListener(ParseTreeListener):
 
     # Exit a parse tree produced by SmeilParser#literal.
     def exitLiteral(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by SmeilParser#stringliteral.
+    def enterStringliteral(self, ctx):
+        pass
+
+    # Exit a parse tree produced by SmeilParser#stringliteral.
+    def exitStringliteral(self, ctx):
         pass
 
 

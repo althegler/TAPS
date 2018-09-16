@@ -75,13 +75,13 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclaration(SmeilParser.DeclarationContext ctx) { }
+	@Override public void enterProcessdecl(SmeilParser.ProcessdeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclaration(SmeilParser.DeclarationContext ctx) { }
+	@Override public void exitProcessdecl(SmeilParser.ProcessdeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -135,13 +135,13 @@ public class SmeilBaseListener implements SmeilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRange(SmeilParser.RangeContext ctx) { }
+	@Override public void enterRanges(SmeilParser.RangesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRange(SmeilParser.RangeContext ctx) { }
+	@Override public void exitRanges(SmeilParser.RangesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -286,6 +286,18 @@ public class SmeilBaseListener implements SmeilListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLiteral(SmeilParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringliteral(SmeilParser.StringliteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringliteral(SmeilParser.StringliteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

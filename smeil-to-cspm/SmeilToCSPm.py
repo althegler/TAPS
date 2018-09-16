@@ -47,7 +47,7 @@ def transform_instance_input(transformed_data):
     for name, proc in transformed_data['network_proc'].iteritems():
             if proc['instance_input'] != None:
                 instance_name = proc['instance_name']
-                (input,channel) = proc['instance_input'].split('.')
+                (input,channel) = proc['instance_input']
                 # Finding the process of the instance name
                 input_proc = transformed_data['network_instance'][input]
                 # TODO: We can only do this because we currently

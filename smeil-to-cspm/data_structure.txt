@@ -6,7 +6,7 @@ data = {
         {
             proc_name: x, % Must be unique %
             instance_name: x, % Must be unique %
-            instance_input: x,
+            instance_input: [x,y] / None,
          }
     ],
     channels : {
