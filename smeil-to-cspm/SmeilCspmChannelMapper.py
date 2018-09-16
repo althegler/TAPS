@@ -19,7 +19,7 @@ class SmeilCspmChannelMapper(SmeilListener):
         self.data['channels'][proc_name] = process
 
 
-    def exitDeclaration(self, ctx):
+    def exitProcessdecl(self, ctx):
         # Are there a way to get only one child? Declaration will ever only have
         # one child as the grammar is now. But there might be several declarations
         for child in ctx.children:
