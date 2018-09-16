@@ -128,7 +128,7 @@ literal : INTEGER
         /* | 'U */
         ;
 
-stringliteral : '"' stringchar* '"'
+stringliteral : '"' STRINGCHAR* '"' ;
 
 TYPENAME : ('i' INTEGER)
          /* | 'int' - Should not be possible for simulated programs? */
@@ -158,7 +158,7 @@ INTEGER : NUMBER+
         | '0o' OCTALDIGIT+
         ;
 
-FLOATING : NUMBER* '.' NUMBER+
+FLOATING : NUMBER* '.' NUMBER+ ;
 
 NUMBER : [0-9]
     ;
@@ -177,7 +177,7 @@ OCTALDIGIT : [0-8]
 
 
 /* NOTE! This is not how the original grammar is - should be changed*/
-STRINGCHAR : LETTER+
+STRINGCHAR : LETTER+ ;
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
 
