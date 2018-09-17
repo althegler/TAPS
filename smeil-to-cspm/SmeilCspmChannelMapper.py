@@ -7,83 +7,72 @@ import sys
 class SmeilCspmChannelMapper(SmeilListener):
     def __init__(self, data):
         self.data = data
+        self.stack = []
 
 
     def exitProcess(self, ctx):
-        process = {}
         proc_name = ctx.IDENT().getText()
-
-        for key, value in ctx.buses.iteritems():
-            process[key] = value
-
-        self.data['channels'][proc_name] = process
-
-
-    def exitProcessdecl(self, ctx):
-        # Are there a way to get only one child? Declaration will ever only have
-        # one child as the grammar is now. But there might be several declarations
-        for child in ctx.children:
-            if isinstance(child, SmeilParser.BusdeclContext) is True:
-                ctx.parentCtx.buses = child.buses
-
+        # In this mapper we do not take params into account, since
+        # we do not need that information to create this data
+        self.data['channels'][proc_name] = self.stack.pop()
 
     def exitBusdecl(self, ctx):
-        ctx.buses = {}
+        buses = {}
         bus_signals = []
-        text = ''
         bus_name = ctx.IDENT().getText()
         # get all channel declarations within the bus declaration
         # in order to create all channels
-        for child in ctx.bussignaldecls().children:
-            channel =  {}
-            channel_name = child.IDENT().getText()
-            type_name = child.TYPENAME().getText()
-            ranges = []
-            # get the range number from the ranges expressions
-            for expression in child.ranges().children:
-                if hasattr(expression, 'text'):
-                    ranges.append(expression.text)
-            # print ranges
-            if len(ranges) > 2:
-                print "ERROR: not allowed more than two expressions in range"
-            else:
-                channel['channel_name'] = channel_name
-                channel['lowerbound'] = ranges[0]
-                channel['upperbound'] = ranges[1]
-                channel['type'] = type_name
-                bus_signals.append(channel)
-        ctx.buses[bus_name] = bus_signals
+        for _ in ctx.bussignaldecls().children:
+            bus_signals.append(self.stack.pop())
+        buses[bus_name] = bus_signals
+        self.stack.append(buses)
+
+    def exitBussignaldecl(self, ctx):
+        channel =  {}
+        upper = self.stack.pop()
+        lower = self.stack.pop()
+        channel['channel_name'] = ctx.IDENT().getText()
+        channel['lowerbound'] = lower
+        channel['upperbound'] = upper
+        channel['type'] = ctx.TYPENAME().getText()
+        self.stack.append(channel)
 
     def exitExpression(self,ctx):
-        text = ''
-        if ctx.getChildCount() == 1:
-            ## if name
-            text += ctx.children[0].text
-        # else:
-        #     continue
-            # print "hello"
-            # expression_text = ''
-            # for child in ctx.children:
-            #     expression_text += child.text
-            #     expression_text += ' '
-            # text = expression_text
-        ctx.text = text
+        # TODO: Figure out if this can be done better. The only reason this is
+        # here right now is because I need to remove stuff from my stack.
+        if isinstance(ctx.parentCtx, SmeilParser.RangesContext) is False  and \
+           isinstance(ctx.parentCtx,
+                       SmeilParser.BussignaldeclContext) is False:
+            if ctx.getChildCount() == 1:
+                self.stack.pop()
+
+    def exitStatement(self,ctx):
+        # TODO: Figure out if this can be done better. The only reason this is
+        # here right now is because I need to remove stuff from my stack.
+        self.stack.pop()
+
+    def exitRanges(self,ctx):
+        # TODO: Figure out if this can be done better. The only reason this is
+        # here right now is because I need to remove stuff from my stack.
+        if isinstance(ctx.parentCtx, SmeilParser.BussignaldeclContext) is False:
+            self.stack.pop()
+            self.stack.pop()
 
     def exitLiteral(self, ctx):
         # TODO can only handle part of the grammar
-        ctx.text = ctx.INTEGER().getText()
+        self.stack.append(ctx.INTEGER().getText())
 
 
     def exitName(self, ctx):
-        # TODO can only handle part of the grammar
-        if ctx.getChildCount() > 1:
-            if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is True:
-                ctx.text = ctx.name()[0].getText()
-            else:
-                # channel name
-                ctx.com_text = ctx.getText().replace(".", "_")
+        # This mapper only need to look at names of IDENT, therefore it does
+        # not handle other types of name - TODO: is this really true?
+        if ctx.IDENT():
+            self.stack.append(ctx.getText())
         else:
-            if ctx.IDENT():
-                ctx.text = ctx.IDENT().getText()
-            else:
-                ctx.text = ctx.NUM().getText()
+            # TODO: We cannot handle arrayindex yet
+            right = self.stack.pop()
+            left = self.stack.pop()
+            # In the case of channel instances, this would mean that the two
+            # names together are representing the element and therefore we
+            # will keep them together
+            self.stack.append(left + '_' + right)

@@ -65,6 +65,9 @@ class SmeilCspmProcessMapper(SmeilListener):
     def exitBinop(self, ctx):
         ctx.text = ctx.getText()
 
+    def exitLiteral(self,ctx):
+        ctx.text = ctx.INTEGER().getText()
+
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
         # TODO Is it possible to make the parser parse one level down by itself
