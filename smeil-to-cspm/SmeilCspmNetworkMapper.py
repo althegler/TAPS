@@ -34,6 +34,7 @@ class SmeilCspmNetworkMapper(SmeilListener):
         if ctx.IDENT():
             self.stack.append(ctx.getText())
         else:
+            # TODO: We cannot handle arrayindex yet
             right = self.stack.pop()
             left = self.stack.pop()
             # In the case of network instances, this would mean that the two

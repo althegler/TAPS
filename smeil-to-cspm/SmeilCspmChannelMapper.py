@@ -64,8 +64,6 @@ class SmeilCspmChannelMapper(SmeilListener):
 
 
     def exitName(self, ctx):
-        # This mapper only need to look at names of IDENT, therefore it does
-        # not handle other types of name - TODO: is this really true?
         if ctx.IDENT():
             self.stack.append(ctx.getText())
         else:

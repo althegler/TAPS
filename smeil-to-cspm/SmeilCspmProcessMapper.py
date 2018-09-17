@@ -53,6 +53,10 @@ class SmeilCspmProcessMapper(SmeilListener):
             for _ in ctx.children:
                 text.append(self.stack.pop())
             self.stack.append(list(reversed(text)))
+        if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is False  and \
+           isinstance(ctx.parentCtx,
+                       SmeilParser.StatementContext) is False:
+                self.stack.pop()
 
     def exitBinop(self, ctx):
         self.stack.append(ctx.getText())
@@ -62,11 +66,16 @@ class SmeilCspmProcessMapper(SmeilListener):
 
     def exitName(self, ctx):
         # TODO can only handle part of the grammar
-        # TODO Is it possible to make the parser parse one level down by itself
-        # instead of me doing ctx.name()[0].getText()? Are there a better way?
-        if ctx.getChildCount() > 1:
-            ctx.comm_text = True
-        self.stack.append(ctx.getText())
+        if ctx.IDENT():
+            self.stack.append(ctx.getText())
+        else:
+            # TODO: We cannot handle arrayindex yet
+            right = self.stack.pop()
+            left = self.stack.pop()
+            # In the case of process instances, this would mean that the two
+            # names together are representing the element and therefore we
+            # will keep them together
+            self.stack.append(left + '.' + right)
 
     def exitParams(self, ctx):
         # TODO: I need to be able to handle out or const params, but currently I only
