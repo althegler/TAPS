@@ -26,7 +26,7 @@ def main():
     walker.walk(channels_mapper, tree)
     process_mapper = SmeilCspmProcessMapper(data)
     walker.walk(process_mapper, tree)
-
+    # print data['processes']
 
     # Transformation
     transformed_data['channels'] = transform_channels(data)
@@ -35,12 +35,32 @@ def main():
     transformed_data['network_proc'], transformed_data['network_instance'] = transform_network(data)
     # TODO: We need to update calculations in processes to match the csp version
     transformed_data['processes'] = data['processes']
+    transform_processes(transformed_data)
     transform_instance_input(transformed_data)
 
+    # print transformed_data['processes']
+
+    
     # Load
     output = open("output.csp","w")
     output.write(templating(transformed_data))
     output.close()
+
+# Helper function to iterate over nested lists
+def change(item):
+    for index, elem in enumerate(item):
+        if isinstance(elem, list):
+            change(elem)
+        elif '.' in elem:
+            item[index] = elem.split('.')[0]
+    return item
+
+def transform_processes(transformed_data):
+    for _, proc in transformed_data['processes'].iteritems():
+        for name, calc in proc['calculations_list']:
+            changed_calc = change(calc)
+            calc = changed_calc
+
 
 
 def transform_instance_input(transformed_data):
