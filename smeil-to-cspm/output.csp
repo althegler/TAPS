@@ -2,17 +2,16 @@ channel hours_hours_out_first_digit : {0 .. 3}
 channel hours_hours_out_second_digit : {0 .. 15}
 channel seconds_sec_out_first_digit : {0 .. 7}
 channel seconds_sec_out_second_digit : {0 .. 15}
-channel seconds_sec_out_third_digit : {0 .. 15}
 channel minutes_min_out_second_digit : {0 .. 15}
 channel minutes_min_out_first_digit : {0 .. 7}
-channel clock_c_out_val : {0 .. 131071}
+channel clock_c_out_val : {131068 .. 131071}
 
 
 Hours(hours_in) =
     let
-        hours=hours_in.val/3600%24;
-        hours_first_temp=hours/10;
-        hours_second_temp=hours%10;
+        hours = ( hours_in / 3600 ) % 24
+        hours_first_temp = hours / 10
+        hours_second_temp = hours % 10
     within
         hours_hours_out_first_digit ! hours_first_temp ->
         hours_hours_out_second_digit ! hours_second_temp ->
@@ -20,25 +19,30 @@ Hours(hours_in) =
 
 Seconds(sec_in) =
     let
-        sec=sec_in.val%60;
-        sec_first_temp=sec/10;
-        sec_second_temp=sec%10;
+        sec = sec_in % 60
+        sec_first_temp = sec / 10
+        sec_second_temp = sec % 10
     within
         seconds_sec_out_first_digit ! sec_first_temp ->
         seconds_sec_out_second_digit ! sec_second_temp ->
-        seconds_sec_out_third_digit ! sec_third_temp ->
         SKIP
 
 Minutes(min_in) =
     let
-        min=min_in.val/60%60;
-        min_first_temp=min/10;
-        min_second_temp=min%10;
+        min = ( min_in / 60 ) % 60
+        min_first_temp = min / 10
+        min_second_temp = min % 10
     within
         minutes_min_out_first_digit ! min_first_temp ->
         minutes_min_out_second_digit ! min_second_temp ->
         SKIP
 
+Clock() =
+    let
+        i = i + 1
+    within
+        clock_c_out_val ! i ->
+        SKIP
 
 N_hours =
 clock_c_out_val ? variable ->
@@ -53,13 +57,11 @@ assert SKIP [F= N_hours \ Events
 
 N_seconds =
 clock_c_out_val ? variable ->
-((Seconds(variable)
+(Seconds(variable)
 [| {| seconds_sec_out_first_digit |} |]
 seconds_sec_out_first_digit_monitor(seconds_sec_out_first_digit))
 [| {| seconds_sec_out_second_digit |} |]
-seconds_sec_out_second_digit_monitor(seconds_sec_out_second_digit))
-[| {| seconds_sec_out_third_digit |} |]
-seconds_sec_out_third_digit_monitor(seconds_sec_out_third_digit)
+seconds_sec_out_second_digit_monitor(seconds_sec_out_second_digit)
 
 assert SKIP [F= N_seconds \ Events
 
@@ -77,10 +79,6 @@ assert SKIP [F= N_minutes \ Events
 
 
 
-seconds_sec_out_third_digit_monitor(c) =
-    c ? x ->
-    if 0 <= x and x <= 9
-    then SKIP else STOP
 hours_hours_out_second_digit_monitor(c) =
     c ? x ->
     if 0 <= x and x <= 9

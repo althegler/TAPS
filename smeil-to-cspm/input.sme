@@ -36,19 +36,16 @@ proc minutes (in min_in)
 
 proc seconds (in sec_in)
     bus sec_out {first_digit: u3 range 0 to 5;
-                 second_digit: u4 range 0 to 9;
-                 third_digit: u4 range 0 to 9;};
+                 second_digit: u4 range 0 to 9;};
     var sec: u6 range 0 to 59;
     var sec_first_temp: u3 range 0 to 5;
     var sec_second_temp: u4 range 0 to 9;
-    var sec_third_temp: u4 range 0 to 9;
 {
     sec = sec_in.val % 60;
     sec_first_temp = sec / 10;
     sec_second_temp = sec % 10;
     sec_out.first_digit = sec_first_temp;
     sec_out.second_digit = sec_second_temp;
-    sec_out.third_digit = sec_third_temp;
 }
 
 network clock_network ()
