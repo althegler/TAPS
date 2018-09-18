@@ -40,7 +40,7 @@ def main():
 
     # print transformed_data['processes']
 
-    
+
     # Load
     output = open("output.csp","w")
     output.write(templating(transformed_data))
@@ -48,19 +48,28 @@ def main():
 
 # Helper function to iterate over nested lists
 def change(item):
+    stack = []
     for index, elem in enumerate(item):
         if isinstance(elem, list):
-            change(elem)
+            stack.append('(')
+            # recursively calling the function, and creating string with spaces
+            stack.append(" ".join(change(elem)))
+            stack.append(')')
         elif '.' in elem:
             item[index] = elem.split('.')[0]
-    return item
+            stack.append(item[index])
+        else:
+            stack.append(item[index])
+    return stack
 
 def transform_processes(transformed_data):
     for _, proc in transformed_data['processes'].iteritems():
+        new_calculation_list = []
         for name, calc in proc['calculations_list']:
-            changed_calc = change(calc)
-            calc = changed_calc
-
+            # Joining the outer list of calc
+            changed_calc = " ".join(change(calc))
+            new_calculation_list.append((name, changed_calc))
+        proc['calculations_list'] = new_calculation_list
 
 
 def transform_instance_input(transformed_data):

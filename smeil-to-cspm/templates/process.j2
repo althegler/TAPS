@@ -3,8 +3,8 @@
 {% if proc.input_value != None  %}
 {{proc_name|capitalize}}({{proc.input_value}}) =
     let
-    {% for calc in proc.calculations_list %}
-    {{calc}}
+    {% for name, calc in proc.calculations_list %}
+    {{name}} = {{calc}}
     {% endfor %}
 within
     {% for channel, value in proc.communication_list %}
