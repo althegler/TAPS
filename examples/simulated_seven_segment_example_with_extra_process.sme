@@ -1,0 +1,66 @@
+// NOTE! Does not work in TAPS
+
+
+proc hours (in hours_in)
+    bus hours_out {first_digit: u2 range 0 to 2;
+                   second_digit: u4 range 0 to 9;};
+    var hours: u5 range 0 to 23;
+    var hours_first_temp: u2 range 0 to 2;
+    var hours_second_temp: u4 range 0 to 9;
+{
+    hours = hours_in.val / 3600 % 24;
+    hours_first_temp = hours / 10;
+    hours_second_temp = hours % 10;
+    hours_out.first_digit = hours_first_temp;
+    hours_out.second_digit = hours_second_temp;
+}
+
+proc minutes (in minutes_in)
+    bus minutes_out {first_digit: u3 range 0 to 5;
+                     second_digit: u4 range 0 to 9;};
+    var minutes_second_temp: u4 range 0 to 9;
+    var minutes_first_temp: u3 range 0 to 5;
+    var minutes: u6 range 0 to 59;
+{
+    minutes = minutes_in.val / 60 % 60;
+    minutes_first_temp = minutes / 10;
+    minutes_second_temp = minutes % 10;
+    minutes_out.first_digit = minutes_first_temp;
+    minutes_out.second_digit = minutes_second_temp;
+}
+
+proc seconds (in seconds_in)
+    var seconds: u6 range 0 to 59;
+    bus sec_out {seconds_first_digit: u3 range 0 to 5;
+                 seconds_second_digit: u4 range 0 to 9;};
+    var seconds_first_temp: u3 range 0 to 5;
+    var seconds_second_temp: u4 range 0 to 9;
+{
+    seconds = seconds_in.val % 60;
+    seconds_first_temp = seconds / 10;
+    seconds_second_temp = seconds % 10;
+    sec_out.seconds_first_digit = seconds_first_temp;
+    sec_out.seconds_second_digit = seconds_second_temp;
+}
+
+proc output (in inputbus)
+    var val: u3 range 0 to 5;
+{
+    val = inputbus.seconds_first_digit;
+}
+
+network clock_network ()
+{
+    instance g of clock();
+    instance m of minutes(g.clock_out);
+    instance o of output(s.sec_out);
+    instance s of seconds(g.clock_out);
+    instance h of hours(g.clock_out);
+}
+proc clock ()
+    bus clock_out {val: u17 range 1 to 86401;};
+    var i: u17 = 0 range 0 to 86401;
+{
+    i = i + 1;
+    clock_out.val = i;
+}
