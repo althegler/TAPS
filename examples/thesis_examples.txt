@@ -3,6 +3,7 @@ Example and their relevans to the thesis:
 
 
 Seven segments example:
+Will I use it: Yes.
 
 - It shows a good idea of the basic structure
 - Monitor processes (simple)
@@ -12,8 +13,19 @@ Seven segments example:
 
 
 AddOne:
+Will I use it: Yes. I can show how the programmer has to add the extra process
+and then afterwards show how we can be sure it will never go above x.
+It is a simple problem that resembles Seven segment example, but it shows
+how the program needs the data generation process.
 
 - Data generation, how not to do it.
 
 -- Verify that overflow does not happen (Like Seven segment)
 
+
+Traffic Light:
+Will I use it: Maybe
+
+- Data generation by a source process
+- Monitor proces get data from two channels. It is a different way of verifying
+- Sending data from one process to the other
