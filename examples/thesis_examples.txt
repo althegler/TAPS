@@ -1,0 +1,19 @@
+Example and their relevans to the thesis:
+
+
+
+Seven segments example:
+
+- It shows a good idea of the basic structure
+- Monitor processes (simple)
+- Data generation
+
+-- Verify that overflow does not happen
+
+
+AddOne:
+
+- Data generation, how not to do it.
+
+-- Verify that overflow does not happen (Like Seven segment)
+
