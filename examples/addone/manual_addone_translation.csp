@@ -1,12 +1,17 @@
-channel load, to_add
+channel from_add : {0..10}
+channel to_add : {0..10}
 channel kill
 
 
-Id = load ? n -> to_add ! n -> Id
+Id = ; x:<0..9> @ from_add ? n -> to_add ! n -> SKIP
 
--- inc (x,n) = if x + n > 20 then STOP else SKIP
+inc (x,n) = if x + n > 10 then 0 else x+n
 
 
-Add (x) = load ? n -> load ! (n+x) -> Add(n)
+Add (x) = ; x:<0..9> @ to_add ? n -> from_add ! inc (x,n) -> SKIP
 
-Network = load ! 1 -> (Id [| {| load, to_add |} |] Add (1)) ; kill -> SKIP
+Network = (Id [| {| from_add, to_add |} |] Add (0)) ; kill -> SKIP
+-- from_add ? n -> if n == 100 then STOP else SKIP
+
+assert SKIP [F= Network \ Events
+
