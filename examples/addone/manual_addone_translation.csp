@@ -1,0 +1,12 @@
+channel load, to_add
+channel kill
+
+
+Id = load ? n -> to_add ! n -> Id
+
+-- inc (x,n) = if x + n > 20 then STOP else SKIP
+
+
+Add (x) = load ? n -> load ! (n+x) -> Add(n)
+
+Network = load ! 1 -> (Id [| {| load, to_add |} |] Add (1)) ; kill -> SKIP
