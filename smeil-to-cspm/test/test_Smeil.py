@@ -4,9 +4,13 @@ sys.path.append('/home/albt/git/SMEIL-to-CSPm/smeil-to-cspm/')
 
 from antlr4 import *
 from SmeilLexer import SmeilLexer
-from SmeilCspmListenerVersion2 import SmeilCspmListenerVersion2
 from SmeilParser import SmeilParser
+from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
+from SmeilCspmChannelMapper import SmeilCspmChannelMapper
+from SmeilCspmProcessMapper import SmeilCspmProcessMapper
+from SmeilCspmPrinter import SmeilCspmPrinter
 import pytest
+from CSPmTemplate import templating
 
 
 
@@ -17,10 +21,26 @@ def test_proc_name():
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.module()
-    printer = SmeilCspmListenerVersion2()
+    data = { 'network': [], 'channels': {}, 'processes': {}}
+    transformed_data = {}
     walker = ParseTreeWalker()
-    walker.walk(printer, tree)
-    output = printer.get_channel() + printer.get_process()
+    network_mapper = SmeilCspmNetworkMapper(data)
+    walker.walk(network_mapper, tree)
+    channels_mapper = SmeilCspmChannelMapper(data)
+    walker.walk(channels_mapper, tree)
+    process_mapper = SmeilCspmProcessMapper(data)
+    walker.walk(process_mapper, tree)
+    # print data['processes']
+    # Transformation
+    transformed_data['channels'] = transform_channels(data)
+    transformed_data['monitor'] = transform_monitor(data)
+    transformed_data['channels_monitor'] = transform_channels_monitor(data)
+    transformed_data['network_proc'], transformed_data['network_instance'] = transform_network(data)
+    # TODO: We need to update calculations in processes to match the csp version
+    transformed_data['processes'] = data['processes']
+    transform_processes(transformed_data)
+    transform_instance_input(transformed_data)
+    output = templating(transformed_data)
     assert output == test_output
 
 
