@@ -1,0 +1,51 @@
+channel id_idout_val : {0..10}
+channel addone_addout_val : {0..10}
+channel src_out_val : {0..5}
+
+Src() =
+    let
+        i = 1
+    within
+        src_out_val ! i -> SKIP
+
+
+
+
+
+Id(input) =
+    input ? variable ->
+    let
+        result = variable
+    within
+        id_idout_val ! result -> SKIP
+
+Add(variable) =
+    let
+        result = variable + 1
+
+    within
+        addone_addout_val ! result -> SKIP
+
+Monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 6
+    then SKIP else STOP
+
+
+Network =
+    src_out_val ? variable ->
+    -- id_idout_val ? id_value ->
+    (Add(variable)
+    [| {| addone_addout_val |} |]
+    Monitor(addone_addout_val))
+    [| {| addone_addout_val |} |]
+    (Id(addone_addout_val)
+    [| {| id_idout_val |} |]
+    Monitor(id_idout_val))
+
+
+assert SKIP [F= Network \ Events
+
+
+
+
