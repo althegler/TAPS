@@ -1,17 +1,131 @@
-channel from_add : {0..10}
-channel to_add : {0..10}
-channel kill
+channel id_idout_val : {0..10}
+channel addone_addout_val : {0..10}
+channel src_out_val : {0..2}
+Src() =
+    let
+        i = 1
+    within
+        src_out_val ! i -> SKIP
 
 
-Id = ; x:<0..9> @ from_add ? n -> to_add ! n -> SKIP
+Id(input) =
+    input ? input_variable ->
+    let
+        result = input_variable
+    within
+        id_idout_val ! result -> SKIP
 
-inc (x,n) = if x + n > 10 then 0 else x+n
+-- Add(variable, input_variable) =
+Add(variable, input) =
+    input ? input_variable ->
+    let
+        result = variable + 1
+
+    within
+        addone_addout_val ! result -> SKIP
 
 
-Add (x) = ; x:<0..9> @ to_add ? n -> from_add ! inc (x,n) -> SKIP
 
-Network = (Id [| {| from_add, to_add |} |] Add (0)) ; kill -> SKIP
--- from_add ? n -> if n == 100 then STOP else SKIP
+--
+-- Network =
+--     ; x:<0..9> @ Id(addone_addout_val) ||| src_out_val ? variable -> Add(variable, id_idout_val)
+--
+
+
+Network =
+    -- src_out_val ? variable ->
+
+    -- addone_addout_val ? add_variable ->
+    (Id(addone_addout_val)
+    [| {| id_idout_val |} |]
+    Monitor(id_idout_val))
+
+
+    -- [ {| addone_addout_val |} || {| id_idout_val |} ]
+    [| {| addone_addout_val |} |]
+
+
+    src_out_val ? variable ->
+    -- id_idout_val ? input_variable ->
+    (Add(variable, id_idout_val)
+    -- (Add(id_idout_val)
+    [| {| addone_addout_val |} |]
+    Monitor(addone_addout_val))
 
 assert SKIP [F= Network \ Events
+
+
+
+Monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 11
+    then SKIP else STOP
+
+
+
+
+
+
+
+
+
+
+-- Network_Add =
+--     id_idout_val ? variable ->
+--     -- id_idout_val ? id_value ->
+--     Add(variable)
+--     -- [| {| addone_addout_val, id_idout_val |} |]
+--
+--     -- addone_addout_val ? add_value ->
+--     -- Id(addone_addout_val))
+--     [| {| addone_addout_val |} |]
+--     Add_monitor(addone_addout_val)
+--
+-- assert SKIP [F= Network_Add \ Events
+
+-- Network =
+--     src_out_val ? variable ->
+--     -- id_idout_val ? id_value ->
+--     Add(variable)
+--     -- [| {| addone_addout_val, id_idout_val |} |]
+--
+--     -- addone_addout_val ? add_value ->
+--     -- Id(addone_addout_val))
+--     [| {| addone_addout_val |} |]
+--     Add_monitor(addone_addout_val)
+--
+--
+-- assert SKIP [F= Network \ Events
+
+
+--
+-- Network_Id =
+--     -- src_out_val ? variable ->
+--     -- -- id_idout_val ? id_value ->
+--     -- Add(variable)
+--     -- -- [| {| addone_addout_val, id_idout_val |} |]
+--     --
+--     addone_addout_val ? add_value ->
+--     Id(add_value)
+--     [| {| id_idout_val |} |]
+--     Add_monitor(id_idout_val)
+--
+--
+-- assert SKIP [F= Network_Id \ Events
+
+
+
+
+
+-- Id = ; x:<0..9> @ from_add ? n -> to_add ! n -> SKIP
+--
+-- inc (x,n) = if x + n > 10 then 0 else x+n
+--
+--
+-- Add (x) = ; x:<0..9> @ to_add ? n -> from_add ! inc (x,n) -> SKIP
+--
+-- Network = (Id [| {| from_add, to_add |} |] Add (0)) ; kill -> SKIP
+-- -- from_add ? n -> if n == 100 then STOP else SKIP
+--
+
 
