@@ -5,7 +5,7 @@ Channels:
     - A channel is generated with proper ranges and types
     - If channel has a value i SMEIL, the cspm range matches that
     - If the bus is defined in the network the cspm channel name matches that
-    -
+    - A bus can be defined in the network instead of process
 
 
 Processes:
