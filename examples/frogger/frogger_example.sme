@@ -1,0 +1,45 @@
+proc src()
+  bus src_out {
+    val: uint;
+  };
+  var i: uint = 0;
+{
+    trace("iteration {}", i);
+    i = i + 1;
+    src_out.val = i;
+}
+
+
+proc frogger1 (in frogger1_input)
+    bus frogger1_out {
+        val: uint;
+    };
+    var result: uint;
+{
+    result = frogger1_input.val + 1;
+    trace ("frogger1 was {}", result);
+    frogger1_out.val = result;
+}
+
+
+
+
+proc frogger2 (in frogger2_input)
+    bus frogger2_out {
+        val: uint;
+    };
+    var result: uint;
+{
+    result = frogger2_input.val + 2;
+    trace ("frogger2 was {}", result);
+    frogger2_out.val = result;
+}
+
+
+
+network frogger ()
+{
+    instance src of src();
+    instance frog1 of frogger1(src.src_out);
+    instance frog2 of frogger2(src.src_out);
+}

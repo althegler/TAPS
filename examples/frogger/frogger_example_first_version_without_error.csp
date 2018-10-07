@@ -1,0 +1,54 @@
+channel frogger1_frogger1_out_val : {0 .. 15}
+channel src_src_out_val : {0 .. 15}
+channel frogger2_frogger2_out_val : {0 .. 15}
+
+
+Frogger1(frogger1_input) =
+    let
+        result = if 2 >= frogger1_input or frogger1_input >= 10 then 2 else frogger1_input + 1
+    within
+        frogger1_frogger1_out_val ! result ->
+        SKIP
+
+Frogger2(frogger2_input) =
+    let
+        result = if 3 >= frogger2_input or frogger2_input >= 10 then 3 else frogger2_input + 2
+    within
+        frogger2_frogger2_out_val ! result ->
+        SKIP
+
+Src() =
+    let
+        i = i + 1
+    within
+        src_src_out_val ! i ->
+        SKIP
+
+N_frogger2 =
+src_src_out_val ? variable ->
+Frogger2(variable)
+[| {| frogger2_frogger2_out_val |} |]
+frogger2_frogger2_out_val_monitor(frogger2_frogger2_out_val)
+
+assert SKIP [F= N_frogger2 \ Events
+
+
+N_frogger1 =
+src_src_out_val ? variable ->
+Frogger1(variable)
+[| {| frogger1_frogger1_out_val |} |]
+frogger1_frogger1_out_val_monitor(frogger1_frogger1_out_val)
+
+assert SKIP [F= N_frogger1 \ Events
+
+
+
+
+frogger1_frogger1_out_val_monitor(c) =
+    c ? x ->
+    if 2 <= x and x <= 10
+    then SKIP else STOP
+frogger2_frogger2_out_val_monitor(c) =
+    c ? x ->
+    if 3 <= x and x <= 11
+    then SKIP else STOP

@@ -1,0 +1,29 @@
+network frogger ()
+{
+    instance frog2 of frogger2(src.src_out);
+    instance src of src();
+    instance frog1 of frogger1(src.src_out);
+}
+proc frogger1 (in frogger1_input)
+    var result: u4 range 2 to 10;
+    bus frogger1_out {val: u4 range 2 to 10;};
+{
+    result = frogger1_input.val + 1 % 10;
+    frogger1_out.val = result;
+}
+
+proc src ()
+    bus src_out {val: u4 range 1 to 10;};
+    var i: u4 = 0 range 0 to 10;
+{
+    i = i + 1;
+    src_out.val = i;
+}
+
+proc frogger2 (in frogger2_input)
+    var result: u4 range 3 to 11;
+    bus frogger2_out {val: u4 range 3 to 11;};
+{
+    result = frogger2_input.val + 2 % 10;
+    frogger2_out.val = result;
+}
