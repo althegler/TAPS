@@ -2,19 +2,21 @@ proc id (in inbus)
     bus idout {
         val: uint = 0;
     };
-    var it: uint = 0;
+    var from_add: uint;
 {
-    idout.val = inbus.val;
-    it = it + 1;
+    from_add = inbus.val;
+    idout.val = from_add;
 }
 
 proc addone (in inbus, const val)
     bus addout {
         val: uint = 0 ;
     };
+    var from_id: uint;
 {
     trace("input is {}", inbus.val);
-    addout.val = inbus.val + val;
+    from_id = inbus.val;
+    addout.val = from_id + val;
 }
 
 network addone_network ()
