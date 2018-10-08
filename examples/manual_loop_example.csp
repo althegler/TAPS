@@ -1,0 +1,18 @@
+channel src : {1}
+channel add : {0..10}
+-- channel I
+channel id : {0..10}
+
+Src =
+    let
+        i = 1
+    within
+        (src ! i -> Src) [] SKIP
+
+Add(i) = src ? a -> add ! (a + i) -> id ? y -> if y >= 4 then SKIP else Add(y)
+
+Id = add ? x -> id ! x -> if x >= 4 then SKIP else Id
+
+Network = (Src [| {| src |} |] Add(0)) [| {| add, id |} |] Id
+
+assert SKIP [FD= Network \ Events
