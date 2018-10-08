@@ -1,0 +1,21 @@
+channel c0, c1 : { 0..10 }
+channel d0, d1 : { 0..9 }
+channel s0, s1 : { 1 }
+channel clock
+
+One = s0!1 -> SKIP
+Add = (clock -> ((s1?x -> c0!(x+1) -> Add) [] (d1?x -> c0!(x+1) -> Add))) [] SKIP
+Id = (clock -> c1?x -> (if x >= 3 then SKIP else (d0!x -> Id))) [] SKIP
+
+Bufs = (s0?x -> s1!x -> Bufs) [] SKIP
+Bufc = (c0?x -> c1!x -> Bufc) [] SKIP
+Bufd = (d0?x -> d1!x -> Bufd) [] SKIP
+
+System = (One [|{| s0 |}|] Bufs)
+         [{| s0, s1 |} || {| clock, s1, d0, d1, c0, c1 |}]
+         ((Add [{| clock, s1, d1, c0 |} || {| clock, c1, d0 |}] Id)
+         [{| clock, s1, d0, d1, c0, c1 |} || {| c0, c1, d0, d1 |}]
+         (Bufc [{| c0, c1 |} || {| d0, d1 |}] Bufd))
+
+-- assert System :[has trace [T]]: <clock, s0.1, s1.1>
+assert SKIP [FD= System \ Events
