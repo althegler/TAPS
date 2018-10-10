@@ -1,0 +1,13 @@
+channel c : { 0..100 }
+channel d : { 0..100 }
+channel clock
+
+Add(x) = x <= 4 & (clock -> (c!(x+1) -> d?x -> Add(x)) [] SKIP)
+Id = clock -> (c?x -> d!x -> Id) [] SKIP
+
+Clock(4) = SKIP
+Clock(x) = clock -> Clock(x+1)
+
+System = (Add(0) [|{| clock, c, d |}|] Id) [|{| clock |}|] Clock(0)
+
+assert SKIP [FD= System \ Events

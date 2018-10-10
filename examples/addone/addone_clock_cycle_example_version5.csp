@@ -1,0 +1,43 @@
+channel clock
+channel d_r, c_r : { -1..3}
+channel d_w, c_w : { -1..3}
+
+Add(i) =
+    (clock -> d_w ? x ->
+    if (x > 2)
+      then clock -> SKIP
+      else (
+    if (x == -1)
+        then clock -> c_r ! (i+1) -> Add(i)
+        else clock -> c_r ! (x+1) -> Add(i))
+      )
+     [] SKIP
+Id(i) =
+    (clock -> c_w ? x ->
+    if (x == -1)
+        then clock -> d_r ! i -> Id(i)
+        else clock -> d_r ! x -> Id(i))
+     [] SKIP
+
+Clock = (clock -> Clock) [] SKIP
+
+Buf_cw(x) = clock -> ((c_w ! x -> Buf_cr(x)) [] Buf_cr(-1))
+Buf_cr(x) = clock -> ((c_r ? x -> (Buf_cw(x) [] SKIP)) [] Buf_cw(-1) [] SKIP)
+
+Buf_dw(x) = clock -> ((d_w ! x -> Buf_dr(x)) [] Buf_dr(-1))
+Buf_dr(x) = clock -> ((d_r ? x -> (Buf_dw(x) [] SKIP)) [] Buf_dw(-1) [] SKIP)
+
+System = (
+           (
+             Add(0) [{| clock, c_r, d_w |} || {| clock, d_r, d_w |}] Buf_dw(-1)
+           )
+           [{| clock, c_r, d_r, d_w |} || {| clock, c_r, c_w, d_r |}]
+           (
+             Id(0) [{| clock, c_w, d_r |} || {| clock, c_r, c_w |}] Buf_cw(-1)
+           )
+         ) [|{| clock |}|] (
+           Clock
+         )
+
+assert SKIP [F= System \ Events
+assert System :[deadlock free [F]]

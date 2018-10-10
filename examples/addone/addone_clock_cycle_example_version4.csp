@@ -1,0 +1,46 @@
+-- This version is not accurate and does not work, but saved for reference
+channel clock
+
+nametype range = {0..10}
+nametype F = false
+datatype mydatatype = range | F
+channel c,d : mydatatype
+
+
+Add(i) =
+    (clock -> d1 ? x ->
+    if (x == false)
+        then clock -> c0 ! i+1 -> Add(i)
+        else clock -> c0 ! x+1 -> Add(i))
+     [] SKIP
+
+Id(i) =
+    (clock -> c1 ? x ->
+    if (x == false)
+        then clock -> c0 ! i -> Add(i)
+        else clock -> c0 ! x -> Add(i))
+     [] SKIP
+
+Clock(10) = SKIP
+Clock(x) = clock -> clock -> Clock(x+1)
+
+Buf_cw(x) = clock -> ((c1 ! x -> Buf_cr) [] Buf_cr(false))
+Buf_cr(false) = clock -> ((c0 ? x -> Bufcw(x)) [] Buf_cw(false) [] SKIP)
+
+Buf_dw(x) = clock -> ((d1 ! x -> Buf_dr) [] Buf_dr(false))
+Buf_dr(false) = clock -> ((d0 ? x -> Bufdw(x)) [] Buf_dw(false) [] SKIP)
+
+
+System = (((Add(0) [|{| clock, d1 |}|] Buf_dw(false))
+         [{| clock, d1, c0 |} || {| clock, c0 |}] Buf_cr(false))
+         [{| clock, d1, c0 |} || {| clock, c0, c1 |}]
+         ((Id(0) [|{| clock, c1 |}|] Buf_cw(false))
+         [{| clock, c1, c0 |} || {| clock, d0 |}] Buf_dr(false)))
+         [|{| clock |}|] Clock(0)
+
+    -- Add(0) [{| d1 |} || {| d0, d1 |}]
+    -- Id(0)
+    --
+    -- Buf_cw(false) [{| c1 |} || {| d0, d1 |}] Buf_dw(false)
+
+

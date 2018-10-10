@@ -1,0 +1,16 @@
+channel d : {0..10}
+channel c : {0..10}
+channel clock1, clock2, clock3
+channel f
+
+
+Add(x) = x <= 4 & (clock1 -> c ! x -> clock2 -> d ? y -> clock3 -> Add(y)) [] SKIP
+Id =  (clock1 -> c ? x -> clock2 -> d ! x -> clock3 -> Id) [] SKIP
+
+Clock(x) = clock3 -> if x >= 4 then Clock(4) else Clock(x+1)
+-- Clock(0) = clock3 -> clock3 -> clock3 -> clock3 -> SKIP
+
+System = (Add(0) [|{| c, d, clock1, clock2, clock3 |}|] Id) [|{| clock3 |}|] Clock(0)
+
+-- assert System :[has trace [T]]: <clock, s0.1, s1.1>
+assert SKIP [F= System \ Events

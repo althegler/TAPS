@@ -1,0 +1,58 @@
+channel clock
+channel clock_value : {0..10}
+channel d_r, c_r : { -1..10}
+channel d_w, c_w : { -1..10}
+
+Add(i) =
+    (clock -> clock_value ? n ->
+    if (n > 5)
+      then clock -> SKIP
+      else (
+      d_w ? x ->
+        if (x == -1)
+            then clock -> c_r ! (i+1) -> Add(i)
+            else clock -> c_r ! (x+1) -> Add(i))
+      )
+     [] SKIP
+
+
+Id(i) =
+    (clock -> clock_value ? n ->
+    if (n > 5)
+      then clock -> SKIP
+      else (
+      c_w ? x ->
+        if (x == -1)
+            then clock -> d_r ! i -> Id(i)
+            else clock -> d_r ! x -> Id(i))
+        )
+     [] SKIP
+
+Clock(n) = (clock -> clock_value ! n -> if (n > 5) then clock -> SKIP else Clock(n+1)) [] SKIP
+
+Buf_cw(x) = clock -> ((c_w ! x -> Buf_cr(x)) [] Buf_cr(-1))
+Buf_cr(x) = clock -> clock_value ? n ->
+    if (n > 5)
+      then clock -> SKIP
+      else ((c_r ? x -> (Buf_cw(x) [] SKIP)) [] Buf_cw(-1) [] SKIP)
+
+Buf_dw(x) = clock -> ((d_w ! x -> Buf_dr(x)) [] Buf_dr(-1))
+Buf_dr(x) = clock -> clock_value ? n ->
+    if (n > 5)
+      then clock -> SKIP
+      else ((d_r ? x -> (Buf_dw(x) [] SKIP)) [] Buf_dw(-1) [] SKIP)
+
+System = (
+           (
+             Add(0) [{| clock, c_r, d_w |} || {| clock, d_r, d_w |}] Buf_dw(-1)
+           )
+           [{| clock, c_r, d_r, d_w |} || {| clock, c_r, c_w, d_r |}]
+           (
+             Id(0) [{| clock, c_w, d_r |} || {| clock, c_r, c_w |}] Buf_cw(-1)
+           )
+         ) [|{| clock |}|] (
+           Clock(0)
+         )
+
+assert SKIP [F= System \ Events
+assert System :[deadlock free [F]]
