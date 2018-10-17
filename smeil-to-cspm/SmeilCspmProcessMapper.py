@@ -1,92 +1,111 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
-from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
+from SmeilVisitor import SmeilVisitor
 import sys
 
-class SmeilCspmProcessMapper(SmeilListener):
+class SmeilCspmProcessMapper(SmeilVisitor):
     def __init__(self, data):
         self.data = data
-        self.stack = []
 
-    def exitProcess(self, ctx):
+    def visitModule(self, ctx):
+        return self.visitChildren(ctx)
+
+    def visitEntity(self, ctx):
+        if isinstance(ctx.children[0], SmeilParser.ProcessContext) is True:
+            return self.visit(ctx.process())
+        else:
+            # TODO: Handle other stuff here
+            return
+
+    def visitProcess(self, ctx):
         communication_list = []
         calculations_list = []
         process = {}
-        # TODO: Note that we are only interested in the input bus, and therefore
-        # we are not looking at the other two potential input
-        proc_input_variable = next((x.getText()
-                              for x in ctx.children
-                              if isinstance(x, SmeilParser.ParamsContext)),
-                              None)
-        if proc_input_variable != None:
-            process['input_value'] = self.stack.pop()
-        for child in ctx.statement():
-            if hasattr(child, 'communication'):
-                communication_list.append(child.communication)
+        processname = ctx.IDENT().getText()
+        if ctx.params():
+            process['params'] = self.visit(ctx.params())
+        else:
+            process['params'] = None
+        # We are only interested in visiting the statement
+        result = {}
+        # TODO: Should be able to handle zero or more statements
+        for statement in ctx.statement():
+            # TODO: Should be able to handle more than only name = expression;
+            cal_or_comm, list = self.visit(statement)
+            if cal_or_comm == "calculation":
+                # TODO: Find a way to figure out how to seperate cal and comm
+                calculations_list.append(list)
             else:
-                calculations_list.append(child.calculation)
+                communication_list.append(list)
         process['calculations_list'] = calculations_list
         process['communication_list'] = communication_list
-        self.data['processes'][ctx.IDENT().getText()] = process
+        self.data['processes'][processname] = process
+        return
 
-    def exitStatement(self, ctx):
+    def visitParams(self, ctx):
+        for param in ctx.param():
+            # TODO: The params should be a list of values, so as to handle
+            # more than one input parameter. The datastructure does not handle
+            # that currently, therefore we only return the last result and
+            # no data about if it is an in, out or const.
+            result = self.visit(param)
+        return result
+
+    def visitParam(self, ctx):
+        # TODO: TAPS should be able to handle several inputs and also const and
+        # outputs.
+        direction = self.visit(ctx.direction())
+        param = ctx.IDENT().getText()
+        return param
+
+    def visitDirection(self, ctx):
+        return ctx.getText()
+
+    # TODO: This function will change when we add labeles to the grammar
+    def visitStatement(self, ctx):
         # TODO currently only handling "name = expression ;" and trace(/nothing)
         # TODO what happens with several expressions in one?
-        formatstring = next((x.getText() for x in ctx.children if
-            isinstance(x, SmeilParser.FormatstringContext)), None)
-        ## If the statement is a trace, it does nothing.
-        if formatstring == None:
-            expression = self.stack.pop()
-            name = self.stack.pop()
-            if '.' in name:
-                # # Communication
-                ctx.communication = (name, expression)
-            else:
-                # # Calculations
-                ctx.calculation = (name, expression)
-
-
-    def exitExpression(self,ctx):
-        text = []
-        if ctx.getChildCount() > 1:
-            for _ in ctx.children:
-                text.append(self.stack.pop())
-            self.stack.append(list(reversed(text)))
-        if isinstance(ctx.parentCtx, SmeilParser.ExpressionContext) is False  and \
-           isinstance(ctx.parentCtx,
-                       SmeilParser.StatementContext) is False:
-                self.stack.pop()
-
-    def exitBinop(self, ctx):
-        self.stack.append(ctx.getText())
-
-    def exitLiteral(self,ctx):
-        self.stack.append(ctx.getText())
-
-    def exitName(self, ctx):
-        # TODO can only handle part of the grammar
-        if ctx.IDENT():
-            self.stack.append(ctx.getText())
+        if ctx.formatstring():
+             ## If the statement is a trace, it does nothing.
+             return
         else:
-            # TODO: We cannot handle arrayindex yet
-            right = self.stack.pop()
-            left = self.stack.pop()
-            # In the case of process instances, this would mean that the two
-            # names together are representing the element and therefore we
-            # will keep them together
-            self.stack.append(left + '.' + right)
+            # Currently only handle two types of statement and therefore this
+            # structure works. Will not work when we add more.
+            # Should use labeled grammar
+            name = self.visit(ctx.name())
+            if isinstance(name, list):
+                cal_or_comm = 'communication'
+            else:
+                cal_or_comm = 'calculation'
+            # TODO: For some reason it thinks that expression is a list
+            # Currently I do not see why, but this function will change when I
+            # add labels to the grammar, so I just took the first element now.
+            expr = self.visit(ctx.expression(0))
+        return cal_or_comm, (name, expr)
 
-    def exitParams(self, ctx):
-        # TODO: I need to be able to handle out or const params, but currently I only
-        # need the in parameter.
-        for child in ctx.children:
-            if isinstance(child, SmeilParser.ParamContext) is True:
-                param = self.stack.pop()
-        # TODO: The last parameter popped is the input parameter in our case.
-        # This is not necessaryly always the case, so something should be done
-        # about this solution
-        self.stack.append(param)
+    def visitName(self, ctx):
+        result  = []
+        if ctx.IDENT():
+            return ctx.IDENT().getText()
+        else:
+            first = self.visit(ctx.name(0))
+            second = self.visit(ctx.name(1))
+            return [first, second]
 
-    def exitParam(self, ctx):
-        self.stack.append(ctx.IDENT().getText())
+    def visitExpression(self, ctx):
+        if ctx.name():
+            return self.visit(ctx.name())
+        elif ctx.literal():
+            return self.visit(ctx.literal())
+        else:
+            first = self.visit(ctx.expression(0))
+            binop = self.visit(ctx.binop())
+            second = self.visit(ctx.expression(1))
+            return [first, binop, second]
+
+    def visitLiteral(self, ctx):
+         return ctx.INTEGER().getText()
+
+    def visitBinop(self, ctx):
+         return ctx.getText()
