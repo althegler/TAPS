@@ -20,7 +20,7 @@ class SmeilCspmChannelMapper(SmeilVisitor):
 
 
     def visitProcess(self, ctx):
-        proc_name = ctx.IDENT().getText()
+        processname = ctx.IDENT().getText()
         #     # In this mapper we do not take params into account, since
         #     # we do not need that information to create this data
         #     # We are only interested in visiting the processdecl
@@ -28,7 +28,7 @@ class SmeilCspmChannelMapper(SmeilVisitor):
         for busdecl in ctx.busdecl():
             bus_name, channels = self.visit(busdecl)
             result[bus_name] = channels
-        self.data['channels'][proc_name] = result
+        self.data['channels'][processname] = result
         return
 
 
