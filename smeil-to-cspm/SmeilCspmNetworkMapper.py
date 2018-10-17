@@ -52,6 +52,11 @@ class SmeilCspmNetworkMapper(SmeilVisitor):
     def visitInstancename(self, ctx):
         return ctx.IDENT().getText()
 
+    # TODO: It does not work to just use visitChildren.
+    # I have to call it specificly. For instance
+    ## first = self.visit(ctx.name(0))
+    ## second = self.visit(ctx.name(1))
+    ## return [first, second]
     def visitName(self, ctx):
         if ctx.IDENT():
             return ctx.IDENT().getText()
