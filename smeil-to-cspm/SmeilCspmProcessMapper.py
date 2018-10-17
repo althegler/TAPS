@@ -74,7 +74,8 @@ class SmeilCspmProcessMapper(SmeilVisitor):
             # structure works. Will not work when we add more.
             # Should use labeled grammar
             name = self.visit(ctx.name())
-            if isinstance(name, list):
+            # TODO: This is a bad way to recognize input communication! Change!
+            if '.' in name:
                 cal_or_comm = 'communication'
             else:
                 cal_or_comm = 'calculation'
@@ -89,9 +90,16 @@ class SmeilCspmProcessMapper(SmeilVisitor):
         if ctx.IDENT():
             return ctx.IDENT().getText()
         else:
+            # TODO: We cannot handle arrayindex yet
             first = self.visit(ctx.name(0))
             second = self.visit(ctx.name(1))
-            return [first, second]
+            # In the case of process instances, this would mean that the two
+            # names together are representing the element and therefore we
+            # will keep them together
+            # TODO: This is a ugly way to handle input communication!
+            # I need to change it, but I have to figure out how to
+            # recognize communication in the calculations first.
+            return first + '.' + second
 
     def visitExpression(self, ctx):
         if ctx.name():
