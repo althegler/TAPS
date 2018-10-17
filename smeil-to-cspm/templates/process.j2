@@ -1,7 +1,7 @@
 {% for proc_name, proc in data.processes.iteritems()%}
 
-{% if proc.input_value != None  %}
-{{proc_name|capitalize}}({{proc.input_value}}) =
+{% if proc.params != None  %}
+{{proc_name|capitalize}}({{proc.params}}) =
     let
     {% for name, calc in proc.calculations_list %}
     {{name}} = {{calc}}
