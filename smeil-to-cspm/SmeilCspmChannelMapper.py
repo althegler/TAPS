@@ -1,76 +1,65 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
-from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
+from SmeilVisitor import SmeilVisitor
 import sys
 
-class SmeilCspmChannelMapper(SmeilListener):
+class SmeilCspmChannelMapper(SmeilVisitor):
     def __init__(self, data):
         self.data = data
-        self.stack = []
 
+    def visitModule(self, ctx):
+        return self.visitChildren(ctx)
 
-    def exitProcess(self, ctx):
+    def visitEntity(self, ctx):
+        return self.visit(ctx.process())
+
+    def visitProcess(self, ctx):
         proc_name = ctx.IDENT().getText()
-        # In this mapper we do not take params into account, since
-        # we do not need that information to create this data
-        self.data['channels'][proc_name] = self.stack.pop()
+        #     # In this mapper we do not take params into account, since
+        #     # we do not need that information to create this data
+        #     # We are only interested in visiting the processdecl
+        result = {}
+        for busdecl in ctx.busdecl():
+            bus_name, channels = self.visit(busdecl)
+            result[bus_name] = channels
+        self.data['channels'][proc_name] = result
+        return
 
-    def exitBusdecl(self, ctx):
-        buses = {}
-        bus_signals = []
+
+    def visitBusdecl(self, ctx):
         bus_name = ctx.IDENT().getText()
-        # get all channel declarations within the bus declaration
-        # in order to create all channels
-        for _ in ctx.bussignaldecls().children:
-            bus_signals.append(self.stack.pop())
-        buses[bus_name] = bus_signals
-        self.stack.append(buses)
+        channels = []
+        for bussignaldecl in ctx.bussignaldecl():
+            channels.append(self.visit(bussignaldecl))
+        return (bus_name, channels)
 
-    def exitBussignaldecl(self, ctx):
+
+    def visitBussignaldecl(self, ctx):
         channel =  {}
-        upper = self.stack.pop()
-        lower = self.stack.pop()
         channel['channel_name'] = ctx.IDENT().getText()
+        channel['type'] = ctx.TYPENAME().getText()
+        expression = next((self.visit(x) for x in ctx.children if
+            isinstance(x, SmeilParser.ExpressionContext)), None)
+        # TODO: If expression then what?
+        (lower, upper) = self.visit(ctx.ranges())
         channel['lowerbound'] = lower
         channel['upperbound'] = upper
-        channel['type'] = ctx.TYPENAME().getText()
-        self.stack.append(channel)
+        print channel
+        return channel
 
-    def exitExpression(self,ctx):
-        # TODO: Figure out if this can be done better. The only reason this is
-        # here right now is because I need to remove stuff from my stack.
-        if isinstance(ctx.parentCtx, SmeilParser.RangesContext) is False  and \
-           isinstance(ctx.parentCtx,
-                       SmeilParser.BussignaldeclContext) is False:
-            if ctx.getChildCount() == 1:
-                self.stack.pop()
+    def visitRanges(self, ctx):
+        lower = self.visit(ctx.expression(0))
+        upper = self.visit(ctx.expression(1))
+        return lower, upper
 
-    def exitStatement(self,ctx):
-        # TODO: Figure out if this can be done better. The only reason this is
-        # here right now is because I need to remove stuff from my stack.
-        self.stack.pop()
-
-    def exitRanges(self,ctx):
-        # TODO: Figure out if this can be done better. The only reason this is
-        # here right now is because I need to remove stuff from my stack.
-        if isinstance(ctx.parentCtx, SmeilParser.BussignaldeclContext) is False:
-            self.stack.pop()
-            self.stack.pop()
-
-    def exitLiteral(self, ctx):
-        # TODO can only handle part of the grammar
-        self.stack.append(ctx.INTEGER().getText())
-
-
-    def exitName(self, ctx):
-        if ctx.IDENT():
-            self.stack.append(ctx.getText())
+    def visitExpression(self, ctx):
+        if isinstance(ctx.children[0], SmeilParser.LiteralContext) is True:
+            literal = self.visit(ctx.literal())
+            return literal
         else:
-            # TODO: We cannot handle arrayindex yet
-            right = self.stack.pop()
-            left = self.stack.pop()
-            # In the case of channel instances, this would mean that the two
-            # names together are representing the element and therefore we
-            # will keep them together
-            self.stack.append(left + '_' + right)
+            # TODO: Handle other stuff here
+            return
+
+    def visitLiteral(self, ctx):
+         return ctx.INTEGER().getText()
