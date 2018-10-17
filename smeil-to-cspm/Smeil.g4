@@ -1,7 +1,7 @@
 grammar Smeil;
 
 /* NOTE! Not completed */
-module : entity entity* ;
+module : entity+ ;
 
 entity : network
        | process
@@ -10,7 +10,14 @@ entity : network
 network : 'network' IDENT '(' params? ')' '{' networkdecl* '}';
 
 /* NOTE! Not completed */
-process : 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}';
+process : 'proc' IDENT '(' params? ')'
+            (vardecl
+            /* | constdecl */
+            | busdecl
+            /*| enum*/
+            /*| instance */
+            /*| gendecl*/)*
+            '{' statement* '}';
 
 /* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}'; */
 
@@ -20,13 +27,13 @@ networkdecl : instance
             /* | gendecl */
             ;
 
-processdecl : vardecl
+/* processdecl : vardecl */
             /* | constdecl */
-            | busdecl
+            /* | busdecl */
             /*| enum*/
             /*| instance */
             /*| gendecl*/
-            ;
+            /* ; */
 
 params : param (',' param)* ;
 
@@ -49,21 +56,27 @@ ranges : 'range' expression 'to' expression ;
 
 /* constdecl : 'const' IDENT ':' TYPENAME '=' expression ';' */
 
-busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecls '}' ';' ;
+busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecl+ '}' ';' ;
 
-bussignaldecls : bussignaldecl bussignaldecl* ;
+/* bussignaldecls : bussignaldecl+ ; */
 
-bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges? ';' ;
+/* NOTE: ranges should not optional in our situation, but they are in the
+   original grammar */
+bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges ';' ;
 
 /* NOTE! This is not how the original grammar is */
 instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
+
+/* TODO We probably want to label the alternatives */
 instancename : IDENT
              /* | IDENT '[' expression ']' */
              /* | '_' */
              ;
+
 /* gendecl : 'generate' IDENT '=' expression 'to' expression '{' networkdecl* '}' ; */
 
+/* TODO We probably want to label the alternatives */
 statement : name '=' expression ';'
           /*| 'if' '(' expression ')' '{' statement* '}' elifblock* elseblock?*/
           /*| 'for' IDENT '=' expression 'to' expression '{' statement* '}'*/
@@ -86,6 +99,7 @@ formatstringpart : '{}'
                  | LETTER
                  ;
 
+/* TODO We probably want to label the alternatives */
 expression : name
            | literal
            | expression binop expression
@@ -119,6 +133,7 @@ unop : '-'
       | '~'
       ;
 
+/* TODO We probably want to label the alternatives */
 literal : INTEGER
         /* | floating */
         /* | stringliteral */
@@ -130,6 +145,7 @@ literal : INTEGER
 
 stringliteral : '"' STRINGCHAR* '"' ;
 
+/* TODO We probably want to label the alternatives */
 TYPENAME : ('i' INTEGER)
          /* | 'int' - Should not be possible for simulated programs? */
          | ('u' INTEGER)
@@ -143,6 +159,8 @@ TYPENAME : ('i' INTEGER)
 
 IDENT : LETTER (LETTER | NUMBER | '_' | '-')* ;
 
+
+/* TODO We probably want to label the alternatives */
 name : IDENT
      | name '.' name
      /* | name '[' arrayindex ']' */
