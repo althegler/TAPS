@@ -64,7 +64,8 @@ busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecl+ '}' ';' ;
    original grammar */
 bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges ';' ;
 
-/* NOTE! This is not how the original grammar is */
+/* TODO! This is not how the original grammar is.
+I should implement it correctly*/
 instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
 
@@ -162,7 +163,7 @@ IDENT : LETTER (LETTER | NUMBER | '_' | '-')* ;
 
 /* TODO We probably want to label the alternatives */
 name : IDENT
-     | name '.' name
+     | name '.' name   /* # hierarchical_accessor */
      /* | name '[' arrayindex ']' */
      ;
 
