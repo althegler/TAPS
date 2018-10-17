@@ -18,23 +18,14 @@ def main():
     data = { 'network': [], 'channels': {}, 'processes': {}}
     transformed_data = {}
 
-    # lisp_tree_str = tree.toStringTree(recog=parser)
-    # print(lisp_tree_str)
+    # tree_str = tree.toStringTree(recog=parser)
+    # print(tree_str)
 
     # Extraction
     SmeilCspmNetworkMapper(data).visit(tree)
     SmeilCspmChannelMapper(data).visit(tree)
     SmeilCspmProcessMapper(data).visit(tree)
 
-    # print data['processes']
-
-    # walker = ParseTreeWalker()
-    # network_mapper = SmeilCspmNetworkMapper(data)
-    # walker.walk(network_mapper, tree)
-    # channels_mapper = SmeilCspmChannelMapper(data)
-    # walker.walk(channels_mapper, tree)
-    # process_mapper = SmeilCspmProcessMapper(data)
-    # walker.walk(process_mapper, tree)
     # print data['processes']
 
     # Transformation
@@ -98,7 +89,6 @@ def transform_instance_input(transformed_data):
                 # in one is the same change in the other)
                 proc['instance_input'] = channel
     return
-
 
 
 # Maybe we do not need this
