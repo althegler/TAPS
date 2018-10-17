@@ -12,7 +12,12 @@ class SmeilCspmChannelMapper(SmeilVisitor):
         return self.visitChildren(ctx)
 
     def visitEntity(self, ctx):
-        return self.visit(ctx.process())
+        if isinstance(ctx.children[0], SmeilParser.ProcessContext) is True:
+            return self.visit(ctx.process())
+        else:
+            # TODO: Handle other stuff here
+            return
+
 
     def visitProcess(self, ctx):
         proc_name = ctx.IDENT().getText()
@@ -42,10 +47,10 @@ class SmeilCspmChannelMapper(SmeilVisitor):
         expression = next((self.visit(x) for x in ctx.children if
             isinstance(x, SmeilParser.ExpressionContext)), None)
         # TODO: If expression then what?
+        # Can't I just say "if ctx.expression:...."?
         (lower, upper) = self.visit(ctx.ranges())
         channel['lowerbound'] = lower
         channel['upperbound'] = upper
-        print channel
         return channel
 
     def visitRanges(self, ctx):

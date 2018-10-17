@@ -1,43 +1,59 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
-from SmeilListener import SmeilListener
 from SmeilParser import SmeilParser
+from SmeilVisitor import SmeilVisitor
 import sys
 
-class SmeilCspmNetworkMapper(SmeilListener):
+class SmeilCspmNetworkMapper(SmeilVisitor):
     def __init__(self, data):
         self.data = data
-        self.stack = []
 
-    def exitInstance(self,ctx):
+    def visitModule(self, ctx):
+        return self.visitChildren(ctx)
+
+    def visitEntity(self, ctx):
+        if isinstance(ctx.children[0], SmeilParser.NetworkContext) is True:
+            return self.visit(ctx.network())
+
+    def visitNetwork(self, ctx):
+        for networkdecl in ctx.networkdecl():
+            self.data['network'].append(self.visit(networkdecl))
+        return
+
+    def visitNetworkdecl(self, ctx):
+        if isinstance(ctx.children[0], SmeilParser.InstanceContext) is True:
+            return self.visit(ctx.instance())
+        else:
+        # TODO: Do something about the other stuff here
+            return
+
+    def visitInstance(self, ctx):
         instance = {}
+        instancename = self.visit(ctx.instancename())
+        processname = ctx.IDENT().getText()
+        # TODO: The instance input is generated in a simple way that is not
+        # the way the original grammar is. This will be changed when the
+        # grammar is updated
         if ctx.name():
-            input_instance_channel = self.stack.pop()
-            input_instance_name = self.stack.pop()
-            instance_input = [input_instance_name, input_instance_channel]
+            # TODO: The name division is also supposed to be in the visitname
+            # function, but the temporary grammar is simplifying it.
+            instanceinput_name = self.visit(ctx.name(0))
+            instanceinput_channel = self.visit(ctx.name(1))
+            instanceinput = [instanceinput_name, instanceinput_channel]
         else:
-            instance_input = None
-        instance_name = self.stack.pop()
-        process_name = ctx.IDENT().getText()
-        instance['proc_name'] = process_name
-        instance['instance_name'] = instance_name
-        instance['instance_input'] = instance_input
-        self.data['network'].append(instance)
+            instanceinput = None
+        instance['instance_name'] = instancename
+        instance['proc_name'] = processname
+        instance['instance_input'] = instanceinput
+        return instance
 
-    # NOTE grammar not finished for this parser.
-    def exitInstancename(self,ctx):
-        self.stack.append(ctx.getText())
+    # TODO: This should probably be changed when I add the labeled alternatives
+    # for the instancenames. but for now it can only be an IDENT
+    def visitInstancename(self, ctx):
+        return ctx.IDENT().getText()
 
-    def exitName(self, ctx):
-        # This mapper only need to look at names of IDENT, therefore it does
-        # not handle other types of name - TODO: is this really true?
+    def visitName(self, ctx):
         if ctx.IDENT():
-            self.stack.append(ctx.getText())
+            return ctx.IDENT().getText()
         else:
-            # TODO: We cannot handle arrayindex yet
-            right = self.stack.pop()
-            left = self.stack.pop()
-            # In the case of network instances, this would mean that the two
-            # names together are representing the element and therefore we
-            # will keep them together
-            self.stack.append(left + '.' + right)
+            return self.visitChildren(ctx)
