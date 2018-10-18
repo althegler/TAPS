@@ -4,7 +4,7 @@ channel seconds_sec_out_first_digit : {0 .. 7}
 channel seconds_sec_out_second_digit : {0 .. 15}
 channel minutes_min_out_second_digit : {0 .. 15}
 channel minutes_min_out_first_digit : {0 .. 7}
-channel clock_c_out_val : {0 .. 131071}
+channel clock_c_out_val : {131068 .. 131071}
 
 
 Hours(hours_in) =

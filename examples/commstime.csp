@@ -1,0 +1,35 @@
+-- This was provided to me by Ohm
+
+-- channel c, d, e, f : { 0..10 }
+--
+-- P(x) = (c!x -> d?y -> P(y)) [] SKIP
+--
+-- D = (c?x -> ((e!x -> ((f!x -> D) [] SKIP)) [] (f!x -> (e!x -> D) [] SKIP))) [] SKIP
+--
+-- S = (e?x -> d!((x+1)%10) -> S) [] SKIP
+--
+-- C(0) = STOP
+-- C(n) = f?x -> C(n-1)
+--
+-- System = (P(0) [{| c, d |} || {| c, e, f |}] D)
+--          [{|c, d, e, f|} || {|e, d, f|}]
+--          (S [{|e, d|} || {| f |}] C(20))
+--
+-- assert System :[deadlock free [F]]
+-- assert SKIP [F= System \ Events
+channel c, d, e, f : { 0..10 }
+
+P(x) = c!x -> d?y -> P(y)
+
+D = c?x -> f!x -> e!x -> D
+
+S = e?x -> d!((x+1)%10) -> S
+
+C = f?x -> C
+
+System = (P(0) [{| c, d |} || {| c, e, f |}] D)
+         [{|c, d, e, f|} || {|e, d, f|}]
+         (S [{|e, d|} || {| f |}] C)
+
+assert System :[deadlock free [F]]
+assert SKIP [F= System \ Events
