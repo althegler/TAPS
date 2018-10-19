@@ -4,10 +4,39 @@ from SmeilParser import SmeilParser
 from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
 from SmeilCspmChannelMapper import SmeilCspmChannelMapper
 from SmeilCspmProcessMapper import SmeilCspmProcessMapper
-from SmeilCspmPrinter import SmeilCspmPrinter
+from CSPmTemplate import templating, test_templating
 import sys
 
-from CSPmTemplate import templating
+
+def test_main(input):
+    lexer = SmeilLexer(InputStream(input))
+    stream = CommonTokenStream(lexer)
+    parser = SmeilParser(stream)
+    tree = parser.module()
+    # Data structure
+    data = { 'network': [], 'channels': {}, 'processes': {}}
+    transformed_data = {}
+
+    # Extraction
+    SmeilCspmNetworkMapper(data).visit(tree)
+    SmeilCspmChannelMapper(data).visit(tree)
+    SmeilCspmProcessMapper(data).visit(tree)
+
+    # Transformation
+    transformed_data['channels'] = transform_channels(data)
+    transformed_data['monitor'] = transform_monitor(data)
+    transformed_data['channels_monitor'] = transform_channels_monitor(data)
+    transformed_data['network_proc'], transformed_data['network_instance'] = transform_network(data)
+    # TODO: We need to update calculations in processes to match the csp version
+    transformed_data['processes'] = data['processes']
+    transform_processes(transformed_data)
+    transform_instance_input(transformed_data)
+
+    # Load
+    return test_templating(transformed_data)
+
+
+
 
 def main():
     lexer = SmeilLexer(StdinStream())
