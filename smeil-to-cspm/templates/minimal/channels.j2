@@ -1,0 +1,3 @@
+{% for channel_name, (lower, upper) in data.channels.iteritems() %}
+channel {{channel_name}} : {{ "{" }}{{lower}} .. {{upper}}{{ "}" }}
+{% endfor %}

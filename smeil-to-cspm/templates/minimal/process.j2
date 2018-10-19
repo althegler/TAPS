@@ -1,0 +1,15 @@
+{% for proc_name, proc in data.processes.iteritems()%}
+
+{% if proc.params != None  %}
+{{proc_name|capitalize}}({{proc.params}}) =
+    let
+    {% for name, calc in proc.calculations_list %}
+    {{name}} = {{calc}}
+    {% endfor %}
+within
+    {% for channel, value in proc.communication_list %}
+    {{channel}} ! {{value}} ->
+    {% endfor %}
+    SKIP
+{% endif %}
+{% endfor %}
