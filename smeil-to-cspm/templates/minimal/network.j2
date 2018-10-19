@@ -7,13 +7,8 @@ N_{{proc_name}} =
 {% for channel, monitor in proc.synchronization %}
 [| {| {{channel}} |} |]
 {{monitor}}({{channel}}){% if loop.nextitem is defined %}){% endif%}
-
 {% endfor %}
 
 assert SKIP [F= N_{{proc_name}} \ Events
-
-
 {% endif %}
 {% endfor %}
-
-

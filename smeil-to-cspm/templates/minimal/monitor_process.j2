@@ -1,6 +1,3 @@
 {% for monitor_name, (lower, upper) in data.monitor.iteritems() %}
-{{monitor_name}}(c) =
-    c ? x ->
-    if {{lower}} <= x and x <= {{upper}}
-    then SKIP else STOP
+{{monitor_name}}(c) = c ? x -> if {{lower}} <= x and x <= {{upper}} then SKIP else STOP
 {% endfor %}
