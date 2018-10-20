@@ -16,15 +16,15 @@ process : 'proc' IDENT '(' params? ')'
             | busdecl
             /*| enum*/
             /*| instance */
-            /*| gendecl*/)*
-            '{' statement* '}';
+            /*| gendecl - Not implemented in SMEIL yet */
+            /* '{' statement* '}'; */
 
 /* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}'; */
 
 networkdecl : instance
             /* | busdecl */
             /* | constdecl */
-            /* | gendecl */
+            /*| gendecl - Not implemented in SMEIL yet */
             ;
 
 /* processdecl : vardecl */
@@ -32,7 +32,7 @@ networkdecl : instance
             /* | busdecl */
             /*| enum*/
             /*| instance */
-            /*| gendecl*/
+            /*| gendecl - Not implemented in SMEIL yet */
             /* ; */
 
 params : param (',' param)* ;
@@ -71,10 +71,12 @@ instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
 /* TODO We probably want to label the alternatives */
 instancename : IDENT
-             /* | IDENT '[' expression ']' */
+             /* | IDENT '[' expression ']'  - NOTE: Not implemented in SMEIL yet*/
              /* | '_' */
              ;
 
+
+/* NOTE: This is not implemented in SMEIL yet */
 /* gendecl : 'generate' IDENT '=' expression 'to' expression '{' networkdecl* '}' ; */
 
 /* TODO We probably want to label the alternatives */
