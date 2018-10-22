@@ -6,13 +6,9 @@ Add(i) =
     (clock -> d_w ? x ->
             if (x == -1)
             then (clock ->
-                if (i+1) > 5
-                then STOP
-                else (c_r ! (i+1) -> Add(i)))
+                (i+1) <= 5 & c_r ! (i+1) -> Add(i))
             else (clock ->
-                if (x+1) > 5
-                then STOP
-                else (c_r ! (x+1) -> Add(i)))
+                (x+1) <= 5 & c_r ! (x+1) -> Add(i))
     )
     [] SKIP
 
@@ -21,13 +17,9 @@ Id(i) =
     (clock -> c_w ? x ->
             if (x == -1)
             then (clock ->
-                if i > 5
-                then STOP
-                else (d_r ! i -> Id(i)))
+                i <= 5 & d_r ! i -> Id(i))
             else (clock ->
-                if x > 5
-                then STOP
-                else (d_r ! x -> Id(i)))
+                x <= 5 & d_r ! x -> Id(i))
     )
     [] SKIP
 
