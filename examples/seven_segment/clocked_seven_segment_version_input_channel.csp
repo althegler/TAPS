@@ -1,6 +1,6 @@
 channel hour_w_first, hour_r_first, hour_w_second, hour_r_second : { -1..20}
 -- channel clock_w, clock_r : { -1..300}
-channel clock_w : { -1 ..300}
+channel clock_w : { 131067 ..131071}
 channel clock
 
 -- Seven_segment_clock(i) =
@@ -16,7 +16,7 @@ channel clock
 
 Hours =
     (clock -> clock_w ? hours_in ->
-        if (hours_in == -1)
+        if (hours_in == 131067)
         then clock -> hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
@@ -43,7 +43,7 @@ Hours =
     ) [] SKIP
 
 
-Clock(n) =  if n == 300 then SKIP else clock -> clock -> Clock(n+1)
+Clock(n) =  if n == 30 then SKIP else clock -> clock -> Clock(n+1)
 
 Buf_hour_w_first(x) = clock -> hour_w_first ! x -> Buf_hour_r_first(x) [] SKIP
 Buf_hour_r_first(x) = clock -> (hour_r_first ? x -> Buf_hour_w_first(x) [] SKIP)
@@ -57,7 +57,7 @@ Buf_hour_r_second(x) = clock -> (hour_r_second ? x -> Buf_hour_w_second(x) [] SK
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    if 0 <= x and x <= 5 or x == -1
+    if 0 <= x and x <= 2 or x == -1
     then hours_hours_out_first_digit_monitor(c) else STOP) [] SKIP
 
 hours_hours_out_second_digit_monitor(c) =

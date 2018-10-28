@@ -56,7 +56,7 @@ Buf_clock_r(x) = clock -> (clock_r ? x -> Buf_clock_w(x) [] SKIP)
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    if 0 <= x and x <= 5 or x == -1
+    if 0 <= x and x <= 2 or x == -1
     then hours_hours_out_first_digit_monitor(c) else STOP) [] SKIP
 
 hours_hours_out_second_digit_monitor(c) =
