@@ -1,0 +1,42 @@
+proc counter ()
+    bus output {
+        val: uint;
+    };
+    var i: uint = 0;
+{
+    i = i + 1;
+    trace("counter is {}", i);
+    output.val = i;
+}
+
+
+proc pixel (in input, out net_output, const id)
+    var value: uint;
+{
+    value = input.val;
+    trace("p{} input is {}", id, input.val);
+    if (value == id) {
+        trace("Pixel{} sending value {}", id, value);
+        net_output.val = id;
+    }
+}
+
+proc src (in input)
+    var value: uint;
+    var count: uint = 0;
+{
+    value = input.val;
+    trace("Receiving value {}", value);
+}
+
+
+network net ()
+{
+    bus net_output {
+        val: uint;
+    };
+    instance c of counter();
+    instance p1 of pixel(c.output, net_output, 1);
+    instance p2 of pixel(c.output, net_output, 2);
+    instance s of src(net_output);
+}
