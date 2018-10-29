@@ -1,6 +1,8 @@
 channel clock
 channel w,r : { -1..10}
 
+INITIAL = -1
+
 P = clock -> clock -> r ! 1 -> P
 
 -- S = clock ! 2 -> SKIP
@@ -13,7 +15,7 @@ Q = clock -> w ? x -> clock -> Q
 SYSTEM =
             (
                 (
-                    P [{| clock, r |} || {| clock, r, w |}] Buf_w(-1)
+                    P [{| clock, r |} || {| clock, r, w |}] Write(INITIAL)
                 )
                 [{| clock, w, r |} || {| clock, w |}]
                 Q
@@ -28,10 +30,15 @@ SYSTEM =
 Clock(n) =  if n == 4 then SKIP else clock -> clock -> Clock(n+1)
 
 
-Buf_w(x) = clock -> w ! x -> Buf_r(x) [] SKIP
-Buf_r(x) = clock -> (r ? x -> Buf_w(x) [] SKIP)
+-- Buf_w(x) = clock -> w ! x -> Buf_r(x) [] SKIP
+-- Buf_r(x) = clock -> (r ? x -> (r ? x -> STOP [] Buf_w(x)) [] SKIP [] clock -> Buf_r(x))
 
 
+
+Read(x) = (r ? x -> (r ? x -> STOP [] clock -> Write(x))) [] clock -> clock -> Read(x)
+
+Writes(x) = w ! x -> (Write(x) [] Writes(x))
+Write(x) = (clock -> (Writes(x) [] clock -> Read(x)) [] clock -> Read(x)) [] SKIP
 
 assert SKIP [F= SYSTEM \ Events
 assert SYSTEM :[deadlock free [F]]
