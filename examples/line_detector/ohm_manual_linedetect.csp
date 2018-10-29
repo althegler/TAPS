@@ -1,0 +1,21 @@
+MAX = 8
+channel start
+channel c : { 1..MAX }
+channel d : { 1..MAX }
+
+SINK = d?i -> SINK
+TIME = start -> TIME
+
+IDstart = start -> ID(0)
+ID(MAX) = IDstart
+ID(i)   = c.i -> ID(i+1)
+
+P(i) = c.i -> d!i -> P(i)
+
+Ps = ||| i:{1..MAX} @ P(i)
+SYSTEM = (IDstart [{|start, c, d|} || {|start|}] TIME)
+         [|{|c, d|}|]
+         (Ps [{|c, d|} || {|d|}] SINK)
+
+assert SKIP [F= SYSTEM \ Events
+assert SYSTEM :[deadlock free [F]]
