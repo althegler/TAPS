@@ -1,0 +1,15 @@
+channel clock : {0..10}
+
+P = clock ! 1 -> SKIP
+
+S = clock ! 2 -> SKIP
+-- S = SKIP
+
+-- Q = clock ? x -> (clock ? x -> STOP [] SKIP)
+Q = clock ? x -> SKIP
+
+SYSTEM = (P ||| S) [|{|clock|}|] Q
+
+
+assert SKIP [F= SYSTEM \ Events
+assert SYSTEM :[deadlock free [F]]

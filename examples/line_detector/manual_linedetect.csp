@@ -45,4 +45,5 @@ System =
 -- Monitor = clock -> src_w ? x -> clock -> Monitor
 
 assert SKIP [F= System \ Events
+assert SYSTEM :[deadlock free [F]]
 
