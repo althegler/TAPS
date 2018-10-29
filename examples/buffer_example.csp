@@ -1,0 +1,37 @@
+channel clock
+channel w,r : { -1..10}
+
+P = clock -> clock -> r ! 1 -> P
+
+-- S = clock ! 2 -> SKIP
+-- S = SKIP
+
+-- Q = clock ? x -> (clock ? x -> STOP [] SKIP)
+Q = clock -> w ? x -> clock -> Q
+
+
+SYSTEM =
+            (
+                (
+                    P [{| clock, r |} || {| clock, r, w |}] Buf_w(-1)
+                )
+                [{| clock, w, r |} || {| clock, w |}]
+                Q
+            )
+            [|{| clock |}|]
+            (
+                Clock(1)
+            )
+
+
+
+Clock(n) =  if n == 4 then SKIP else clock -> clock -> Clock(n+1)
+
+
+Buf_w(x) = clock -> w ! x -> Buf_r(x) [] SKIP
+Buf_r(x) = clock -> (r ? x -> Buf_w(x) [] SKIP)
+
+
+
+assert SKIP [F= SYSTEM \ Events
+assert SYSTEM :[deadlock free [F]]
