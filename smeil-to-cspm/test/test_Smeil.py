@@ -14,11 +14,18 @@ from SmeilToCSPm import test_main as taps
 
 
 
+
 def test_proc_name_with_input():
     test_input = "proc clock(in x) { }"
     test_output = "Clock(x) =\nlet\nwithin\nSKIP\n"
     output = taps(test_input)
     assert output == test_output
+
+# def test_proc_name_with_several_input():
+#     test_input = "proc clock(in x, out y, const z) { }"
+#     test_output = "?"
+#     output = taps(test_input)
+#     assert output == test_output
 
 
 def test_proc_name_without_input():
@@ -28,86 +35,35 @@ def test_proc_name_without_input():
     output = taps(test_input)
     assert output == test_output
 
+def test_proc_variable_in_process():
+    test_input = "proc clock() var x : u4; { }"
+    test_output = ""
+    # Will not generate a channel because it does not have an output bus
+    output = taps(test_input)
+    assert output == test_output
+
+def test_proc_output_bus():
+    test_input = "proc clock() \
+                    bus clock_out { \
+                        val: u4 range 0 to 2; \
+                    }; \
+                    { }"
+    test_output = "channel clock_clock_out_val : {0 .. 15}\nclock_clock_out_val_monitor(c) = c ? x -> if 0 <= x and x <= 2 then SKIP else STOP\n"
+    output = taps(test_input)
+    assert output == test_output
+
+def test_proc_output_bus_several_channels():
+    test_input = "proc clock() \
+                    bus clock_out { \
+                        val: u4 range 0 to 2; \
+                        val2: u4 range 0 to 2; \
+                    }; \
+                    { }"
+    test_output = "channel clock_clock_out_val : {0 .. 15}\nchannel clock_clock_out_val2 : {0 .. 15}\nclock_clock_out_val_monitor(c) = c ? x -> if 0 <= x and x <= 2 then SKIP else STOP\nclock_clock_out_val2_monitor(c) = c ? x -> if 0 <= x and x <= 2 then SKIP else STOP\n"
+    output = taps(test_input)
+    assert output == test_output
 
 
-# def test_variables():
-#     test_input = "proc clock(in x)var hour : u4 ; { }"
-#     test_output = "Clock(x) = \n"
-#     lexer = SmeilLexer(InputStream(test_input))
-#     stream = CommonTokenStream(lexer)
-#     parser = SmeilParser(stream)
-#     tree = parser.module()
-#     printer = SmeilCspmListenerVersion2()
-#     walker = ParseTreeWalker()
-#     walker.walk(printer, tree)
-#     output = printer.get_channel() + printer.get_process()
-#     # print output
-#     # print test_output
-#     assert output == test_output
-#
-#
-# def test_channel():
-#     test_input = "proc clock(in x) bus clock_out {val: u4 range 0 to 2;};var hour : u4 ; { }"
-#     test_output = "channel clock_out_val : {0..2} \n\nClock(x) = \n"
-#     lexer = SmeilLexer(InputStream(test_input))
-#     stream = CommonTokenStream(lexer)
-#     parser = SmeilParser(stream)
-#     tree = parser.module()
-#     printer = SmeilCspmListenerVersion2()
-#     walker = ParseTreeWalker()
-#     walker.walk(printer, tree)
-#     output = printer.get_channel() + printer.get_process()
-#     print output
-#     print test_output
-#     assert output == test_output
-#
-#
-# def test_several_channels():
-#     test_input = ("proc clock( in x) bus clock_out {val1: u4 range 0 to 1; val2: u4 range 0 to 3;}; " +
-#                   "var hour : u4 ; {}")
-#     test_output = ("channel clock_out_val1 : {0..1} " +
-#                   "\nchannel clock_out_val2 : {0..3} \n\nClock(x) = \n")
-#     lexer = SmeilLexer(InputStream(test_input))
-#     stream = CommonTokenStream(lexer)
-#     parser = SmeilParser(stream)
-#     tree = parser.module()
-#     printer = SmeilCspmListenerVersion2()
-#     walker = ParseTreeWalker()
-#     walker.walk(printer, tree)
-#     output = printer.get_channel() + printer.get_process()
-#     # print output
-#     # print test_output
-#     assert output == test_output
-#
-# def test_process_input_variable():
-#     test_input = "proc clock( in hours_in ) { }"
-#     test_output = "Clock(hours_in) = \n"
-#     lexer = SmeilLexer(InputStream(test_input))
-#     stream = CommonTokenStream(lexer)
-#     parser = SmeilParser(stream)
-#     tree = parser.module()
-#     printer = SmeilCspmListenerVersion2()
-#     walker = ParseTreeWalker()
-#     walker.walk(printer, tree)
-#     output = printer.get_channel() + printer.get_process()
-#     # print output
-#     # print test_output
-#     assert output == test_output
-#
-# def test_process_empty_statement():
-#     test_input = "proc clock(in x) bus clock_out {val: u4 range 10 to 20;}; var hour : u4 ; { }"
-#     test_output = "channel clock_out_val : {10..20} \n\nClock(x) = \n"
-#     lexer = SmeilLexer(InputStream(test_input))
-#     stream = CommonTokenStream(lexer)
-#     parser = SmeilParser(stream)
-#     tree = parser.module()
-#     printer = SmeilCspmListenerVersion2()
-#     walker = ParseTreeWalker()
-#     walker.walk(printer, tree)
-#     output = printer.get_channel() + printer.get_process()
-#     print output
-#     print test_output
-#     assert output == test_output
 #
 # #TODO this should not be a valid process definition. it has no communication
 # # but still creates an assertion process
