@@ -1,11 +1,9 @@
-channel counter : { -1..10}
+channel counter : { 0..10}
 channel src_r, src_w : { -1..10}
 channel clock
 
 
-Pixel1 = clock ->
-    -- counter ? x ->
-        clock -> src_r ! 1 -> Pixel1
+Pixel1 = (clock -> counter ? x -> clock -> src_r ! 1 -> Pixel1) [] SKIP
         -- if (x == 1)
         -- then (clock -> src_r ! x -> Pixel1)
         -- else clock -> Pixel1
@@ -17,7 +15,7 @@ Pixel1 = clock ->
 --         else clock -> Pixel2
 
 
-Src = clock -> src_w ? x -> clock -> Src
+Src = (clock -> src_w ? x -> clock -> Src) [] SKIP
 
 Buf_src_w(x) = clock -> src_w ! x -> Buf_src_r(x) [] SKIP
 Buf_src_r(x) = clock -> (src_r ? x -> Buf_src_w(x) [] SKIP)
@@ -45,5 +43,5 @@ System =
 -- Monitor = clock -> src_w ? x -> clock -> Monitor
 
 assert SKIP [F= System \ Events
-assert SYSTEM :[deadlock free [F]]
+assert System :[deadlock free [F]]
 
