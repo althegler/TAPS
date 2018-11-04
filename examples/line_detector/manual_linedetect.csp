@@ -3,39 +3,48 @@ channel src_r, src_w : { -1..10}
 channel clock
 
 
-Pixel1 = (clock -> counter ? x -> clock -> src_r ! 1 -> Pixel1) [] SKIP
-        -- if (x == 1)
-        -- then (clock -> src_r ! x -> Pixel1)
-        -- else clock -> Pixel1
-
--- Pixel2 = clock ->
---     counter ? x ->
---         if (x == 1)
---         then (clock -> src_r ! x -> Pixel2)
---         else clock -> Pixel2
 
 
-Src = (clock -> src_w ? x -> clock -> Src) [] SKIP
+Pixel1 = (clock -> counter ? x -> -- clock -> src_r ! 1 -> Pixel1) [] SKIP
+        if (x == 1)
+        then (clock -> src_r ! 1 -> Pixel1)
+        else clock -> Pixel1) [] SKIP
 
-Buf_src_w(x) = clock -> src_w ! x -> Buf_src_r(x) [] SKIP
-Buf_src_r(x) = clock -> (src_r ? x -> Buf_src_w(x) [] SKIP)
+Pixel2 = (clock -> counter ? x -> -- clock -> src_r ! 1 -> Pixel1) [] SKIP
+        if (x == 2)
+        then (clock -> src_r ! 2 -> Pixel2)
+        else clock -> Pixel2) [] SKIP
 
-Clock(n) = if n == 10 then SKIP else clock -> clock -> Clock(n+1)
+
+Src = (clock -> (src_w ? x -> clock -> Src [] clock -> Src)) [] SKIP
+
+
+
+Writes(x) = src_w ! x -> ((Writes(x) [] Buf_src_r(x)) [] SKIP)
+Buf_src_w(x) = clock -> (Writes(x) [] Buf_src_r(x)) [] SKIP
+
+Buf_src_r(x) = clock -> ((src_r ? x -> (src_r ? x -> STOP [] Buf_src_w(x))
+                         [] clock -> Buf_src_r(x)) [] SKIP)
+
+
+
+
+Clock(n) = if n == 5 then SKIP else clock -> clock -> Clock(n+1)
 
 
 
 System =
         (
             (
-                -- (
+                (
                     (
                         Pixel1 [{| clock, src_r, counter |} || {| clock, src_r, src_w |}] Buf_src_w(-1)
                     )
-                    -- [{| clock, src_r, src_w, counter |} || {| clock, src_r, counter |}] Pixel2
-                -- )
-                [{| clock, src_r, src_w |} || {| clock, src_w |}] Src
+                    [{| clock, src_r, src_w, counter |} || {| clock, src_r, counter |}] Pixel2
+                )
+                [{| clock, src_r, src_w, counter |} || {| clock, src_w |}] Src
             )
-            [{| clock, src_r, src_w |} || {| clock |}] Clock(0)
+            [{| clock, src_r, src_w, counter |} || {| clock |}] Clock(0)
         )
 
 
