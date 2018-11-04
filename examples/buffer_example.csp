@@ -1,27 +1,43 @@
 channel clock
 channel w,r : { -1..10}
 
-INITIAL = -1
 
-P = (clock -> clock ->  r ! 1 -> P) [] SKIP
+--
+P1 = (clock -> clock ->  r ! 1 -> P1) [] SKIP
+--
+-- -- S = clock ! 2 -> SKIP
+-- -- S = SKIP
+--
+-- -- Q = clock ? x -> (clock ? x -> STOP [] SKIP)
+Q1 =  (clock -> w ? x -> w ? x -> w ? x -> clock -> Q1) [] SKIP
+--
+-- -- Q2 =  (clock -> w ? x -> w ? y -> clock -> Q2) [] SKIP
+--
+--
 
--- S = clock ! 2 -> SKIP
--- S = SKIP
 
--- Q = clock ? x -> (clock ? x -> STOP [] SKIP)
-Q =  (clock -> w ? x -> clock -> Q) [] SKIP
 
--- Q2 =  (clock -> w ? x -> w ? y -> clock -> Q2) [] SKIP
+P = (clock -> clock -> clock -> clock -> r ! 1 -> clock -> clock -> r ! 1 -> P1) [] SKIP
+Q = (clock -> clock -> clock -> clock -> clock -> w ? x -> clock -> Q1) [] SKIP
+
+
+
+Read(x) = clock -> ((r ? x -> (r ? x -> STOP [] Write(x))
+                    [] clock -> Read(x)) [] SKIP)
+
+Writes(x) = w ! x -> ((Writes(x) [] Read(x)) [] SKIP)
+Write(x) = clock -> (Writes(x) [] Read(x)) [] SKIP
+
 
 
 SYSTEM =
             -- (
                 (
                     (
-                        P [{| clock, r |} || {| clock, r, w |}] Write(INITIAL)
+                        Q [{| clock, w |} || {| clock, r, w |}] Write(-1)
                     )
-                    [{| clock, w, r |} || {| clock, w |}]
-                    Q
+                    [{| clock, w, r |} || {| clock, r |}]
+                    P
                 )
                 -- [{| clock, w, r |} || {| clock, w |}]
                 -- Q2
@@ -33,18 +49,12 @@ SYSTEM =
 
 
 
-Clock(n) =  if n == 4 then SKIP else clock -> clock -> Clock(n+1)
+Clock(n) =  if n == 10 then SKIP else clock -> clock -> Clock(n+1)
 
 
 -- Buf_w(x) = clock -> w ! x -> Buf_r(x) [] SKIP
 -- Buf_r(x) = clock -> (r ? x -> (r ? x -> STOP [] Buf_w(x)) [] SKIP [] clock -> Buf_r(x))
 
-
-
-Read(x) = (r ? x -> (r ? x -> STOP [] Write(x))) [] clock -> clock -> Read(x)
-
-Writes(x) = w ! x -> (Writes(x) [] clock -> Read(x))
-Write(x) = clock -> (Writes(x) [] clock -> Read(x)) [] SKIP
 
 assert SKIP [F= SYSTEM \ Events
 assert SYSTEM :[deadlock free [F]]

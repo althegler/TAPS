@@ -1,0 +1,19 @@
+proc counter (in input)
+    bus output {
+        val: uint;
+    };
+    var i: uint = 0;
+{
+    i = i + 1;
+    trace("input is {}", input.val);
+    output.val = i;
+}
+
+network net ()
+{
+    bus net_output {
+        val: uint;
+    };
+    instance c of counter(net_output);
+
+}
