@@ -1,18 +1,6 @@
 channel hour_w_first, hour_r_first, hour_w_second, hour_r_second : { -1..20}
--- channel clock_w, clock_r : { -1..300}
 channel clock_w : { 131067 ..131071}
 channel clock
-
--- Seven_segment_clock(i) =
---     (clock ->
---     let
---         j = i + 1
---     within
---         clock ->
---         if j > 300
---         then STOP
---         else (clock_r ! i -> Seven_segment_clock(j))
---         ) [] SKIP
 
 Hours =
     (clock -> clock_w ? hours_in ->
@@ -20,7 +8,6 @@ Hours =
         then clock -> hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
-                -- hours = hours_in % 60 -- for testing
                 hours = ( hours_in / 3600 ) % 24
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
@@ -28,13 +15,9 @@ Hours =
                 clock ->
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
-                if hours_first_temp > 100
-                then STOP
-                else(
+                (hours_first_temp <= 100) & (
                     hour_r_first ! hours_first_temp ->
-                    if hours_second_temp > 100
-                    then STOP
-                    else(
+                    (hours_second_temp <= 100) & (
                         hour_r_second ! hours_second_temp ->
                         Hours
                     )
@@ -51,48 +34,39 @@ Buf_hour_r_first(x) = clock -> (hour_r_first ? x -> Buf_hour_w_first(x) [] SKIP)
 Buf_hour_w_second(x) = clock -> hour_w_second ! x -> Buf_hour_r_second(x) [] SKIP
 Buf_hour_r_second(x) = clock -> (hour_r_second ? x -> Buf_hour_w_second(x) [] SKIP)
 
--- Buf_clock_w(x) = clock -> clock_w ! x -> Buf_clock_r(x) [] SKIP
--- Buf_clock_r(x) = clock -> (clock_r ? x -> Buf_clock_w(x) [] SKIP)
-
-
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    if 0 <= x and x <= 2 or x == -1
-    then hours_hours_out_first_digit_monitor(c) else STOP) [] SKIP
+    (0 <= x and x <= 2 or x == -1) & (
+        hours_hours_out_first_digit_monitor(c))
+    ) [] SKIP
 
 hours_hours_out_second_digit_monitor(c) =
     (c ? x ->
-    if 0 <= x and x <= 9 or x == -1
-    then hours_hours_out_second_digit_monitor(c) else STOP) [] SKIP
+    (0 <= x and x <= 9 or x == -1) & (
+        hours_hours_out_second_digit_monitor(c))
+    ) [] SKIP
 
 
 Network =
         (
             (
-                -- (
-                    -- (
-                        (
-                            (
-                            Hours
-                            [|{| hour_r_first |}|]
-                            hours_hours_out_first_digit_monitor(hour_r_first)
-                            )
-                        [|{| hour_r_second |}|]
-                        hours_hours_out_second_digit_monitor(hour_r_second)
-                        )
-                    -- [{| clock, clock_w, hour_r_first, hour_r_second|} || {| clock, clock_w|}]
-                    -- Buf_clock_w(-1)
-                    -- )
-                -- [{| clock, clock_w, hour_r_first, hour_r_second, clock_r|} || {| clock, clock_r |}]
-                -- Seven_segment_clock(0)
-                -- )
+                (
+                    (
+                    Hours
+                    [|{| hour_r_first |}|]
+                    hours_hours_out_first_digit_monitor(hour_r_first)
+                    )
+                [|{| hour_r_second |}|]
+                hours_hours_out_second_digit_monitor(hour_r_second)
+                )
             [{| clock, clock_w, hour_r_first, hour_r_second|} || {| clock, hour_r_first, hour_w_first |}]
             Buf_hour_w_first(-1)
             )
         [{| clock, clock_w, hour_r_first, hour_r_second, hour_w_first|} || {| clock, hour_r_second, hour_w_second |}]
         Buf_hour_w_second(-1)
         )
-        [|{| clock |}|] (
+        [|{| clock |}|]
+        (
         Clock(1)
         )
 
