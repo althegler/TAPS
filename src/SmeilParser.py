@@ -253,14 +253,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_module
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterModule"):
-                listener.enterModule(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitModule"):
-                listener.exitModule(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitModule"):
                 return visitor.visitModule(self)
@@ -313,14 +305,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_entity
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterEntity"):
-                listener.enterEntity(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitEntity"):
-                listener.exitEntity(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitEntity"):
@@ -382,14 +366,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_network
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterNetwork"):
-                listener.enterNetwork(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitNetwork"):
-                listener.exitNetwork(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitNetwork"):
@@ -482,14 +458,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_process
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterProcess"):
-                listener.enterProcess(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitProcess"):
-                listener.exitProcess(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitProcess"):
                 return visitor.visitProcess(self)
@@ -579,14 +547,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_networkdecl
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterNetworkdecl"):
-                listener.enterNetworkdecl(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitNetworkdecl"):
-                listener.exitNetworkdecl(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitNetworkdecl"):
                 return visitor.visitNetworkdecl(self)
@@ -627,14 +587,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_params
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterParams"):
-                listener.enterParams(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitParams"):
-                listener.exitParams(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitParams"):
@@ -690,14 +642,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_param
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterParam"):
-                listener.enterParam(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitParam"):
-                listener.exitParam(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitParam"):
                 return visitor.visitParam(self)
@@ -734,14 +678,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_direction
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterDirection"):
-                listener.enterDirection(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitDirection"):
-                listener.exitDirection(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitDirection"):
@@ -796,14 +732,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_vardecl
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterVardecl"):
-                listener.enterVardecl(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitVardecl"):
-                listener.exitVardecl(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitVardecl"):
@@ -873,14 +801,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_ranges
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterRanges"):
-                listener.enterRanges(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitRanges"):
-                listener.exitRanges(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitRanges"):
                 return visitor.visitRanges(self)
@@ -930,14 +850,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_busdecl
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterBusdecl"):
-                listener.enterBusdecl(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitBusdecl"):
-                listener.exitBusdecl(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitBusdecl"):
@@ -1016,14 +928,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_bussignaldecl
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterBussignaldecl"):
-                listener.enterBussignaldecl(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitBussignaldecl"):
-                listener.exitBussignaldecl(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitBussignaldecl"):
                 return visitor.visitBussignaldecl(self)
@@ -1091,14 +995,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_instance
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterInstance"):
-                listener.enterInstance(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitInstance"):
-                listener.exitInstance(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitInstance"):
                 return visitor.visitInstance(self)
@@ -1161,14 +1057,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_instancename
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterInstancename"):
-                listener.enterInstancename(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitInstancename"):
-                listener.exitInstancename(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitInstancename"):
                 return visitor.visitInstancename(self)
@@ -1217,14 +1105,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_statement
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterStatement"):
-                listener.enterStatement(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitStatement"):
-                listener.exitStatement(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitStatement"):
@@ -1307,14 +1187,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_formatstring
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterFormatstring"):
-                listener.enterFormatstring(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitFormatstring"):
-                listener.exitFormatstring(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitFormatstring"):
                 return visitor.visitFormatstring(self)
@@ -1365,14 +1237,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_formatstringpart
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterFormatstringpart"):
-                listener.enterFormatstringpart(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitFormatstringpart"):
-                listener.exitFormatstringpart(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitFormatstringpart"):
@@ -1432,14 +1296,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_expression
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterExpression"):
-                listener.enterExpression(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitExpression"):
-                listener.exitExpression(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitExpression"):
@@ -1513,14 +1369,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_binop
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterBinop"):
-                listener.enterBinop(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitBinop"):
-                listener.exitBinop(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitBinop"):
                 return visitor.visitBinop(self)
@@ -1561,14 +1409,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_unop
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterUnop"):
-                listener.enterUnop(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitUnop"):
-                listener.exitUnop(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitUnop"):
@@ -1613,14 +1453,6 @@ class SmeilParser ( Parser ):
         def getRuleIndex(self):
             return SmeilParser.RULE_literal
 
-        def enterRule(self, listener):
-            if hasattr(listener, "enterLiteral"):
-                listener.enterLiteral(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitLiteral"):
-                listener.exitLiteral(self)
-
         def accept(self, visitor):
             if hasattr(visitor, "visitLiteral"):
                 return visitor.visitLiteral(self)
@@ -1660,14 +1492,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_stringliteral
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterStringliteral"):
-                listener.enterStringliteral(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitStringliteral"):
-                listener.exitStringliteral(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitStringliteral"):
@@ -1725,14 +1549,6 @@ class SmeilParser ( Parser ):
 
         def getRuleIndex(self):
             return SmeilParser.RULE_name
-
-        def enterRule(self, listener):
-            if hasattr(listener, "enterName"):
-                listener.enterName(self)
-
-        def exitRule(self, listener):
-            if hasattr(listener, "exitName"):
-                listener.exitName(self)
 
         def accept(self, visitor):
             if hasattr(visitor, "visitName"):

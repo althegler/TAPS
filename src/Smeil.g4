@@ -13,11 +13,11 @@ network : 'network' IDENT '(' params? ')' '{' networkdecl* '}';
 process : 'proc' IDENT '(' params? ')'
             (vardecl
             /* | constdecl */
-            | busdecl
+            | busdecl )*
             /*| enum*/
             /*| instance */
             /*| gendecl - Not implemented in SMEIL yet */
-            /* '{' statement* '}'; */
+            '{' statement* '}';
 
 /* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}'; */
 
