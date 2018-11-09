@@ -1,0 +1,35 @@
+Unit test ideas:
+
+Channels:
+    - A channel is generated with proper name from bus
+    - A channel is generated with proper ranges and types
+    - If channel has a value i SMEIL, the cspm range matches that
+    - If the bus is defined in the network the cspm channel name matches that
+    - A bus can be defined in the network instead of process
+
+
+Processes:
+    - A process input variable is translated without bus.channelname
+    - A process that calculates something on a line with communication will
+        be translated with the correct communication and translation
+    - A process will generate proper calculations with parenthesis
+    - A process is able to receive more than one input variable
+    -
+
+Network:
+    - A network will be created with the correct input channel
+    - A network with several input channels will be able to translate properly
+    - A network will generate the syncronization with the correct parentheses
+    - A network will generate the syncronization with a sink process correctly
+    - A network will generate the syncronization with monitor processes correctly
+
+Monitor:
+    - A monitor will be able to generate correct range calculations
+    - A monitor will be able to generate "other" types of verification
+    - A monitor will be able to receive more than one input.
+    - A monitor will be able to use more than one input for verification
+
+
+Assert:
+    - An assert will be able to use the correct network for verification
+    - An assert will be able to use other types of refinements

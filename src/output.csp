@@ -1,0 +1,99 @@
+channel hours_hours_out_first_digit : {0 .. 3}
+channel hours_hours_out_second_digit : {0 .. 15}
+channel seconds_sec_out_first_digit : {0 .. 7}
+channel seconds_sec_out_second_digit : {0 .. 15}
+channel minutes_min_out_second_digit : {0 .. 15}
+channel minutes_min_out_first_digit : {0 .. 7}
+channel clock_c_out_val : {0 .. 131071}
+
+
+Hours(hours_in) =
+    let
+        hours = ( hours_in / 3600 ) % 24
+        hours_first_temp = hours / 10
+        hours_second_temp = hours % 10
+    within
+        hours_hours_out_first_digit ! hours_first_temp ->
+        hours_hours_out_second_digit ! hours_second_temp ->
+        SKIP
+
+Seconds(sec_in) =
+    let
+        sec = sec_in % 60
+        sec_first_temp = sec / 10
+        sec_second_temp = sec % 10
+    within
+        seconds_sec_out_first_digit ! sec_first_temp ->
+        seconds_sec_out_second_digit ! sec_second_temp ->
+        SKIP
+
+Minutes(min_in) =
+    let
+        min = ( min_in / 60 ) % 60
+        min_first_temp = min / 10
+        min_second_temp = min % 10
+    within
+        minutes_min_out_first_digit ! min_first_temp ->
+        minutes_min_out_second_digit ! min_second_temp ->
+        SKIP
+
+
+N_hours =
+clock_c_out_val ? variable ->
+(Hours(variable)
+[| {| hours_hours_out_first_digit |} |]
+hours_hours_out_first_digit_monitor(hours_hours_out_first_digit))
+[| {| hours_hours_out_second_digit |} |]
+hours_hours_out_second_digit_monitor(hours_hours_out_second_digit)
+
+assert SKIP [F= N_hours \ Events
+
+
+N_seconds =
+clock_c_out_val ? variable ->
+(Seconds(variable)
+[| {| seconds_sec_out_first_digit |} |]
+seconds_sec_out_first_digit_monitor(seconds_sec_out_first_digit))
+[| {| seconds_sec_out_second_digit |} |]
+seconds_sec_out_second_digit_monitor(seconds_sec_out_second_digit)
+
+assert SKIP [F= N_seconds \ Events
+
+
+N_minutes =
+clock_c_out_val ? variable ->
+(Minutes(variable)
+[| {| minutes_min_out_first_digit |} |]
+minutes_min_out_first_digit_monitor(minutes_min_out_first_digit))
+[| {| minutes_min_out_second_digit |} |]
+minutes_min_out_second_digit_monitor(minutes_min_out_second_digit)
+
+assert SKIP [F= N_minutes \ Events
+
+
+
+
+hours_hours_out_second_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 9
+    then SKIP else STOP
+minutes_min_out_first_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 5
+    then SKIP else STOP
+minutes_min_out_second_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 9
+    then SKIP else STOP
+seconds_sec_out_first_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 5
+    then SKIP else STOP
+hours_hours_out_first_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 2
+    then SKIP else STOP
+seconds_sec_out_second_digit_monitor(c) =
+    c ? x ->
+    if 0 <= x and x <= 9
+    then SKIP else STOP
