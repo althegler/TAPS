@@ -109,4 +109,4 @@ src/*.interp
 src/input.sme
 src/output.csp
 src/expected_output.csp
-src/test/stuff_to_test.txt
+src/tests/stuff_to_test.txt
