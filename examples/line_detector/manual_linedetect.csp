@@ -2,9 +2,6 @@ channel counter : { 0..10}
 channel src_r, src_w : { -1..10}
 channel clock
 
-
-
-
 Pixel1 = (clock -> counter ? x -> -- clock -> src_r ! 1 -> Pixel1) [] SKIP
         if (x == 1)
         then (clock -> src_r ! 1 -> Pixel1)
