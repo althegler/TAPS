@@ -1,5 +1,5 @@
 channel hour_w_first, hour_r_first, hour_w_second, hour_r_second : { -1..20}
-channel clock_w : { 131067 ..131071}
+channel clock_w : {131067 ..131071}
 channel clock
 
 Hours =
@@ -8,7 +8,8 @@ Hours =
         then clock -> hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
-                hours = ( hours_in / 3600 ) % 24
+                hours = hours_in % 60 -- For testing
+                -- hours = ( hours_in / 3600 ) % 24
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
             within
@@ -25,18 +26,22 @@ Hours =
         )
     ) [] SKIP
 
+-- First digit buffers
+Read_first = clock -> ((hour_r_first ? x -> (hour_r_first ? x -> STOP [] Write_first(x))
+                    [] clock -> Read_first) [] SKIP)
+Writes_first(x) = hour_w_first ! x -> ((Writes_first(x) [] Read_first) [] SKIP)
+Write_first(x) = clock -> (Writes_first(x) [] Read_first) [] SKIP
 
-Clock(n) =  if n == 30 then SKIP else clock -> clock -> Clock(n+1)
 
-Buf_hour_w_first(x) = clock -> hour_w_first ! x -> Buf_hour_r_first(x) [] SKIP
-Buf_hour_r_first(x) = clock -> (hour_r_first ? x -> Buf_hour_w_first(x) [] SKIP)
-
-Buf_hour_w_second(x) = clock -> hour_w_second ! x -> Buf_hour_r_second(x) [] SKIP
-Buf_hour_r_second(x) = clock -> (hour_r_second ? x -> Buf_hour_w_second(x) [] SKIP)
+-- Second digit buffers
+Read_second = clock -> ((hour_r_second ? x -> (hour_r_second ? x -> STOP [] Write_second(x))
+                    [] clock -> Read_second) [] SKIP)
+Writes_second(x) = hour_w_second ! x -> ((Writes_second(x) [] Read_second) [] SKIP)
+Write_second(x) = clock -> (Writes_second(x) [] Read_second) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 2 or x == -1) & (
+    (0 <= x and x <= 5 or x == -1) & (
         hours_hours_out_first_digit_monitor(c))
     ) [] SKIP
 
@@ -45,6 +50,9 @@ hours_hours_out_second_digit_monitor(c) =
     (0 <= x and x <= 9 or x == -1) & (
         hours_hours_out_second_digit_monitor(c))
     ) [] SKIP
+
+
+Clock(n) =  if n == 10 then SKIP else clock -> clock -> Clock(n+1)
 
 
 Network =
@@ -60,10 +68,10 @@ Network =
                 hours_hours_out_second_digit_monitor(hour_r_second)
                 )
             [{| clock, clock_w, hour_r_first, hour_r_second|} || {| clock, hour_r_first, hour_w_first |}]
-            Buf_hour_w_first(-1)
+            Write_first(-1)
             )
         [{| clock, clock_w, hour_r_first, hour_r_second, hour_w_first|} || {| clock, hour_r_second, hour_w_second |}]
-        Buf_hour_w_second(-1)
+        Write_second(-1)
         )
         [|{| clock |}|]
         (
