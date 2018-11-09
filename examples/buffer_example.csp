@@ -3,45 +3,41 @@ channel w,r : { -1..10}
 
 
 --
-P1 = (clock -> clock ->  r ! 1 -> P1) [] SKIP
---
--- -- S = clock ! 2 -> SKIP
--- -- S = SKIP
---
--- -- Q = clock ? x -> (clock ? x -> STOP [] SKIP)
-Q1 =  (clock -> w ? x -> w ? x -> w ? x -> clock -> Q1) [] SKIP
---
--- -- Q2 =  (clock -> w ? x -> w ? y -> clock -> Q2) [] SKIP
---
---
+P1 = (clock -> clock -> r ! 1-> P1) [] SKIP
+
+Q1 =  (clock -> w ? x -> w ? x -> clock -> Q1) [] SKIP
+
+-- Q2 =  (clock -> w ? x -> clock -> Q1) [] SKIP
 
 
 
-P = (clock -> clock -> clock -> clock -> r ! 1 -> clock -> clock -> r ! 1 -> P1) [] SKIP
-Q = (clock -> clock -> clock -> clock -> clock -> w ? x -> clock -> Q1) [] SKIP
+-- P = (clock -> clock -> clock -> clock -> r ! 1 -> clock -> clock -> r ! 1 -> P1) [] SKIP
+-- Q = (clock -> clock -> clock -> clock -> clock -> w ? x -> clock -> Q1) [] SKIP
 
 
 
-Read(x) = clock -> ((r ? x -> (r ? x -> STOP [] Write(x))
-                    [] clock -> Read(x)) [] SKIP)
 
-Writes(x) = w ! x -> ((Writes(x) [] Read(x)) [] SKIP)
-Write(x) = clock -> (Writes(x) [] Read(x)) [] SKIP
+
+Read = clock -> ((r ? x -> (r ? x -> STOP [] Write(x))
+                    [] clock -> Read) [] SKIP)
+
+Writes(x) = w ! x -> ((Writes(x) [] Read) [] SKIP)
+Write(x) = clock -> (Writes(x) [] Read) [] SKIP
 
 
 
 SYSTEM =
-            -- (
-                (
-                    (
-                        Q [{| clock, w |} || {| clock, r, w |}] Write(-1)
-                    )
-                    [{| clock, w, r |} || {| clock, r |}]
-                    P
-                )
+            (
+                    -- (
+                        (
+                            Q1 [{| clock, w |} || {| clock, r, w |}] Write(-1)
+                        )
+                        [{| clock, w, r |} || {| clock, r |}]
+                        P1
+                --     )
                 -- [{| clock, w, r |} || {| clock, w |}]
                 -- Q2
-            -- )
+            )
             [|{| clock |}|]
             (
                 Clock(1)
@@ -49,12 +45,7 @@ SYSTEM =
 
 
 
-Clock(n) =  if n == 10 then SKIP else clock -> clock -> Clock(n+1)
-
-
--- Buf_w(x) = clock -> w ! x -> Buf_r(x) [] SKIP
--- Buf_r(x) = clock -> (r ? x -> (r ? x -> STOP [] Buf_w(x)) [] SKIP [] clock -> Buf_r(x))
-
+Clock(n) =  if n == 6 then SKIP else clock -> clock -> Clock(n+1)
 
 assert SKIP [F= SYSTEM \ Events
 assert SYSTEM :[deadlock free [F]]
