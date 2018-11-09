@@ -103,10 +103,10 @@ venv.bak/
 
 ## Specific project related stuff ##
 
-smeil-to-cspm/*.java
-smeil-to-cspm/*.tokens
-smeil-to-cspm/*.interp
-smeil-to-cspm/input.sme
-smeil-to-cspm/output.csp
-smeil-to-cspm/expected_output.csp
-smeil-to-cspm/test/stuff_to_test.txt
+src/*.java
+src/*.tokens
+src/*.interp
+src/input.sme
+src/output.csp
+src/expected_output.csp
+src/test/stuff_to_test.txt
