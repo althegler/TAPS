@@ -4,7 +4,7 @@ from SmeilParser import SmeilParser
 from SmeilVisitor import SmeilVisitor
 import sys
 
-class SmeilCspmNetworkMapper(SmeilVisitor):
+class taps_network_mapper(SmeilVisitor):
     def __init__(self, data):
         self.data = data
 

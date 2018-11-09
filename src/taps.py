@@ -1,10 +1,10 @@
 from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
-from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
-from SmeilCspmChannelMapper import SmeilCspmChannelMapper
-from SmeilCspmProcessMapper import SmeilCspmProcessMapper
-from CSPmTemplate import templating, test_templating
+from taps_network_mapper import taps_network_mapper
+from taps_channel_mapper import taps_channel_mapper
+from taps_process_mapper import taps_process_mapper
+from taps_template import templating, test_templating
 import sys
 
 
@@ -18,9 +18,9 @@ def test_main(input):
     transformed_data = {}
 
     # Extraction
-    SmeilCspmNetworkMapper(data).visit(tree)
-    SmeilCspmChannelMapper(data).visit(tree)
-    SmeilCspmProcessMapper(data).visit(tree)
+    taps_network_mapper(data).visit(tree)
+    taps_channel_mapper(data).visit(tree)
+    taps_process_mapper(data).visit(tree)
 
     # Transformation
     transformed_data['channels'] = transform_channels(data)
@@ -51,9 +51,9 @@ def main():
     # print(tree_str)
 
     # Extraction
-    SmeilCspmNetworkMapper(data).visit(tree)
-    SmeilCspmChannelMapper(data).visit(tree)
-    SmeilCspmProcessMapper(data).visit(tree)
+    taps_network_mapper(data).visit(tree)
+    taps_channel_mapper(data).visit(tree)
+    taps_process_mapper(data).visit(tree)
 
     # print data['processes']
 
