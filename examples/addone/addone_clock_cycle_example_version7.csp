@@ -6,9 +6,11 @@ Add(i) =
     (clock -> d_w ? x ->
             if (x == -1)
             then (clock ->
-                (i+1) <= 5 & c_r ! (i+1) -> Add(i))
+                (i+1) <= 5 &
+                    c_r ! (i+1) -> Add(i))
             else (clock ->
-                (x+1) <= 5 & c_r ! (x+1) -> Add(i))
+                (x+1) <= 5 &
+                    c_r ! (x+1) -> Add(i))
     )
     [] SKIP
 
@@ -17,20 +19,29 @@ Id(i) =
     (clock -> c_w ? x ->
             if (x == -1)
             then (clock ->
-                i <= 5 & d_r ! i -> Id(i))
+                i <= 5 &
+                    d_r ! i -> Id(i))
             else (clock ->
-                x <= 5 & d_r ! x -> Id(i))
+                x <= 5 &
+                    d_r ! x -> Id(i))
     )
     [] SKIP
 
 Clock(n) =  if n == 10 then SKIP else clock -> clock -> Clock(n+1)
 
 
-Buf_dw(x) = clock -> d_w ! x -> Buf_dr(x) [] SKIP
-Buf_dr(x) = clock -> (d_r ? x -> Buf_dw(x) [] SKIP)
+Buf_dr = clock -> ((d_r ? x -> (d_r ? x -> STOP [] Buf_dw(x))
+                    [] clock -> Buf_dr) [] SKIP)
 
-Buf_cw(x) = clock -> c_w ! x -> Buf_cr(x) [] SKIP
-Buf_cr(x) = clock -> (c_r ? x -> Buf_cw(x) [] SKIP)
+Writes_dw(x) = d_w ! x -> ((Writes_dw(x) [] Buf_dr) [] SKIP)
+Buf_dw(x) = clock -> (Writes_dw(x) [] Buf_dr) [] SKIP
+
+
+Buf_cr = clock -> ((c_r ? x -> (c_r ? x -> STOP [] Buf_cw(x))
+                    [] clock -> Buf_cr) [] SKIP)
+
+Writes_cw(x) = c_w ! x -> ((Writes_cw(x) [] Buf_cr) [] SKIP)
+Buf_cw(x) = clock -> (Writes_cw(x) [] Buf_cr) [] SKIP
 
 System = (
            (
