@@ -3,25 +3,31 @@ channel d_r, c_r : { -1..5}
 channel d_w, c_w : { -1..5}
 
 Add(i) =
-    (clock -> d_w ? x ->
+    (clock -> d_w ? x -> clock ->
             if (x == -1)
-            then (clock ->
-                (i+1) <= 5 &
-                    c_r ! (i+1) -> Add(i))
-            else (clock ->
-                (x+1) <= 5 &
-                    c_r ! (x+1) -> Add(i))
+            then (
+                let
+                    var = i + 1 -- Maybe this should actually just sent i and not i + 1?
+                within
+                    var <= 5 &
+                        c_r ! var -> Add(i))
+            else (
+                let
+                    var = x + 1
+                within
+                    var <= 5 &
+                        c_r ! var -> Add(i))
     )
     [] SKIP
 
 
 Id(i) =
-    (clock -> c_w ? x ->
+    (clock -> c_w ? x -> clock ->
             if (x == -1)
-            then (clock ->
+            then ( -- Minus let within her
                 i <= 5 &
                     d_r ! i -> Id(i))
-            else (clock ->
+            else (
                 x <= 5 &
                     d_r ! x -> Id(i))
     )
