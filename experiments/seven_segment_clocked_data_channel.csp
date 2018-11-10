@@ -28,14 +28,16 @@ Hours =
 -- First digit buffers
 Read_first = clock -> ((hour_r_first ? x -> (hour_r_first ? x -> STOP [] Write_first(x))
                     [] clock -> Read_first) [] SKIP)
-Writes_first(x) = hour_w_first ! x -> ((Writes_first(x) [] Read_first) [] SKIP)
+
+Writes_first(x) = hour_w_first ! x -> (Writes_first(x) [] Read_first)
 Write_first(x) = clock -> (Writes_first(x) [] Read_first) [] SKIP
 
 
 -- Second digit buffers
 Read_second = clock -> ((hour_r_second ? x -> (hour_r_second ? x -> STOP [] Write_second(x))
                     [] clock -> Read_second) [] SKIP)
-Writes_second(x) = hour_w_second ! x -> ((Writes_second(x) [] Read_second) [] SKIP)
+
+Writes_second(x) = hour_w_second ! x -> (Writes_second(x) [] Read_second)
 Write_second(x) = clock -> (Writes_second(x) [] Read_second) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
@@ -50,8 +52,8 @@ hours_hours_out_second_digit_monitor(c) =
         hours_hours_out_second_digit_monitor(c)
     ) [] SKIP
 
-
-Clock(n) =  if n == 10 then SKIP else clock -> clock -> Clock(n+1)
+Clock(10) = SKIP
+Clock(n) =  clock -> clock -> Clock(n+1)
 
 
 Network =
@@ -78,7 +80,7 @@ Network =
         )
 
 assert SKIP [F= Network \ Events
-assert Network :[deadlock free [F]]
+-- assert Network :[deadlock free [F]]
 
 
 

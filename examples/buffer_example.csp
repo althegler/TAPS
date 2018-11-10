@@ -3,7 +3,7 @@ channel w,r : { -1..10}
 
 
 --
-P1 = (clock -> clock -> r ! 1-> P1) [] SKIP
+P1 = (clock -> clock -> r ! 1 -> P1) [] SKIP
 
 Q1 =  (clock -> w ? x -> w ? x -> clock -> Q1) [] SKIP
 
@@ -21,7 +21,7 @@ Q1 =  (clock -> w ? x -> w ? x -> clock -> Q1) [] SKIP
 Read = clock -> ((r ? x -> (r ? x -> STOP [] Write(x))
                     [] clock -> Read) [] SKIP)
 
-Writes(x) = w ! x -> ((Writes(x) [] Read) [] SKIP)
+Writes(x) = w ! x -> (Writes(x) [] Read)
 Write(x) = clock -> (Writes(x) [] Read) [] SKIP
 
 
@@ -45,7 +45,9 @@ SYSTEM =
 
 
 
-Clock(n) =  if n == 6 then SKIP else clock -> clock -> Clock(n+1)
+
+Clock(6) = SKIP
+Clock(n) =  clock -> clock -> Clock(n+1)
 
 assert SKIP [F= SYSTEM \ Events
 assert SYSTEM :[deadlock free [F]]
