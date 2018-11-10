@@ -3,9 +3,9 @@ channel clock_w : {131067 ..131071}
 channel clock
 
 Hours =
-    (clock -> clock_w ? hours_in ->
+    (clock -> clock_w ? hours_in -> clock ->
         if (hours_in == 131067)
-        then clock -> hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
+        then hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
                 hours = hours_in % 60 -- For testing
@@ -13,17 +13,16 @@ Hours =
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
             within
-                clock ->
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
-                (hours_first_temp <= 100) & (
-                    hour_r_first ! hours_first_temp ->
-                    (hours_second_temp <= 100) & (
-                        hour_r_second ! hours_second_temp ->
+                (hours_first_temp <= 100) &
+                    (hour_r_first ! hours_first_temp ->
+                    (hours_second_temp <= 100) &
+                        (hour_r_second ! hours_second_temp ->
                         Hours
+                        )
                     )
-                )
-        )
+            )
     ) [] SKIP
 
 -- First digit buffers
@@ -41,14 +40,14 @@ Write_second(x) = clock -> (Writes_second(x) [] Read_second) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 5 or x == -1) & (
-        hours_hours_out_first_digit_monitor(c))
+    (0 <= x and x <= 5 or x == -1) &
+        hours_hours_out_first_digit_monitor(c)
     ) [] SKIP
 
 hours_hours_out_second_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 9 or x == -1) & (
-        hours_hours_out_second_digit_monitor(c))
+    (0 <= x and x <= 9 or x == -1) &
+        hours_hours_out_second_digit_monitor(c)
     ) [] SKIP
 
 
