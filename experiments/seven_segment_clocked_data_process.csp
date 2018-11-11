@@ -1,15 +1,15 @@
 channel hour_w_first, hour_r_first, hour_w_second, hour_r_second : { -1..20}
 channel clock_w : {131067 ..131077}
-channel clock
+channel sync
 
 Seven_segment_clock(i) =
     (i+1 <= 131077) & (
         clock_w ! i+1 -> Seven_segment_clock(i+1) [] SKIP)
 
 Hours =
-    (clock -> clock_w ? hours_in ->
+    (sync -> clock_w ? hours_in -> sync ->
         if (hours_in == 131067)
-        then clock -> hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
+        then hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
                 hours = hours_in % 60 -- For testing
@@ -17,7 +17,6 @@ Hours =
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
             within
-                clock ->
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
                 (hours_first_temp <= 100) & (
@@ -32,18 +31,18 @@ Hours =
 
 
 -- First digit buffers
-Read_first = clock -> ((hour_r_first ? x -> (hour_r_first ? x -> STOP [] Write_first(x))
-                    [] clock -> Read_first) [] SKIP)
+Read_first = sync -> ((hour_r_first ? x -> (hour_r_first ? x -> STOP [] Write_first(x))
+                    [] sync -> Read_first) [] SKIP)
 
 Writes_first(x) = hour_w_first ! x -> (Writes_first(x) [] Read_first)
-Write_first(x) = clock -> (Writes_first(x) [] Read_first) [] SKIP
+Write_first(x) = sync -> (Writes_first(x) [] Read_first) [] SKIP
 
 -- Second digit buffers
-Read_second = clock -> ((hour_r_second ? x -> (hour_r_second ? x -> STOP [] Write_second(x))
-                    [] clock -> Read_second) [] SKIP)
+Read_second = sync -> ((hour_r_second ? x -> (hour_r_second ? x -> STOP [] Write_second(x))
+                    [] sync -> Read_second) [] SKIP)
 
 Writes_second(x) = hour_w_second ! x -> (Writes_second(x) [] Read_second)
-Write_second(x) = clock -> (Writes_second(x) [] Read_second) [] SKIP
+Write_second(x) = sync -> (Writes_second(x) [] Read_second) [] SKIP
 
 
 hours_hours_out_first_digit_monitor(c) =
@@ -61,7 +60,7 @@ hours_hours_out_second_digit_monitor(c) =
 
 
 Clock(10) = SKIP
-Clock(n) =  clock -> clock -> Clock(n+1)
+Clock(n) =  sync -> sync -> Clock(n+1)
 
 Network =
         (
@@ -76,21 +75,21 @@ Network =
                     [|{| hour_r_second |}|]
                     hours_hours_out_second_digit_monitor(hour_r_second)
                     )
-                [{| clock, clock_w, hour_r_first, hour_r_second|} || {| clock_w |}]
+                [{| sync, clock_w, hour_r_first, hour_r_second|} || {| clock_w |}]
                 Seven_segment_clock(131067)
                 )
-            [{| clock, clock_w, hour_r_first, hour_r_second|} || {| clock, hour_r_first, hour_w_first |}]
+            [{| sync, clock_w, hour_r_first, hour_r_second|} || {| sync, hour_r_first, hour_w_first |}]
             Write_first(-1)
             )
-        [{| clock, clock_w, hour_r_first, hour_r_second, hour_w_first|} || {| clock, hour_r_second, hour_w_second |}]
+        [{| sync, clock_w, hour_r_first, hour_r_second, hour_w_first|} || {| sync, hour_r_second, hour_w_second |}]
         Write_second(-1)
         )
-        [|{| clock |}|] (
+        [|{| sync |}|] (
         Clock(1)
         )
 
 assert SKIP [F= Network \ Events
--- assert Network :[deadlock free [F]]
+assert Network :[deadlock free [F]]
 
 
 
