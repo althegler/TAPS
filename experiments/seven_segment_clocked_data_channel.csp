@@ -1,50 +1,36 @@
-channel hour_w_first, hour_r_first, hour_w_second, hour_r_second : { -1..20}
-channel minutes_w_first, minutes_r_first, minutes_w_second, minutes_r_second : { -1..20}
-channel seconds_w_first, seconds_r_first, seconds_w_second, seconds_r_second : { -1..20}
-channel clock_w : {131067 ..131071}
+channel hour_r_first : { -1..3}
+channel hour_r_second : { -1..15}
+channel minutes_r_first : { -1..7}
+channel minutes_r_second : { -1..15}
+channel seconds_r_first : { -1..7}
+channel seconds_r_second : { -1..15}
+channel clock_w : { -1 ..50}
 channel sync
 
 Clock(1) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
 
-
 Hours =
     (sync -> clock_w ? hours_in -> sync ->
-        if (hours_in == 131067) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
+        if (hours_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
         then hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
         else (
             let
-                -- hours = hours_in % 60 -- For testing
                 hours = ( hours_in / 3600 ) % 24
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
             within
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
-                (hours_first_temp <= 100) &
+                (hours_first_temp <= 3) &
                     (hour_r_first ! hours_first_temp ->
-                    (hours_second_temp <= 100) &
+                    (hours_second_temp <= 15) &
                         (hour_r_second ! hours_second_temp ->
                         Hours
                         )
                     )
             )
     ) [] SKIP
-
--- First digit buffers
-Read_hour_first = sync -> ((hour_r_first ? x -> (hour_r_first ? x -> STOP [] Write_hour_first(x))
-                    [] sync -> Read_hour_first) [] SKIP)
-
-Writes_hour_first(x) = hour_w_first ! x -> (Writes_hour_first(x) [] Read_hour_first)
-Write_hour_first(x) = sync -> (Writes_hour_first(x) [] Read_hour_first) [] SKIP
-
-
--- Second digit buffers
-Read_hour_second = sync -> ((hour_r_second ? x -> (hour_r_second ? x -> STOP [] Write_hour_second(x))
-                    [] sync -> Read_hour_second) [] SKIP)
-
-Writes_hour_second(x) = hour_w_second ! x -> (Writes_hour_second(x) [] Read_hour_second)
-Write_hour_second(x) = sync -> (Writes_hour_second(x) [] Read_hour_second) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
@@ -62,20 +48,12 @@ hours_hours_out_second_digit_monitor(c) =
 Hours_Network =
         (
             (
-                (
-                    (
-                    Hours
-                    [|{| hour_r_first |}|]
-                    hours_hours_out_first_digit_monitor(hour_r_first)
-                    )
-                [|{| hour_r_second |}|]
-                hours_hours_out_second_digit_monitor(hour_r_second)
-                )
-            [{| sync, clock_w, hour_r_first, hour_r_second|} || {| sync, hour_r_first, hour_w_first |}]
-            Write_hour_first(-1)
+            Hours
+            [|{| hour_r_first |}|]
+            hours_hours_out_first_digit_monitor(hour_r_first)
             )
-        [{| sync, clock_w, hour_r_first, hour_r_second, hour_w_first|} || {| sync, hour_r_second, hour_w_second |}]
-        Write_hour_second(-1)
+        [|{| hour_r_second |}|]
+        hours_hours_out_second_digit_monitor(hour_r_second)
         )
         [|{| sync |}|]
         (
@@ -88,41 +66,25 @@ assert SKIP [F= Hours_Network \ Events
 
 Minutes =
     (sync -> clock_w ? min_in -> sync ->
-        if (min_in == 131067) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
+        if (min_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
         then minutes_r_first ! -1 -> minutes_r_second ! -1 -> Hours
         else (
             let
-                -- min = min_in % 60 -- For testing
                 min = ( min_in / 60 ) % 60
                 min_first_temp = min / 10
                 min_second_temp = min % 10
             within
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
-                (min_first_temp <= 100) &
+                (min_first_temp <= 7) &
                     (minutes_r_first ! min_first_temp ->
-                    (min_second_temp <= 100) &
+                    (min_second_temp <= 15) &
                         (minutes_r_second ! min_second_temp ->
                         Minutes
                         )
                     )
             )
     ) [] SKIP
-
--- First digit buffers
-Read_min_first = sync -> ((minutes_r_first ? x -> (minutes_r_first ? x -> STOP [] Write_min_first(x))
-                    [] sync -> Read_min_first) [] SKIP)
-
-Writes_min_first(x) = minutes_w_first ! x -> (Writes_min_first(x) [] Read_min_first)
-Write_min_first(x) = sync -> (Writes_min_first(x) [] Read_min_first) [] SKIP
-
-
--- Second digit buffers
-Read_min_second = sync -> ((minutes_r_second ? x -> (minutes_r_second ? x -> STOP [] Write_min_second(x))
-                    [] sync -> Read_min_second) [] SKIP)
-
-Writes_min_second(x) = minutes_w_second ! x -> (Writes_min_second(x) [] Read_min_second)
-Write_min_second(x) = sync -> (Writes_min_second(x) [] Read_min_second) [] SKIP
 
 minutes_min_out_first_digit_monitor(c) =
     (c ? x ->
@@ -139,20 +101,12 @@ minutes_min_out_second_digit_monitor(c) =
 Minutes_Network =
         (
             (
-                (
-                    (
-                    Minutes
-                    [|{| minutes_r_first |}|]
-                    minutes_min_out_first_digit_monitor(minutes_r_first)
-                    )
-                [|{| minutes_r_second |}|]
-                minutes_min_out_second_digit_monitor(minutes_r_second)
-                )
-            [{| sync, clock_w, minutes_r_first, minutes_r_second|} || {| sync, minutes_r_first, minutes_w_first |}]
-            Write_min_first(-1)
+            Minutes
+            [|{| minutes_r_first |}|]
+            minutes_min_out_first_digit_monitor(minutes_r_first)
             )
-        [{| sync, clock_w, minutes_r_first, minutes_r_second, minutes_w_first|} || {| sync, minutes_r_second, minutes_w_second |}]
-        Write_min_second(-1)
+        [|{| minutes_r_second |}|]
+        minutes_min_out_second_digit_monitor(minutes_r_second)
         )
         [|{| sync |}|]
         (
@@ -167,7 +121,7 @@ assert SKIP [F= Minutes_Network \ Events
 
 Seconds =
     (sync -> clock_w ? sec_in -> sync ->
-        if (sec_in == 131067) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
+        if (sec_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
         then seconds_r_first ! -1 -> seconds_r_second ! -1 -> Seconds
         else (
             let
@@ -177,9 +131,9 @@ Seconds =
             within
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
-                (sec_first_temp <= 100) &
+                (sec_first_temp <= 7) &
                     (seconds_r_first ! sec_first_temp ->
-                    (sec_second_temp <= 100) &
+                    (sec_second_temp <= 15) &
                         (seconds_r_second ! sec_second_temp ->
                         Seconds
                         )
@@ -187,20 +141,6 @@ Seconds =
             )
     ) [] SKIP
 
--- First digit buffers
-Read_sec_first = sync -> ((seconds_r_first ? x -> (seconds_r_first ? x -> STOP [] Write_sec_first(x))
-                    [] sync -> Read_sec_first) [] SKIP)
-
-Writes_sec_first(x) = seconds_w_first ! x -> (Writes_sec_first(x) [] Read_sec_first)
-Write_sec_first(x) = sync -> (Writes_sec_first(x) [] Read_sec_first) [] SKIP
-
-
--- Second digit buffers
-Read_sec_second = sync -> ((seconds_r_second ? x -> (seconds_r_second ? x -> STOP [] Write_sec_second(x))
-                    [] sync -> Read_sec_second) [] SKIP)
-
-Writes_sec_second(x) = seconds_w_second ! x -> (Writes_sec_second(x) [] Read_sec_second)
-Write_sec_second(x) = sync -> (Writes_sec_second(x) [] Read_sec_second) [] SKIP
 
 sec_sec_out_first_digit_monitor(c) =
     (c ? x ->
@@ -217,20 +157,12 @@ sec_sec_out_second_digit_monitor(c) =
 Seconds_Network =
         (
             (
-                (
-                    (
-                    Seconds
-                    [|{| seconds_r_first |}|]
-                    sec_sec_out_first_digit_monitor(seconds_r_first)
-                    )
-                [|{| seconds_r_second |}|]
-                sec_sec_out_second_digit_monitor(seconds_r_second)
-                )
-            [{| sync, clock_w, seconds_r_first, seconds_r_second|} || {| sync, seconds_r_first, seconds_w_first |}]
-            Write_sec_first(-1)
+            Seconds
+            [|{| seconds_r_first |}|]
+            sec_sec_out_first_digit_monitor(seconds_r_first)
             )
-        [{| sync, clock_w, seconds_r_first, seconds_r_second, seconds_w_first|} || {| sync, seconds_r_second, seconds_w_second |}]
-        Write_sec_second(-1)
+        [|{| seconds_r_second |}|]
+        sec_sec_out_second_digit_monitor(seconds_r_second)
         )
         [|{| sync |}|]
         (
