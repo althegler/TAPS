@@ -1,19 +1,19 @@
-channel hour_r_first : { -1..3}
-channel hour_r_second : { -1..15}
-channel minutes_r_first : { -1..7}
-channel minutes_r_second : { -1..15}
-channel seconds_r_first : { -1..7}
-channel seconds_r_second : { -1..15}
-channel clock_w : { -1 ..50}
+channel hours_hours_out_first_digit : { -1..3}
+channel hours_hours_out_second_digit : { -1..15}
+channel minutes_min_out_first_digit : { -1..7}
+channel minutes_min_out_second_digit : { -1..15}
+channel seconds_sec_out_first_digit : { -1..7}
+channel seconds_sec_out_second_digit : { -1..15}
+channel clock_c_out_val : { -1 ..3}
 channel sync
 
 Clock(1) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
 
 Hours =
-    (sync -> clock_w ? hours_in -> sync ->
+    (sync -> clock_c_out_val ? hours_in -> sync ->
         if (hours_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then hour_r_first ! -1 -> hour_r_second ! -1 -> Hours
+        then hours_hours_out_first_digit ! -1 -> hours_hours_out_second_digit ! -1 -> Hours
         else (
             let
                 hours = ( hours_in / 3600 ) % 24
@@ -23,9 +23,9 @@ Hours =
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
                 (hours_first_temp <= 3) &
-                    (hour_r_first ! hours_first_temp ->
+                    (hours_hours_out_first_digit ! hours_first_temp ->
                     (hours_second_temp <= 15) &
-                        (hour_r_second ! hours_second_temp ->
+                        (hours_hours_out_second_digit ! hours_second_temp ->
                         Hours
                         )
                     )
@@ -45,29 +45,29 @@ hours_hours_out_second_digit_monitor(c) =
     ) [] SKIP
 
 
-Hours_Network =
+N_hours =
         (
             (
             Hours
-            [|{| hour_r_first |}|]
-            hours_hours_out_first_digit_monitor(hour_r_first)
+            [|{| hours_hours_out_first_digit |}|]
+            hours_hours_out_first_digit_monitor(hours_hours_out_first_digit)
             )
-        [|{| hour_r_second |}|]
-        hours_hours_out_second_digit_monitor(hour_r_second)
+        [|{| hours_hours_out_second_digit |}|]
+        hours_hours_out_second_digit_monitor(hours_hours_out_second_digit)
         )
         [|{| sync |}|]
         (
         Clock(0)
         )
 
-assert SKIP [F= Hours_Network \ Events
--- assert Hours_Network :[deadlock free [F]]
+assert SKIP [F= N_hours \ Events
+-- assert N_hours :[deadlock free [F]]
 --------------------------------------------------------------------------
 
 Minutes =
-    (sync -> clock_w ? min_in -> sync ->
+    (sync -> clock_c_out_val ? min_in -> sync ->
         if (min_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then minutes_r_first ! -1 -> minutes_r_second ! -1 -> Hours
+        then minutes_min_out_first_digit ! -1 -> minutes_min_out_second_digit ! -1 -> Hours
         else (
             let
                 min = ( min_in / 60 ) % 60
@@ -77,9 +77,9 @@ Minutes =
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
                 (min_first_temp <= 7) &
-                    (minutes_r_first ! min_first_temp ->
+                    (minutes_min_out_first_digit ! min_first_temp ->
                     (min_second_temp <= 15) &
-                        (minutes_r_second ! min_second_temp ->
+                        (minutes_min_out_second_digit ! min_second_temp ->
                         Minutes
                         )
                     )
@@ -98,31 +98,31 @@ minutes_min_out_second_digit_monitor(c) =
         minutes_min_out_second_digit_monitor(c)
     ) [] SKIP
 
-Minutes_Network =
+N_minutes =
         (
             (
             Minutes
-            [|{| minutes_r_first |}|]
-            minutes_min_out_first_digit_monitor(minutes_r_first)
+            [|{| minutes_min_out_first_digit |}|]
+            minutes_min_out_first_digit_monitor(minutes_min_out_first_digit)
             )
-        [|{| minutes_r_second |}|]
-        minutes_min_out_second_digit_monitor(minutes_r_second)
+        [|{| minutes_min_out_second_digit |}|]
+        minutes_min_out_second_digit_monitor(minutes_min_out_second_digit)
         )
         [|{| sync |}|]
         (
         Clock(0)
         )
 
-assert SKIP [F= Minutes_Network \ Events
+assert SKIP [F= N_minutes \ Events
 
 
 --------------------------------------------------------------------------
 
 
 Seconds =
-    (sync -> clock_w ? sec_in -> sync ->
+    (sync -> clock_c_out_val ? sec_in -> sync ->
         if (sec_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then seconds_r_first ! -1 -> seconds_r_second ! -1 -> Seconds
+        then seconds_sec_out_first_digit ! -1 -> seconds_sec_out_second_digit ! -1 -> Seconds
         else (
             let
                 sec = sec_in % 60
@@ -132,9 +132,9 @@ Seconds =
                 -- I might be able to put them together in a if x > 10 or y >10
                 -- But this would probably not be possible to auto generate.
                 (sec_first_temp <= 7) &
-                    (seconds_r_first ! sec_first_temp ->
+                    (seconds_sec_out_first_digit ! sec_first_temp ->
                     (sec_second_temp <= 15) &
-                        (seconds_r_second ! sec_second_temp ->
+                        (seconds_sec_out_second_digit ! sec_second_temp ->
                         Seconds
                         )
                     )
@@ -154,21 +154,21 @@ sec_sec_out_second_digit_monitor(c) =
         sec_sec_out_second_digit_monitor(c)
     ) [] SKIP
 
-Seconds_Network =
+N_seconds =
         (
             (
             Seconds
-            [|{| seconds_r_first |}|]
-            sec_sec_out_first_digit_monitor(seconds_r_first)
+            [|{| seconds_sec_out_first_digit |}|]
+            sec_sec_out_first_digit_monitor(seconds_sec_out_first_digit)
             )
-        [|{| seconds_r_second |}|]
-        sec_sec_out_second_digit_monitor(seconds_r_second)
+        [|{| seconds_sec_out_second_digit |}|]
+        sec_sec_out_second_digit_monitor(seconds_sec_out_second_digit)
         )
         [|{| sync |}|]
         (
         Clock(0)
         )
 
-assert SKIP [F= Seconds_Network \ Events
+assert SKIP [F= N_seconds \ Events
 
 
