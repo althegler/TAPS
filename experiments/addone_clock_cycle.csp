@@ -1,0 +1,92 @@
+channel sync
+channel d_read, c_read : { -1..15}
+channel d_write, c_write : { -1..15}
+
+DUM_VAL = -1
+
+
+Add(i, input_channel) =
+    (sync ->
+     input_channel ? x ->
+     sync ->
+        if (x == DUM_VAL) -- initial value
+            then (
+                let
+                    var = i
+                within
+                    var <= 15 &
+                        c_read ! var -> Add(i, input_channel))
+            else (
+                let
+                    var = (x + 1) % 5 -- % 5 fix
+                within
+                    var <= 15 &
+                        c_read ! var -> Add(i, input_channel))
+    )
+    [] SKIP
+
+
+Id(i, input_channel) =
+    (sync ->
+     input_channel ? x ->
+     sync ->
+        if (x == DUM_VAL) -- initial value
+            then (
+                i <= 15 &
+                    d_read ! i -> Id(i, input_channel))
+            else (
+                x <= 15 &
+                    d_read ! x -> Id(i, input_channel))
+    )
+    [] SKIP
+
+
+c_read_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 5 or x == -1) &
+        c_read_monitor(c)
+    ) [] SKIP
+
+d_read_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 5 or x == -1) &
+        d_read_monitor(c)
+    ) [] SKIP
+
+
+Buf_d_read = sync -> ((d_read ? x -> (d_read ? x -> STOP [] Buf_d_write(x))
+                    [] sync -> Buf_d_read) [] SKIP)
+
+Writes_d_write(x) = d_write ! x -> ((Writes_d_write(x) [] Buf_d_read) [] SKIP)
+Buf_d_write(x) = sync -> (Writes_d_write(x) [] Buf_d_read) [] SKIP
+
+
+Buf_c_read = sync -> ((c_read ? x -> (c_read ? x -> STOP [] Buf_c_write(x))
+                    [] sync -> Buf_c_read) [] SKIP)
+
+Writes_c_write(x) = c_write ! x -> ((Writes_c_write(x) [] Buf_c_read) [] SKIP)
+Buf_c_write(x) = sync -> (Writes_c_write(x) [] Buf_c_read) [] SKIP
+
+Clock(13) = SKIP
+Clock(n) =  sync -> sync -> Clock(n+1)
+
+
+System = (
+           (
+             (Add(0, d_write) [{| sync, c_read, d_write |} || {| c_read |}]  c_read_monitor(c_read))
+
+
+             [{| sync, c_read, d_write |} || {| sync, d_read, d_write |}]
+             Buf_d_write(DUM_VAL)
+           )
+           [{| sync, c_read, d_read, d_write |} || {| sync, c_read, c_write, d_read |}]
+           (
+             (Id(0, c_write) [{| sync, d_read, c_write |} || {| d_read |}] d_read_monitor(d_read))
+             [{| sync, c_write, d_read |} || {| sync, c_read, c_write |}]
+             Buf_c_write(DUM_VAL)
+           )
+         ) [|{| sync |}|] (
+           Clock(0)
+         )
+
+assert SKIP [F= System \ Events
