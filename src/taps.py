@@ -5,6 +5,7 @@ from taps_network_mapper import taps_network_mapper
 from taps_channel_mapper import taps_channel_mapper
 from taps_process_mapper import taps_process_mapper
 from taps_template import templating, test_templating
+import argparse
 import sys
 
 
@@ -37,9 +38,8 @@ def test_main(input):
 
 
 
-
-def main():
-    lexer = SmeilLexer(StdinStream())
+def main(in_file, out_file):
+    lexer = SmeilLexer(FileStream(in_file))
     stream = CommonTokenStream(lexer)
     parser = SmeilParser(stream)
     tree = parser.module()
@@ -47,15 +47,10 @@ def main():
     data = { 'network': [], 'channels': {}, 'processes': {}}
     transformed_data = {}
 
-    # tree_str = tree.toStringTree(recog=parser)
-    # print(tree_str)
-
     # Extraction
     taps_network_mapper(data).visit(tree)
     taps_channel_mapper(data).visit(tree)
     taps_process_mapper(data).visit(tree)
-
-    # print data['processes']
 
     # Transformation
     transformed_data['channels'] = transform_channels(data)
@@ -67,11 +62,9 @@ def main():
     transform_processes(transformed_data)
     transform_instance_input(transformed_data)
 
-    # print transformed_data['processes']
-
 
     # Load
-    output = open("output.csp","w")
+    output = open(out_file,"w")
     output.write(templating(transformed_data))
     output.close()
 
@@ -227,4 +220,10 @@ def max_bits(b):
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='TAPS transpiler')
+    parser.add_argument('input_filename', type=str,
+                        help='Source input file.')
+    parser.add_argument('output_filename', type=str,
+                        help='Source output file.')
+    args = parser.parse_args()
+    main(args.input_filename, args.output_filename)
