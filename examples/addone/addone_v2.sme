@@ -1,0 +1,30 @@
+proc id (in input)
+    bus output {
+        val: u4 = 0;
+    };
+    var from_add: u4;
+
+{
+    from_add = input.val;
+    trace("Id value {}", from_add);
+    output.val = from_add;
+}
+
+
+proc add (in input, const constant)
+    bus output {
+        val: u4 = 0;
+    };
+    var from_id: u4;
+{
+    from_id = input.val + constant;
+    trace("Add value {}", from_id);
+    output.val = from_id;
+}
+
+
+network addone_network ()
+{
+    instance id of id(add.output);
+    instance add of add(id.output, constant: 1);
+}

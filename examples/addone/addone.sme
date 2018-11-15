@@ -15,8 +15,8 @@ proc addone (in inbus, const val)
     var from_id: uint;
 {
     trace("input is {}", inbus.val);
-    from_id = inbus.val;
-    addout.val = from_id + val;
+    from_id = inbus.val + val;
+    addout.val = from_id ;
 }
 
 network addone_network ()
