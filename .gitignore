@@ -104,8 +104,6 @@ venv.bak/
 ## Specific project related stuff ##
 
 src/*.java
-src/*.tokens
-src/*.interp
 src/input.sme
 src/output.csp
 src/expected_output.csp
