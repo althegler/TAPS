@@ -4,17 +4,21 @@ channel minutes_min_out_first_digit : { -1..7}
 channel minutes_min_out_second_digit : { -1..15}
 channel seconds_sec_out_first_digit : { -1..7}
 channel seconds_sec_out_second_digit : { -1..15}
-channel clock_c_out_val : { -1 ..3}
+channel clock_c_out_val : { 0..502}
 channel sync
+
+-- DUM_VAL = -1
 
 Clock(1) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
 
-Hours =
-    (sync -> clock_c_out_val ? hours_in -> sync ->
-        if (hours_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then hours_hours_out_first_digit ! -1 -> hours_hours_out_second_digit ! -1 -> Hours
-        else (
+Hours(input_channel) =
+    (sync ->
+     input_channel ? hours_in ->
+     sync ->
+     -- if (hours_in == DUM_VAL)
+     --    then hours_hours_out_first_digit ! -1 -> hours_hours_out_second_digit ! -1 -> Hours(input_channel)
+     --    else (
             let
                 hours = ( hours_in / 3600 ) % 24
                 hours_first_temp = hours / 10
@@ -26,10 +30,10 @@ Hours =
                     (hours_hours_out_first_digit ! hours_first_temp ->
                     (hours_second_temp <= 15) &
                         (hours_hours_out_second_digit ! hours_second_temp ->
-                        Hours
+                        Hours(input_channel)
                         )
                     )
-            )
+            -- )
     ) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
@@ -48,7 +52,7 @@ hours_hours_out_second_digit_monitor(c) =
 N_hours =
         (
             (
-            Hours
+            Hours(clock_c_out_val)
             [|{| hours_hours_out_first_digit |}|]
             hours_hours_out_first_digit_monitor(hours_hours_out_first_digit)
             )
@@ -64,11 +68,13 @@ assert SKIP [F= N_hours \ Events
 -- assert N_hours :[deadlock free [F]]
 --------------------------------------------------------------------------
 
-Minutes =
-    (sync -> clock_c_out_val ? min_in -> sync ->
-        if (min_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then minutes_min_out_first_digit ! -1 -> minutes_min_out_second_digit ! -1 -> Hours
-        else (
+Minutes(input_channel) =
+    (sync ->
+     clock_c_out_val ? min_in ->
+     sync ->
+     -- if (min_in == DUM_VAL)
+     --    then minutes_min_out_first_digit ! -1 -> minutes_min_out_second_digit ! -1 -> Minutes(input_channel)
+     --    else (
             let
                 min = ( min_in / 60 ) % 60
                 min_first_temp = min / 10
@@ -80,10 +86,10 @@ Minutes =
                     (minutes_min_out_first_digit ! min_first_temp ->
                     (min_second_temp <= 15) &
                         (minutes_min_out_second_digit ! min_second_temp ->
-                        Minutes
+                        Minutes(input_channel)
                         )
                     )
-            )
+            -- )
     ) [] SKIP
 
 minutes_min_out_first_digit_monitor(c) =
@@ -101,7 +107,7 @@ minutes_min_out_second_digit_monitor(c) =
 N_minutes =
         (
             (
-            Minutes
+            Minutes(clock_c_out_val)
             [|{| minutes_min_out_first_digit |}|]
             minutes_min_out_first_digit_monitor(minutes_min_out_first_digit)
             )
@@ -119,11 +125,13 @@ assert SKIP [F= N_minutes \ Events
 --------------------------------------------------------------------------
 
 
-Seconds =
-    (sync -> clock_c_out_val ? sec_in -> sync ->
-        if (sec_in == -1) -- I have to figure out how to do this! It might work with -1 for the experiments because we go from 0-x
-        then seconds_sec_out_first_digit ! -1 -> seconds_sec_out_second_digit ! -1 -> Seconds
-        else (
+Seconds(input_channel) =
+    (sync ->
+     clock_c_out_val ? sec_in ->
+     sync ->
+     -- if (sec_in == DUM_VAL)
+     --    then seconds_sec_out_first_digit ! -1 -> seconds_sec_out_second_digit ! -1 -> Seconds(input_channel)
+     --    else (
             let
                 sec = sec_in % 60
                 sec_first_temp = sec / 10
@@ -135,29 +143,29 @@ Seconds =
                     (seconds_sec_out_first_digit ! sec_first_temp ->
                     (sec_second_temp <= 15) &
                         (seconds_sec_out_second_digit ! sec_second_temp ->
-                        Seconds
+                        Seconds(input_channel)
                         )
                     )
-            )
+            -- )
     ) [] SKIP
 
 
 sec_sec_out_first_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 5 or x == -1) &
+    (0 <= x and x <= 5) &
         sec_sec_out_first_digit_monitor(c)
     ) [] SKIP
 
 sec_sec_out_second_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 9 or x == -1) &
+    (0 <= x and x <= 9) &
         sec_sec_out_second_digit_monitor(c)
     ) [] SKIP
 
 N_seconds =
         (
             (
-            Seconds
+            Seconds(clock_c_out_val)
             [|{| seconds_sec_out_first_digit |}|]
             sec_sec_out_first_digit_monitor(seconds_sec_out_first_digit)
             )
