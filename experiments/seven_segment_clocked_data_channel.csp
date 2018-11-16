@@ -4,7 +4,7 @@ channel minutes_min_out_first_digit : { -1..7}
 channel minutes_min_out_second_digit : { -1..15}
 channel seconds_sec_out_first_digit : { -1..7}
 channel seconds_sec_out_second_digit : { -1..15}
-channel clock_c_out_val : { 0..502}
+channel clock_c_out_val : { 0..1000}
 channel sync
 
 -- DUM_VAL = -1
@@ -120,7 +120,7 @@ N_minutes =
         )
 
 assert SKIP [F= N_minutes \ Events
-
+-- assert N_minutes :[deadlock free [F]]
 
 --------------------------------------------------------------------------
 
@@ -178,5 +178,5 @@ N_seconds =
         )
 
 assert SKIP [F= N_seconds \ Events
-
+-- assert N_seconds :[deadlock free [F]]
 
