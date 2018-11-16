@@ -18,7 +18,7 @@ Add(i, input_channel) =
                         c_read ! var -> Add(i, input_channel))
             else (
                 let
-                    var = x + 1
+                    var = (x + 1) % 5 -- % 5 fix
                 within
                     var <= 15 &
                         c_read ! var -> Add(i, input_channel))
