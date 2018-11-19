@@ -6,8 +6,8 @@ proc id (in input)
 
 {
     from_add = input.val;
-    trace("Id value {}", from_add);
     output.val = from_add;
+    trace("Id wrote {}", from_add);
 }
 
 
@@ -15,11 +15,9 @@ proc add (in input, const constant)
     bus output {
         val: u4 = 0;
     };
-    var from_id: u4;
 {
-    from_id = (input.val + constant) % 5 ;
-    trace("Add value {}", from_id);
-    output.val = from_id;
+    output.val = (input.val + constant) % 11;
+    trace("Add wrote {}", (input.val + constant) % 11);
 }
 
 

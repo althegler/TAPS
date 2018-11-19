@@ -1,8 +1,8 @@
 channel sync
-channel d_read, c_read : { -1..15}
-channel d_write, c_write : { -1..15}
+channel d_read, c_read : { -1..15} -- u4 and initial value
+channel d_write, c_write : { -1..15} -- u4 and initial value
 
-DUM_VAL = -1
+DUM_VAL = -1 -- initial value
 
 
 Add(i, input_channel) =
@@ -14,13 +14,13 @@ Add(i, input_channel) =
                 let
                     var = i
                 within
-                    var <= 15 &
+                    var <= 15 & -- upper limit
                         c_read ! var -> Add(i, input_channel))
             else (
                 let
                     var = x + 1
                 within
-                    var <= 15 &
+                    var <= 15 & -- upper limit
                         c_read ! var -> Add(i, input_channel))
     )
     [] SKIP
@@ -32,10 +32,10 @@ Id(i, input_channel) =
      sync ->
         if (x == DUM_VAL) -- initial value
             then (
-                i <= 15 &
+                i <= 15 & -- upper limit
                     d_read ! i -> Id(i, input_channel))
             else (
-                x <= 15 &
+                x <= 15 & -- upper limit
                     d_read ! x -> Id(i, input_channel))
     )
     [] SKIP
@@ -43,13 +43,13 @@ Id(i, input_channel) =
 
 c_read_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 5 or x == -1) &
+    (0 <= x and x <= 10 or x == -1) & -- observed values + initial value
         c_read_monitor(c)
     ) [] SKIP
 
 d_read_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 5 or x == -1) &
+    (0 <= x and x <= 10 or x == -1) & -- observed values + initial value
         d_read_monitor(c)
     ) [] SKIP
 
@@ -67,7 +67,7 @@ Buf_c_read = sync -> ((c_read ? x -> (c_read ? x -> STOP [] Buf_c_write(x))
 Writes_c_write(x) = c_write ! x -> ((Writes_c_write(x) [] Buf_c_read) [] SKIP)
 Buf_c_write(x) = sync -> (Writes_c_write(x) [] Buf_c_read) [] SKIP
 
-Clock(13) = SKIP
+Clock(21) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
 
 
