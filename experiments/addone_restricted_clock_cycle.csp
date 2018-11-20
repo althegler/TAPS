@@ -71,22 +71,29 @@ Clock(21) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
 
 
-System = (
-           (
-             (Add(0, d_write) [{| sync, c_read, d_write |} || {| c_read |}]  c_read_monitor(c_read))
-
-
-             [{| sync, c_read, d_write |} || {| sync, d_read, d_write |}]
-             Buf_d_write(DUM_VAL)
-           )
-           [{| sync, c_read, d_read, d_write |} || {| sync, c_read, c_write, d_read |}]
-           (
-             (Id(0, c_write) [{| sync, d_read, c_write |} || {| d_read |}] d_read_monitor(d_read))
-             [{| sync, c_write, d_read |} || {| sync, c_read, c_write |}]
-             Buf_c_write(DUM_VAL)
-           )
-         ) [|{| sync |}|] (
-           Clock(0)
-         )
+System =
+        (
+            (
+                (
+                    Add(0, d_write)
+                    [{| sync, c_read, d_write |} || {| c_read |}]
+                    c_read_monitor(c_read)
+                )
+                [{| sync, c_read, d_write |} || {| sync, d_read, d_write |}]
+                Buf_d_write(DUM_VAL)
+            )
+            [{| sync, c_read, d_read, d_write |} || {| sync, c_read, c_write, d_read |}]
+            (
+                (
+                    Id(0, c_write)
+                    [{| sync, d_read, c_write |} || {| d_read |}]
+                    d_read_monitor(d_read)
+                )
+                [{| sync, c_write, d_read |} || {| sync, c_read, c_write |}]
+                Buf_c_write(DUM_VAL)
+            )
+        )
+        [|{| sync |}|]
+        Clock(0)
 
 assert SKIP [F= System \ Events
