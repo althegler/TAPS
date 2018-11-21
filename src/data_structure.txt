@@ -70,7 +70,6 @@ data = {
         monitor_procces_name : (monitor_lowerbound, monitor_upperbound)
     },
 
-    #Not sure if I need this
     channels_monitor:  {
         channel_name : monitor_procces_name
     },

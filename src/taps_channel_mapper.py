@@ -15,15 +15,11 @@ class taps_channel_mapper(SmeilVisitor):
         if isinstance(ctx.children[0], SmeilParser.ProcessContext) is True:
             return self.visit(ctx.process())
         else:
-            # TODO: Handle other stuff here
             return
 
 
     def visitProcess(self, ctx):
         processname = ctx.IDENT().getText()
-        #     # In this mapper we do not take params into account, since
-        #     # we do not need that information to create this data
-        #     # We are only interested in visiting the processdecl
         result = {}
         for busdecl in ctx.busdecl():
             bus_name, channels = self.visit(busdecl)
@@ -46,8 +42,6 @@ class taps_channel_mapper(SmeilVisitor):
         channel['type'] = ctx.TYPENAME().getText()
         expression = next((self.visit(x) for x in ctx.children if
             isinstance(x, SmeilParser.ExpressionContext)), None)
-        # TODO: If expression then what?
-        # Can't I just say "if ctx.expression:...."?
         (lower, upper) = self.visit(ctx.ranges())
         channel['lowerbound'] = lower
         channel['upperbound'] = upper
@@ -63,7 +57,7 @@ class taps_channel_mapper(SmeilVisitor):
             literal = self.visit(ctx.literal())
             return literal
         else:
-            # TODO: Handle other stuff here
+            # TODO: Add support for the rest of the grammar
             return
 
     def visitLiteral(self, ctx):

@@ -1,17 +1,14 @@
 import sys
-sys.path.append('/home/albt/git/SMEIL-to-CSPm/smeil-to-cspm/')
-# sys.path.append('/home/albt/git/SMEIL-to-CSPm/smeil-to-cspm/')
+sys.path.append('/home/albt/git/TAPS/src/')
 
 from antlr4 import *
 from SmeilLexer import SmeilLexer
 from SmeilParser import SmeilParser
-from SmeilCspmNetworkMapper import SmeilCspmNetworkMapper
-from SmeilCspmChannelMapper import SmeilCspmChannelMapper
-from SmeilCspmProcessMapper import SmeilCspmProcessMapper
-from CSPmTemplate import templating
+from taps_network_mapper import taps_network_mapper
+from taps_channel_mapper import taps_channel_mapper
+from taps_process_mapper import taps_process_mapper
+from taps import test_main as taps
 import pytest
-from SmeilToCSPm import test_main as taps
-
 
 
 
@@ -20,13 +17,6 @@ def test_proc_name_with_input():
     test_output = "Clock(x) =\nlet\nwithin\nSKIP\n"
     output = taps(test_input)
     assert output == test_output
-
-# def test_proc_name_with_several_input():
-#     test_input = "proc clock(in x, out y, const z) { }"
-#     test_output = "?"
-#     output = taps(test_input)
-#     assert output == test_output
-
 
 def test_proc_name_without_input():
     test_input = "proc clock() { }"

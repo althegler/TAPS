@@ -1,6 +1,5 @@
 grammar Smeil;
 
-/* NOTE! Not completed */
 module : entity+ ;
 
 entity : network
@@ -9,7 +8,6 @@ entity : network
 
 network : 'network' IDENT '(' params? ')' '{' networkdecl* '}';
 
-/* NOTE! Not completed */
 process : 'proc' IDENT '(' params? ')'
             (vardecl
             /* | constdecl */
@@ -19,6 +17,7 @@ process : 'proc' IDENT '(' params? ')'
             /*| gendecl - Not implemented in SMEIL yet */
             '{' statement* '}';
 
+/* NOTE: simplified version of 'process'  */
 /* process : ('sync'|'async')? 'proc' IDENT '(' params? ')' processdecl* '{' statement* '}'; */
 
 networkdecl : instance
@@ -27,6 +26,8 @@ networkdecl : instance
             /*| gendecl - Not implemented in SMEIL yet */
             ;
 
+/* NOTE: To simplify this grammar, the processdecl have been added directly
+in 'process' */
 /* processdecl : vardecl */
             /* | constdecl */
             /* | busdecl */
@@ -37,7 +38,7 @@ networkdecl : instance
 
 params : param (',' param)* ;
 
-/* NOTE! Not completed */
+/* NOTE! Simplified version */
 param : direction IDENT ;
 /* param : ('[' INTEGER? ']')? direction ident ; */
 
@@ -58,28 +59,25 @@ ranges : 'range' expression 'to' expression ;
 
 busdecl : 'exposed'? 'bus' IDENT '{' bussignaldecl+ '}' ';' ;
 
+/* NOTE: From the original grammar */
 /* bussignaldecls : bussignaldecl+ ; */
 
-/* NOTE: ranges should not optional in our situation, but they are in the
-   original grammar */
+
 bussignaldecl : IDENT ':' TYPENAME ('=' expression )? ranges ';' ;
 
-/* TODO! This is not how the original grammar is.
-I should implement it correctly*/
+/* NOTE! Different from the original grammar. */
 instance : 'instance' instancename 'of' IDENT '(' (name '.' name)? ')' ';' ;
 
 
-/* TODO We probably want to label the alternatives */
 instancename : IDENT
              /* | IDENT '[' expression ']'  - NOTE: Not implemented in SMEIL yet*/
              /* | '_' */
              ;
 
 
-/* NOTE: This is not implemented in SMEIL yet */
+/* NOTE: Not implemented in SMEIL yet */
 /* gendecl : 'generate' IDENT '=' expression 'to' expression '{' networkdecl* '}' ; */
 
-/* TODO We probably want to label the alternatives */
 statement : name '=' expression ';'
           /*| 'if' '(' expression ')' '{' statement* '}' elifblock* elseblock?*/
           /*| 'for' IDENT '=' expression 'to' expression '{' statement* '}'*/
@@ -97,12 +95,10 @@ statement : name '=' expression ';'
 
 formatstring : '"' (formatstringpart*) '"' ;
 
-/* NOTE! This is not how the original grammar is - should be changed*/
 formatstringpart : '{}'
                  | LETTER
                  ;
 
-/* TODO We probably want to label the alternatives */
 expression : name
            | literal
            | expression binop expression
@@ -136,7 +132,6 @@ unop : '-'
       | '~'
       ;
 
-/* TODO We probably want to label the alternatives */
 literal : INTEGER
         /* | floating */
         /* | stringliteral */
@@ -148,7 +143,6 @@ literal : INTEGER
 
 stringliteral : '"' STRINGCHAR* '"' ;
 
-/* TODO We probably want to label the alternatives */
 TYPENAME : ('i' INTEGER)
          /* | 'int' - Should not be possible for simulated programs? */
          | ('u' INTEGER)
@@ -163,7 +157,6 @@ TYPENAME : ('i' INTEGER)
 IDENT : LETTER (LETTER | NUMBER | '_' | '-')* ;
 
 
-/* TODO We probably want to label the alternatives */
 name : IDENT
      | name '.' name   /* # hierarchical_accessor */
      /* | name '[' arrayindex ']' */
@@ -197,7 +190,7 @@ OCTALDIGIT : [0-8]
     ;
 
 
-/* NOTE! This is not how the original grammar is - should be changed*/
+/* NOTE! This is a bit different from the original grammar is*/
 STRINGCHAR : LETTER+ ;
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
