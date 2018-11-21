@@ -54,18 +54,25 @@ d_read_monitor(c) =
     ) [] SKIP
 
 
+Buf_d_write(x) = sync -> (Writes_d_write(x) [] Buf_d_read) [] SKIP
+
+Writes_d_write(x) = d_write ! x -> (Writes_d_write(x)
+                                    [] Buf_d_read)
+
+
 Buf_d_read = sync -> ((d_read ? x -> (d_read ? x -> STOP [] Buf_d_write(x))
                     [] sync -> Buf_d_read) [] SKIP)
 
-Writes_d_write(x) = d_write ! x -> ((Writes_d_write(x) [] Buf_d_read) [] SKIP)
-Buf_d_write(x) = sync -> (Writes_d_write(x) [] Buf_d_read) [] SKIP
 
+
+Buf_c_write(x) = sync -> (Writes_c_write(x) [] Buf_c_read) [] SKIP
+
+Writes_c_write(x) = c_write ! x -> (Writes_c_write(x)
+                                    [] Buf_c_read)
 
 Buf_c_read = sync -> ((c_read ? x -> (c_read ? x -> STOP [] Buf_c_write(x))
                     [] sync -> Buf_c_read) [] SKIP)
 
-Writes_c_write(x) = c_write ! x -> ((Writes_c_write(x) [] Buf_c_read) [] SKIP)
-Buf_c_write(x) = sync -> (Writes_c_write(x) [] Buf_c_read) [] SKIP
 
 Clock(21) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
