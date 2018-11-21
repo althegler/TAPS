@@ -75,22 +75,23 @@ assert SKIP [F= N_minutes \ Events
 
 
 
-
+hours_hours_out_first_digit_monitor(c) =
+    c ? x ->
+    (0 <= x and x <= 2) & SKIP
 hours_hours_out_second_digit_monitor(c) =
     c ? x ->
     (0 <= x and x <= 9) & SKIP
+
 minutes_min_out_first_digit_monitor(c) =
     c ? x ->
     (0 <= x and x <= 5) & SKIP
 minutes_min_out_second_digit_monitor(c) =
     c ? x ->
     (0 <= x and x <= 9) & SKIP
+
 seconds_sec_out_first_digit_monitor(c) =
     c ? x ->
     (0 <= x and x <= 5) & SKIP
-hours_hours_out_first_digit_monitor(c) =
-    c ? x ->
-    (0 <= x and x <= 2) & SKIP
 seconds_sec_out_second_digit_monitor(c) =
     c ? x ->
     (0 <= x and x <= 9) & SKIP
