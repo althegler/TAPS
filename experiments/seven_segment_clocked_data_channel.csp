@@ -4,10 +4,8 @@ channel minutes_min_out_first_digit : {0..7}
 channel minutes_min_out_second_digit : {0..15}
 channel seconds_sec_out_first_digit : {0..7}
 channel seconds_sec_out_second_digit : {0..15}
-channel clock_c_out_val : { 0..1000}
+channel clock_c_out_val : { 0..10}
 channel sync
-
--- DUM_VAL = -1
 
 Clock(1) = SKIP
 Clock(n) =  sync -> sync -> Clock(n+1)
@@ -16,16 +14,11 @@ Hours(input_channel) =
     (sync ->
      input_channel ? hours_in ->
      sync ->
-     -- if (hours_in == DUM_VAL)
-     --    then hours_hours_out_first_digit ! -1 -> hours_hours_out_second_digit ! -1 -> Hours(input_channel)
-     --    else (
             let
                 hours = ( hours_in / 3600 ) % 24
                 hours_first_temp = hours / 10
                 hours_second_temp = hours % 10
             within
-                -- I might be able to put them together in a if x > 10 or y >10
-                -- But this would probably not be possible to auto generate.
                 (hours_first_temp <= 3) &
                     (hours_hours_out_first_digit ! hours_first_temp ->
                     (hours_second_temp <= 15) &
@@ -33,7 +26,6 @@ Hours(input_channel) =
                         Hours(input_channel)
                         )
                     )
-            -- )
     ) [] SKIP
 
 hours_hours_out_first_digit_monitor(c) =
@@ -65,23 +57,16 @@ N_hours =
         )
 
 assert SKIP [F= N_hours \ Events
--- assert N_hours :[deadlock free [F]]
---------------------------------------------------------------------------
 
 Minutes(input_channel) =
     (sync ->
      clock_c_out_val ? min_in ->
      sync ->
-     -- if (min_in == DUM_VAL)
-     --    then minutes_min_out_first_digit ! -1 -> minutes_min_out_second_digit ! -1 -> Minutes(input_channel)
-     --    else (
             let
                 min = ( min_in / 60 ) % 60
                 min_first_temp = min / 10
                 min_second_temp = min % 10
             within
-                -- I might be able to put them together in a if x > 10 or y >10
-                -- But this would probably not be possible to auto generate.
                 (min_first_temp <= 7) &
                     (minutes_min_out_first_digit ! min_first_temp ->
                     (min_second_temp <= 15) &
@@ -89,7 +74,6 @@ Minutes(input_channel) =
                         Minutes(input_channel)
                         )
                     )
-            -- )
     ) [] SKIP
 
 minutes_min_out_first_digit_monitor(c) =
@@ -120,25 +104,17 @@ N_minutes =
         )
 
 assert SKIP [F= N_minutes \ Events
--- assert N_minutes :[deadlock free [F]]
-
---------------------------------------------------------------------------
 
 
 Seconds(input_channel) =
     (sync ->
      clock_c_out_val ? sec_in ->
      sync ->
-     -- if (sec_in == DUM_VAL)
-     --    then seconds_sec_out_first_digit ! -1 -> seconds_sec_out_second_digit ! -1 -> Seconds(input_channel)
-     --    else (
             let
                 sec = sec_in % 60
                 sec_first_temp = sec / 10
                 sec_second_temp = sec % 10
             within
-                -- I might be able to put them together in a if x > 10 or y >10
-                -- But this would probably not be possible to auto generate.
                 (sec_first_temp <= 7) &
                     (seconds_sec_out_first_digit ! sec_first_temp ->
                     (sec_second_temp <= 15) &
@@ -146,7 +122,6 @@ Seconds(input_channel) =
                         Seconds(input_channel)
                         )
                     )
-            -- )
     ) [] SKIP
 
 
@@ -178,5 +153,3 @@ N_seconds =
         )
 
 assert SKIP [F= N_seconds \ Events
--- assert N_seconds :[deadlock free [F]]
-
