@@ -1,0 +1,39 @@
+channel counter : { 0..10}
+channel sink_r_1, sink_w : {1..2}
+channel sink_r_2 : {1..2}
+channel sync
+
+DUM_VAL = -1 -- initial value
+
+COUNT = 0
+
+
+Pixel1 =
+    (sync ->
+     counter ? x ->
+     sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
+     if (x == 1)
+         then sink_r_1 ! 1 -> Pixel1
+         else Pixel1
+    ) [] SKIP
+
+
+-- Read_mul(x, count) = if count > 1 then STOP else Read_mul(x, count+1)
+-- x ? val
+
+Read_mul = sync -> ((sink_r_1 ? x -> sink_r_2 ? x -> Write(x)
+                    [] sync -> Read_mul) [] SKIP)
+
+--
+-- Read = sync -> ((sink_r ? x -> (sink_r ? x -> STOP [] Write(x))
+--                     [] sync -> Read) [] SKIP)
+--
+--
+
+Read(sink_r_1) = sink_r_1 ? x ->
+
+Check(count) = if count > 2 then STOP else Write(x)
+
+Writes(x) = sink_w ! x -> (Writes(x) [] Read_mul)
+Write(x) = sync -> (Writes(x) [] Read_mul) [] SKIP
+

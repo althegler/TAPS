@@ -1,33 +1,46 @@
 channel counter : { 0..10}
-channel src_r, src_w : { -1..10}
-channel clock
+channel sink_r_1, sink_w : {1..2}
+channel sink_r_2 : {1..2}
+channel sync
 
-Pixel1 = (clock -> counter ? x -> -- clock -> src_r ! 1 -> Pixel1) [] SKIP
-        if (x == 1)
-        then (clock -> src_r ! 1 -> Pixel1)
-        else clock -> Pixel1) [] SKIP
+DUM_VAL = -1 -- initial value
 
-Pixel2 = (clock -> counter ? x -> -- clock -> src_r ! 1 -> Pixel1) [] SKIP
-        if (x == 2)
-        then (clock -> src_r ! 2 -> Pixel2)
-        else clock -> Pixel2) [] SKIP
-
-
-Src = (clock -> (src_w ? x -> clock -> Src [] clock -> Src)) [] SKIP
+COUNT = 0
 
 
 
-Writes(x) = src_w ! x -> ((Writes(x) [] Buf_src_r(x)) [] SKIP)
-Buf_src_w(x) = clock -> (Writes(x) [] Buf_src_r(x)) [] SKIP
+Pixel2 =
+    (sync ->
+     counter ? x ->
+     sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
+     if (x == 1)
+         then sink_r_2 ! 2 -> Pixel1
+         else Pixel1
+    ) [] SKIP
 
-Buf_src_r(x) = clock -> ((src_r ? x -> (src_r ? x -> STOP [] Buf_src_w(x))
-                         [] clock -> Buf_src_r(x)) [] SKIP)
+
+Sink = (sync -> sink_w ? x -> sync -> Sink) [] SKIP
+
+
+-- Read_mul(x, count) = if count > 1 then STOP else Read_mul(x, count+1)
+-- x ? val
+
+Read_mul = sync -> ((sink_r_1 ? x -> sink_r_2 ? x -> Write(x))
+                    [] sync -> Read) [] SKIP)
+
+
+Read = sync -> ((sink_r ? x -> (sink_r ? x -> STOP [] Write(x))
+                    [] sync -> Read) [] SKIP)
 
 
 
 
-Clock(n) = if n == 5 then SKIP else clock -> clock -> Clock(n+1)
+Writes(x) = sink_w ! x -> (Writes(x) [] Read)
+Write(x) = sync -> (Writes(x) [] Read) [] SKIP
 
+
+Clock(2) = SKIP
+Clock(n) =  sync -> sync -> Clock(n+1)
 
 
 System =
@@ -35,18 +48,15 @@ System =
             (
                 (
                     (
-                        Pixel1 [{| clock, src_r, counter |} || {| clock, src_r, src_w |}] Buf_src_w(-1)
+                        Pixel1 [{| sync, sink_r, counter |} || {| sync, sink_r, sink_w |}] Write(-1)
                     )
-                    [{| clock, src_r, src_w, counter |} || {| clock, src_r, counter |}] Pixel2
+                    [{| sync, sink_r, sink_w, counter |} || {| sync, sink_r, counter |}] Pixel2
                 )
-                [{| clock, src_r, src_w, counter |} || {| clock, src_w |}] Src
+                [{| sync, sink_r, sink_w, counter |} || {| sync, sink_w |}] Sink
             )
-            [{| clock, src_r, src_w, counter |} || {| clock |}] Clock(0)
+            [{| sync, sink_r, sink_w, counter |} || {| sync |}] Clock(0)
         )
 
-
-
--- Monitor = clock -> src_w ? x -> clock -> Monitor
 
 assert SKIP [F= System \ Events
 assert System :[deadlock free [F]]
