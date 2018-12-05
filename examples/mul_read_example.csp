@@ -3,37 +3,71 @@ channel sink_r_1, sink_w : {1..2}
 channel sink_r_2 : {1..2}
 channel sync
 
-DUM_VAL = -1 -- initial value
+-- DUM_VAL = -1 -- initial value
 
 COUNT = 0
+
+Channels = {sink_r_1, sink_r_2}
 
 
 Pixel1 =
     (sync ->
      counter ? x ->
-     sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
-     if (x == 1)
-         then sink_r_1 ! 1 -> Pixel1
-         else Pixel1
-    ) [] SKIP
+     sync -> sink_r_1 ! 1 -> Pixel1) [] SKIP
+    --  if (x == 1)
+    --      then sink_r_1 ! 1 -> Pixel1
+    --      else Pixel1
+    -- ) [] SKIP
+
+Pixel2 =
+    (sync ->
+     counter ? x ->
+     sync -> sink_r_1 ! 2 -> Pixel2) [] SKIP
+    --  if (x == 1)
+    --      then sink_r_1 ! 1 -> Pixel1
+    --      else Pixel1
+    -- ) [] SKIP
+
+-- 
+--
+-- Read_mul = sink_r_1 ? x -> sink_r_2 ? y -> STOP
+--         [] sink_r_2 ? x -> sink_r_1 ? y-> STOP
+--         [] sink_r_1 ? x -> Buf_c_write(x)
+--         [] sink_r_2 ? x -> Buf_c_write(x)
+--
+--
+-- Buf_c_read = sync -> ((c_read ? x -> (c_read ? x -> STOP [] Buf_c_write(x))
+--                     [] sync -> Buf_c_read) [] SKIP)
+--
+
+
+-- Sink(0) = ; i : Channels @ if i ? x -
+
+
+-- Buffer = sink_r_1 -> (sink_r_2 -> STOP [] )
 
 
 -- Read_mul(x, count) = if count > 1 then STOP else Read_mul(x, count+1)
 -- x ? val
 
-Read_mul = sync -> ((sink_r_1 ? x -> sink_r_2 ? x -> Write(x)
-                    [] sync -> Read_mul) [] SKIP)
-
+-- Read_mul = sync -> ((sink_r_1 ? x -> sink_r_2 ? x -> Write(x)
+--                     [] sync -> Read_mul) [] SKIP)
+--
+--
+-- f(x) = show(x)^" % 2 == "^show(x % 2)
 --
 -- Read = sync -> ((sink_r ? x -> (sink_r ? x -> STOP [] Write(x))
 --                     [] sync -> Read) [] SKIP)
 --
 --
 
-Read(sink_r_1) = sink_r_1 ? x ->
+-- Read(sink_r_1) = sink_r_1 ? x ->
 
-Check(count) = if count > 2 then STOP else Write(x)
+-- Check(count) = if count > 2 then STOP else Write(x)
 
-Writes(x) = sink_w ! x -> (Writes(x) [] Read_mul)
-Write(x) = sync -> (Writes(x) [] Read_mul) [] SKIP
+
+
+--
+-- Writes(x) = sink_w ! x -> (Writes(x) [] Read_mul)
+-- Write(x) = sync -> (Writes(x) [] Read_mul) [] SKIP
 

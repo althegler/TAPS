@@ -1,6 +1,6 @@
-channel counter : { 0..10}
-channel sink_r_1, sink_w : {1..2}
-channel sink_r_2 : {1..2}
+channel counter : {1}
+channel sink_r_1, sink_r_2 : {1..2}
+channel sink_w : { -1..2}
 channel sync
 
 DUM_VAL = -1 -- initial value
@@ -9,30 +9,30 @@ COUNT = 0
 
 
 
-Pixel2 =
+Pixel1 =
     (sync ->
      counter ? x ->
      sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
      if (x == 1)
-         then sink_r_2 ! 2 -> Pixel1
+         then sink_r_1 ! 1 -> Pixel1
          else Pixel1
     ) [] SKIP
 
+Pixel2 =
+    (sync ->
+     counter ? x ->
+     sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
+     if (x == 2)
+         then sink_r_2 ! 2 -> Pixel2
+         else Pixel2
+    ) [] SKIP
 
-Sink = (sync -> sink_w ? x -> sync -> Sink) [] SKIP
+Sink = sync -> (sink_w ? x -> sync -> Sink [] sync -> Sink) [] SKIP
 
+Read = sync -> (Read_mul [] sync -> Read) [] SKIP
 
--- Read_mul(x, count) = if count > 1 then STOP else Read_mul(x, count+1)
--- x ? val
-
-Read_mul = sync -> ((sink_r_1 ? x -> sink_r_2 ? x -> Write(x))
-                    [] sync -> Read) [] SKIP)
-
-
-Read = sync -> ((sink_r ? x -> (sink_r ? x -> STOP [] Write(x))
-                    [] sync -> Read) [] SKIP)
-
-
+Read_mul = sink_r_1 ? x -> (sink_r_2 ? y -> STOP [] Write(x))
+        [] sink_r_2 ? x -> (sink_r_1 ? y -> STOP [] Write(x))
 
 
 Writes(x) = sink_w ! x -> (Writes(x) [] Read)
@@ -48,13 +48,13 @@ System =
             (
                 (
                     (
-                        Pixel1 [{| sync, sink_r, counter |} || {| sync, sink_r, sink_w |}] Write(-1)
+                        Pixel1 [{| sync, sink_r_1, counter |} || {| sync, sink_r_1, sink_r_2, sink_w |}] Write(DUM_VAL)
                     )
-                    [{| sync, sink_r, sink_w, counter |} || {| sync, sink_r, counter |}] Pixel2
+                    [{| sync, sink_r_1, sink_r_2, sink_w, counter |} || {| sync, sink_r_2, counter |}] Pixel2
                 )
-                [{| sync, sink_r, sink_w, counter |} || {| sync, sink_w |}] Sink
+                [{| sync, sink_r_1, sink_r_2, sink_w, counter |} || {| sync, sink_w |}] Sink
             )
-            [{| sync, sink_r, sink_w, counter |} || {| sync |}] Clock(0)
+            [{| sync, sink_r_1, sink_r_2, sink_w, counter |} || {| sync |}] Clock(0)
         )
 
 
