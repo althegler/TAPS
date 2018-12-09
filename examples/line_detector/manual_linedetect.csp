@@ -27,7 +27,7 @@ Pixel2 =
 
 Sink = sync -> (sink_w ? x -> sync -> Sink [] sync -> Sink) [] SKIP
 
-Read = sync -> (Read_mul(false,0) [] sync -> Read) [] SKIP
+Read = sync -> ((Read_mul(false,0) [] sync -> Read) [] SKIP)
 
 -- Read_mul = sink_r_1 ? x -> (sink_r_2 ? y -> STOP [] Write(x))
         -- [] sink_r_2 ? x -> (sink_r_1 ? y -> STOP [] Write(x))
