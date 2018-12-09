@@ -7,13 +7,11 @@ DUM_VAL = -1 -- initial value
 
 COUNT = 0
 
-
-
 Pixel1 =
     (sync ->
      counter ? x ->
      sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
-     if (x == 1)
+     if (x == 3)
          then sink_r_1 ! 1 -> Pixel1
          else Pixel1
     ) [] SKIP
@@ -22,17 +20,23 @@ Pixel2 =
     (sync ->
      counter ? x ->
      sync -> -- sink_r ! 1 -> Pixel1) [] SKIP
-     if (x == 2)
+     if (x == 4)
          then sink_r_2 ! 2 -> Pixel2
          else Pixel2
     ) [] SKIP
 
 Sink = sync -> (sink_w ? x -> sync -> Sink [] sync -> Sink) [] SKIP
 
-Read = sync -> (Read_mul [] sync -> Read) [] SKIP
+Read = sync -> (Read_mul(false,0) [] sync -> Read) [] SKIP
 
-Read_mul = sink_r_1 ? x -> (sink_r_2 ? y -> STOP [] Write(x))
-        [] sink_r_2 ? x -> (sink_r_1 ? y -> STOP [] Write(x))
+-- Read_mul = sink_r_1 ? x -> (sink_r_2 ? y -> STOP [] Write(x))
+        -- [] sink_r_2 ? x -> (sink_r_1 ? y -> STOP [] Write(x))
+
+Read_mul(false, n) = sink_r_1 ? x -> Read_mul(true, x)
+                  [] sink_r_2 ? x -> Read_mul(true, x)
+
+Read_mul(true, x) = sink_r_1 ? y -> STOP
+                 [] sink_r_2 ? y -> STOP [] Write(x)
 
 
 Writes(x) = sink_w ! x -> (Writes(x) [] Read)
