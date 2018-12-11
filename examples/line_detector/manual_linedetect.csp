@@ -20,7 +20,7 @@ Pixel1 =
     (sync ->
      counter ? x ->
      sync ->
-     if (x == 0) -- Should be 1 to succeed
+     if (x == 1) -- Should be 1 to succeed
          then sink_r_1 ! 1 -> Pixel1
          else Pixel1
     ) [] SKIP
@@ -58,17 +58,17 @@ Sink = sync -> (sink_w ? x -> sync -> Sink [] sync -> Sink) [] SKIP
 Read = sync -> ((Read_mul(false,0) [] sync -> Read) [] SKIP)
 
 
-Read_mul(false, n) = sink_r_0 ? x0 -> Read_mul(true, x0)
-                  [] sink_r_1 ? x1 -> Read_mul(true, x1)
-                  [] sink_r_2 ? x2 -> Read_mul(true, x2)
-                  [] sink_r_3 ? x3 -> Read_mul(true, x3)
-                  [] sink_r_4 ? x4 -> Read_mul(true, x4)
+Read_mul(false, n) = sink_r_0 ? x -> Read_mul(true, x)
+                  [] sink_r_1 ? x -> Read_mul(true, x)
+                  [] sink_r_2 ? x -> Read_mul(true, x)
+                  [] sink_r_3 ? x -> Read_mul(true, x)
+                  [] sink_r_4 ? x -> Read_mul(true, x)
 
-Read_mul(true, x) = sink_r_0 ? y0 -> STOP
-                 [] sink_r_1 ? y1 -> STOP
-                 [] sink_r_2 ? y2 -> STOP
-                 [] sink_r_3 ? y3 -> STOP
-                 [] sink_r_4 ? y4 -> STOP
+Read_mul(true, x) = sink_r_0 ? y -> STOP
+                 [] sink_r_1 ? y -> STOP
+                 [] sink_r_2 ? y -> STOP
+                 [] sink_r_3 ? y -> STOP
+                 [] sink_r_4 ? y -> STOP
                  [] Write(x)
 
 
