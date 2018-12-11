@@ -1,0 +1,104 @@
+channel sync
+channel d_read, c_read : {0..15}.Bool -- u4 and initial value
+channel d_write, c_write : {0..15}.Bool -- u4 and initial value
+
+
+Add(i, input_channel) =
+    (sync ->
+     input_channel ? x.dummy ->
+     sync ->
+        if (dummy == false) -- initial value
+            then (
+                let
+                    var = i
+                within
+                    var <= 15 & -- upper limit
+                        c_read ! var.true -> Add(i, input_channel))
+            else (
+                let
+                    var = (x + 1) --% 11 -- observed value + 1 restriction
+                within
+                    var <= 15 & -- upper limit
+                        c_read ! var.true -> Add(i, input_channel))
+    )
+    [] SKIP
+
+
+Id(i, input_channel) =
+    (sync ->
+     input_channel ? x.dummy ->
+     sync ->
+        if (dummy == false) -- initial value
+            then (
+                i <= 15 & -- upper limit
+                    d_read ! i.true -> Id(i, input_channel))
+            else (
+                x <= 15 & -- upper limit
+                    d_read ! x.true -> Id(i, input_channel))
+    )
+    [] SKIP
+
+
+c_read_monitor(c) =
+    (c ? x.dummy ->
+    (0 <= x and x <= 10) & -- observed values + initial value
+        c_read_monitor(c)
+    ) [] SKIP
+
+d_read_monitor(c) =
+    (c ? x.dummy ->
+    (0 <= x and x <= 10) & -- observed values + initial value
+        d_read_monitor(c)
+    ) [] SKIP
+
+
+Buf_d_write(x, dummy) = sync -> (Writes_d_write(x, dummy) [] Buf_d_read) [] SKIP
+
+Writes_d_write(x, dummy) = d_write ! x.dummy -> (Writes_d_write(x, dummy)
+                                    [] Buf_d_read)
+
+
+Buf_d_read = sync -> ((d_read ? x.dummy -> (d_read ? x.dummy -> STOP [] Buf_d_write(x, dummy))
+                    [] sync -> Buf_d_read) [] SKIP)
+
+
+
+Buf_c_write(x, dummy) = sync -> (Writes_c_write(x, dummy) [] Buf_c_read) [] SKIP
+
+Writes_c_write(x, dummy) = c_write ! x.dummy -> (Writes_c_write(x, dummy)
+                                    [] Buf_c_read)
+
+Buf_c_read = sync -> ((c_read ? x.dummy -> (c_read ? x.dummy -> STOP [] Buf_c_write(x, dummy))
+                    [] sync -> Buf_c_read) [] SKIP)
+
+
+Clock(21) = SKIP
+Clock(n) =  sync -> sync -> Clock(n+1)
+
+
+System =
+        (
+            (
+                (
+                    Add(0, d_write)
+                    [{| sync, c_read, d_write |} || {| c_read |}]
+                    c_read_monitor(c_read)
+                )
+                [{| sync, c_read, d_write |} || {| sync, d_read, d_write |}]
+                Buf_d_write(0,false)
+            )
+            [{| sync, c_read, d_read, d_write |} || {| sync, c_read, c_write, d_read |}]
+            (
+                (
+                    Id(0, c_write)
+                    [{| sync, d_read, c_write |} || {| d_read |}]
+                    d_read_monitor(d_read)
+                )
+                [{| sync, c_write, d_read |} || {| sync, c_read, c_write |}]
+                Buf_c_write(0,false)
+            )
+        )
+        [|{| sync |}|]
+        Clock(0)
+
+assert SKIP [F= System \ Events
