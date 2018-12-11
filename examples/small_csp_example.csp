@@ -17,13 +17,17 @@
 
 
 channel c : {0..10}.Bool
+channel z : {0..10}
 
 
 Write = c ! 5.false -> SKIP
 
 -- Read = c ? y -> SKIP
-Read = c ? x.y -> if y == false then SKIP else STOP
+Read = c ? x.y -> if y == false then Proc3(x.y) else STOP
 
-System = Write [|{| c |}|] Read
+Proc3(x.y) = z ! x -> SKIP
+
+
+System = Write [{| c |} || {| c, z |}] Read
 
 assert SKIP [F= System \ Events
