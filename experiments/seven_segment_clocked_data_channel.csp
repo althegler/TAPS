@@ -30,13 +30,13 @@ Hours(input_channel) =
 
 hours_hours_out_first_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 2 or x == -1) &
+    (0 <= x and x <= 2) &
         hours_hours_out_first_digit_monitor(c)
     ) [] SKIP
 
 hours_hours_out_second_digit_monitor(c) =
     (c ? x ->
-    (0 <= x and x <= 9 or x == -1) &
+    (0 <= x and x <= 9) &
         hours_hours_out_second_digit_monitor(c)
     ) [] SKIP
 

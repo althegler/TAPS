@@ -1,0 +1,1587 @@
+channel hours_hours_out_first_digit : {0..3}
+channel hours_hours_out_second_digit : {0..15}
+channel minutes_min_out_first_digit : {0..7}
+channel minutes_min_out_second_digit : {0..15}
+channel seconds_sec_out_first_digit : {0..7}
+channel seconds_sec_out_second_digit : {0..15}
+channel clock_c_out_val : { 0..20}
+channel sync
+
+Clock(1) = SKIP
+Clock(n) =  sync -> sync -> Clock(n+1)
+
+Hours(input_channel) =
+    (sync ->
+     input_channel ? hours_in ->
+     sync ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit ! hours_second_temp ->
+                        Hours(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor(c)
+    ) [] SKIP
+
+
+N_hours =
+        (
+            (
+            Hours(clock_c_out_val)
+            [|{| hours_hours_out_first_digit |}|]
+            hours_hours_out_first_digit_monitor(hours_hours_out_first_digit)
+            )
+        [|{| hours_hours_out_second_digit |}|]
+        hours_hours_out_second_digit_monitor(hours_hours_out_second_digit)
+        )
+        [|{| sync |}|]
+        (
+        Clock(0)
+        )
+
+assert SKIP [F= N_hours \ Events
+
+Minutes(input_channel) =
+    (sync ->
+     input_channel ? min_in ->
+     sync ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit ! min_second_temp ->
+                        Minutes(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor(c)
+    ) [] SKIP
+
+N_minutes =
+        (
+            (
+            Minutes(clock_c_out_val)
+            [|{| minutes_min_out_first_digit |}|]
+            minutes_min_out_first_digit_monitor(minutes_min_out_first_digit)
+            )
+        [|{| minutes_min_out_second_digit |}|]
+        minutes_min_out_second_digit_monitor(minutes_min_out_second_digit)
+        )
+        [|{| sync |}|]
+        (
+        Clock(0)
+        )
+
+assert SKIP [F= N_minutes \ Events
+
+
+Seconds(input_channel) =
+    (sync ->
+     input_channel ? sec_in ->
+     sync ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit ! sec_second_temp ->
+                        Seconds(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor(c)
+    ) [] SKIP
+
+N_seconds =
+        (
+            (
+            Seconds(clock_c_out_val)
+            [|{| seconds_sec_out_first_digit |}|]
+            sec_sec_out_first_digit_monitor(seconds_sec_out_first_digit)
+            )
+        [|{| seconds_sec_out_second_digit |}|]
+        sec_sec_out_second_digit_monitor(seconds_sec_out_second_digit)
+        )
+        [|{| sync |}|]
+        (
+        Clock(0)
+        )
+
+assert SKIP [F= N_seconds \ Events
+
+-------------------------------------------------------------------------------
+
+channel hours_hours_out_first_digit_clock_2 : {0..3}
+channel hours_hours_out_second_digit_clock_2 : {0..15}
+channel minutes_min_out_first_digit_clock_2 : {0..7}
+channel minutes_min_out_second_digit_clock_2 : {0..15}
+channel seconds_sec_out_first_digit_clock_2 : {0..7}
+channel seconds_sec_out_second_digit_clock_2 : {0..15}
+channel clock_c_out_val_clock_2 : { 0..20}
+channel sync_clock_2
+
+Clock_clock_2(1) = SKIP
+Clock_clock_2(n) =  sync_clock_2 -> sync_clock_2 -> Clock_clock_2(n+1)
+
+Hours_clock_2(input_channel) =
+    (sync_clock_2 ->
+     input_channel ? hours_in ->
+     sync_clock_2 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_2 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_2 ! hours_second_temp ->
+                        Hours_clock_2(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+
+N_hours_clock_2 =
+        (
+            (
+            Hours_clock_2(clock_c_out_val_clock_2)
+            [|{| hours_hours_out_first_digit_clock_2 |}|]
+            hours_hours_out_first_digit_monitor_clock_2(hours_hours_out_first_digit_clock_2)
+            )
+        [|{| hours_hours_out_second_digit_clock_2 |}|]
+        hours_hours_out_second_digit_monitor_clock_2(hours_hours_out_second_digit_clock_2)
+        )
+        [|{| sync_clock_2 |}|]
+        (
+        Clock_clock_2(0)
+        )
+
+assert SKIP [F= N_hours_clock_2 \ Events
+
+Minutes_clock_2(input_channel) =
+    (sync_clock_2 ->
+     input_channel ? min_in ->
+     sync_clock_2 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_2 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_2 ! min_second_temp ->
+                        Minutes_clock_2(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+N_minutes_clock_2 =
+        (
+            (
+            Minutes_clock_2(clock_c_out_val_clock_2)
+            [|{| minutes_min_out_first_digit_clock_2 |}|]
+            minutes_min_out_first_digit_monitor_clock_2(minutes_min_out_first_digit_clock_2)
+            )
+        [|{| minutes_min_out_second_digit_clock_2 |}|]
+        minutes_min_out_second_digit_monitor_clock_2(minutes_min_out_second_digit_clock_2)
+        )
+        [|{| sync_clock_2 |}|]
+        (
+        Clock_clock_2(0)
+        )
+
+assert SKIP [F= N_minutes_clock_2 \ Events
+
+
+Seconds_clock_2(input_channel) =
+    (sync_clock_2 ->
+     input_channel ? sec_in ->
+     sync_clock_2 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_2 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_2 ! sec_second_temp ->
+                        Seconds_clock_2(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_2(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_2(c)
+    ) [] SKIP
+
+N_seconds_clock_2 =
+        (
+            (
+            Seconds_clock_2(clock_c_out_val_clock_2)
+            [|{| seconds_sec_out_first_digit_clock_2 |}|]
+            sec_sec_out_first_digit_monitor_clock_2(seconds_sec_out_first_digit_clock_2)
+            )
+        [|{| seconds_sec_out_second_digit_clock_2 |}|]
+        sec_sec_out_second_digit_monitor_clock_2(seconds_sec_out_second_digit_clock_2)
+        )
+        [|{| sync_clock_2 |}|]
+        (
+        Clock_clock_2(0)
+        )
+
+assert SKIP [F= N_seconds_clock_2 \ Events
+
+-------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_3 : {0..3}
+channel hours_hours_out_second_digit_clock_3 : {0..15}
+channel minutes_min_out_first_digit_clock_3 : {0..7}
+channel minutes_min_out_second_digit_clock_3 : {0..15}
+channel seconds_sec_out_first_digit_clock_3 : {0..7}
+channel seconds_sec_out_second_digit_clock_3 : {0..15}
+channel clock_c_out_val_clock_3 : { 0..20}
+channel sync_clock_3
+
+Clock_clock_3(1) = SKIP
+Clock_clock_3(n) =  sync_clock_3 -> sync_clock_3 -> Clock_clock_3(n+1)
+
+Hours_clock_3(input_channel) =
+    (sync_clock_3 ->
+     input_channel ? hours_in ->
+     sync_clock_3 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_3 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_3 ! hours_second_temp ->
+                        Hours_clock_3(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+
+N_hours_clock_3 =
+        (
+            (
+            Hours_clock_3(clock_c_out_val_clock_3)
+            [|{| hours_hours_out_first_digit_clock_3 |}|]
+            hours_hours_out_first_digit_monitor_clock_3(hours_hours_out_first_digit_clock_3)
+            )
+        [|{| hours_hours_out_second_digit_clock_3 |}|]
+        hours_hours_out_second_digit_monitor_clock_3(hours_hours_out_second_digit_clock_3)
+        )
+        [|{| sync_clock_3 |}|]
+        (
+        Clock_clock_3(0)
+        )
+
+assert SKIP [F= N_hours_clock_3 \ Events
+
+Minutes_clock_3(input_channel) =
+    (sync_clock_3 ->
+     input_channel ? min_in ->
+     sync_clock_3 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_3 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_3 ! min_second_temp ->
+                        Minutes_clock_3(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+N_minutes_clock_3 =
+        (
+            (
+            Minutes_clock_3(clock_c_out_val_clock_3)
+            [|{| minutes_min_out_first_digit_clock_3 |}|]
+            minutes_min_out_first_digit_monitor_clock_3(minutes_min_out_first_digit_clock_3)
+            )
+        [|{| minutes_min_out_second_digit_clock_3 |}|]
+        minutes_min_out_second_digit_monitor_clock_3(minutes_min_out_second_digit_clock_3)
+        )
+        [|{| sync_clock_3 |}|]
+        (
+        Clock_clock_3(0)
+        )
+
+assert SKIP [F= N_minutes_clock_3 \ Events
+
+
+Seconds_clock_3(input_channel) =
+    (sync_clock_3 ->
+     input_channel ? sec_in ->
+     sync_clock_3 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_3 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_3 ! sec_second_temp ->
+                        Seconds_clock_3(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_3(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_3(c)
+    ) [] SKIP
+
+N_seconds_clock_3 =
+        (
+            (
+            Seconds_clock_3(clock_c_out_val_clock_3)
+            [|{| seconds_sec_out_first_digit_clock_3 |}|]
+            sec_sec_out_first_digit_monitor_clock_3(seconds_sec_out_first_digit_clock_3)
+            )
+        [|{| seconds_sec_out_second_digit_clock_3 |}|]
+        sec_sec_out_second_digit_monitor_clock_3(seconds_sec_out_second_digit_clock_3)
+        )
+        [|{| sync_clock_3 |}|]
+        (
+        Clock_clock_3(0)
+        )
+
+assert SKIP [F= N_seconds_clock_3 \ Events
+
+-------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_4 : {0..3}
+channel hours_hours_out_second_digit_clock_4 : {0..15}
+channel minutes_min_out_first_digit_clock_4 : {0..7}
+channel minutes_min_out_second_digit_clock_4 : {0..15}
+channel seconds_sec_out_first_digit_clock_4 : {0..7}
+channel seconds_sec_out_second_digit_clock_4 : {0..15}
+channel clock_c_out_val_clock_4 : { 0..20}
+channel sync_clock_4
+
+Clock_clock_4(1) = SKIP
+Clock_clock_4(n) =  sync_clock_4 -> sync_clock_4 -> Clock_clock_4(n+1)
+
+Hours_clock_4(input_channel) =
+    (sync_clock_4 ->
+     input_channel ? hours_in ->
+     sync_clock_4 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_4 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_4 ! hours_second_temp ->
+                        Hours_clock_4(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+
+N_hours_clock_4 =
+        (
+            (
+            Hours_clock_4(clock_c_out_val)
+            [|{| hours_hours_out_first_digit_clock_4 |}|]
+            hours_hours_out_first_digit_monitor_clock_4(hours_hours_out_first_digit_clock_4)
+            )
+        [|{| hours_hours_out_second_digit_clock_4 |}|]
+        hours_hours_out_second_digit_monitor_clock_4(hours_hours_out_second_digit_clock_4)
+        )
+        [|{| sync_clock_4 |}|]
+        (
+        Clock_clock_4(0)
+        )
+
+assert SKIP [F= N_hours_clock_4 \ Events
+
+Minutes_clock_4(input_channel) =
+    (sync ->
+     input_channel ? min_in ->
+     sync ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_4 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_4 ! min_second_temp ->
+                        Minutes_clock_4(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+N_minutes_clock_4 =
+        (
+            (
+            Minutes_clock_4(clock_c_out_val_clock_4)
+            [|{| minutes_min_out_first_digit_clock_4 |}|]
+            minutes_min_out_first_digit_monitor_clock_4(minutes_min_out_first_digit_clock_4)
+            )
+        [|{| minutes_min_out_second_digit_clock_4 |}|]
+        minutes_min_out_second_digit_monitor_clock_4(minutes_min_out_second_digit_clock_4)
+        )
+        [|{| sync_clock_4 |}|]
+        (
+        Clock_clock_4(0)
+        )
+
+assert SKIP [F= N_minutes_clock_4 \ Events
+
+
+Seconds_clock_4(input_channel) =
+    (sync_clock_4 ->
+     input_channel ? sec_in ->
+     sync_clock_4 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_4 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_4 ! sec_second_temp ->
+                        Seconds_clock_4(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_4(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_4(c)
+    ) [] SKIP
+
+N_seconds_clock_4 =
+        (
+            (
+            Seconds_clock_4(clock_c_out_val_clock_4)
+            [|{| seconds_sec_out_first_digit_clock_4 |}|]
+            sec_sec_out_first_digit_monitor_clock_4(seconds_sec_out_first_digit_clock_4)
+            )
+        [|{| seconds_sec_out_second_digit_clock_4 |}|]
+        sec_sec_out_second_digit_monitor_clock_4(seconds_sec_out_second_digit_clock_4)
+        )
+        [|{| sync_clock_4 |}|]
+        (
+        Clock_clock_4(0)
+        )
+
+assert SKIP [F= N_seconds_clock_4 \ Events
+
+-------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_5 : {0..3}
+channel hours_hours_out_second_digit_clock_5 : {0..15}
+channel minutes_min_out_first_digit_clock_5 : {0..7}
+channel minutes_min_out_second_digit_clock_5 : {0..15}
+channel seconds_sec_out_first_digit_clock_5 : {0..7}
+channel seconds_sec_out_second_digit_clock_5 : {0..15}
+channel clock_c_out_val_clock_5 : { 0..20}
+channel sync_clock_5
+
+Clock_clock_5(1) = SKIP
+Clock_clock_5(n) =  sync_clock_5 -> sync_clock_5 -> Clock_clock_5(n+1)
+
+Hours_clock_5(input_channel) =
+    (sync_clock_5 ->
+     input_channel ? hours_in ->
+     sync_clock_5 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_5 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_5 ! hours_second_temp ->
+                        Hours_clock_5(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+
+N_hours_clock_5 =
+        (
+            (
+            Hours_clock_5(clock_c_out_val_clock_5)
+            [|{| hours_hours_out_first_digit_clock_5 |}|]
+            hours_hours_out_first_digit_monitor_clock_5(hours_hours_out_first_digit_clock_5)
+            )
+        [|{| hours_hours_out_second_digit_clock_5 |}|]
+        hours_hours_out_second_digit_monitor_clock_5(hours_hours_out_second_digit_clock_5)
+        )
+        [|{| sync_clock_5 |}|]
+        (
+        Clock_clock_5(0)
+        )
+
+assert SKIP [F= N_hours_clock_5 \ Events
+
+Minutes_clock_5(input_channel) =
+    (sync_clock_5 ->
+     input_channel ? min_in ->
+     sync_clock_5 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_5 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_5 ! min_second_temp ->
+                        Minutes_clock_5(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+N_minutes_clock_5 =
+        (
+            (
+            Minutes_clock_5(clock_c_out_val_clock_5)
+            [|{| minutes_min_out_first_digit_clock_5 |}|]
+            minutes_min_out_first_digit_monitor_clock_5(minutes_min_out_first_digit_clock_5)
+            )
+        [|{| minutes_min_out_second_digit_clock_5 |}|]
+        minutes_min_out_second_digit_monitor_clock_5(minutes_min_out_second_digit_clock_5)
+        )
+        [|{| sync_clock_5 |}|]
+        (
+        Clock_clock_5(0)
+        )
+
+assert SKIP [F= N_minutes_clock_5 \ Events
+
+
+Seconds_clock_5(input_channel) =
+    (sync_clock_5 ->
+     input_channel ? sec_in ->
+     sync_clock_5 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_5 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_5 ! sec_second_temp ->
+                        Seconds_clock_5(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_5(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_5(c)
+    ) [] SKIP
+
+N_seconds_clock_5 =
+        (
+            (
+            Seconds_clock_5(clock_c_out_val_clock_5)
+            [|{| seconds_sec_out_first_digit_clock_5 |}|]
+            sec_sec_out_first_digit_monitor_clock_5(seconds_sec_out_first_digit_clock_5)
+            )
+        [|{| seconds_sec_out_second_digit_clock_5 |}|]
+        sec_sec_out_second_digit_monitor_clock_5(seconds_sec_out_second_digit_clock_5)
+        )
+        [|{| sync_clock_5 |}|]
+        (
+        Clock_clock_5(0)
+        )
+
+assert SKIP [F= N_seconds_clock_5 \ Events
+
+-- -------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_6 : {0..3}
+channel hours_hours_out_second_digit_clock_6 : {0..15}
+channel minutes_min_out_first_digit_clock_6 : {0..7}
+channel minutes_min_out_second_digit_clock_6: {0..15}
+channel seconds_sec_out_first_digit_clock_6 : {0..7}
+channel seconds_sec_out_second_digit_clock_6 : {0..15}
+channel clock_c_out_val_clock_6 : { 0..20}
+channel sync_clock_6
+
+Clock_clock_6(1) = SKIP
+Clock_clock_6(n) =  sync_clock_6 -> sync_clock_6 -> Clock_clock_6(n+1)
+
+Hours_clock_6(input_channel) =
+    (sync_clock_6 ->
+     input_channel ? hours_in ->
+     sync_clock_6 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_6 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_6 ! hours_second_temp ->
+                        Hours_clock_6(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+
+N_hours_clock_6 =
+        (
+            (
+            Hours_clock_6(clock_c_out_val_clock_6)
+            [|{| hours_hours_out_first_digit_clock_6 |}|]
+            hours_hours_out_first_digit_monitor_clock_6(hours_hours_out_first_digit_clock_6)
+            )
+        [|{| hours_hours_out_second_digit_clock_6 |}|]
+        hours_hours_out_second_digit_monitor_clock_6(hours_hours_out_second_digit_clock_6)
+        )
+        [|{| sync_clock_6 |}|]
+        (
+        Clock_clock_6(0)
+        )
+
+assert SKIP [F= N_hours_clock_6 \ Events
+
+Minutes_clock_6(input_channel) =
+    (sync_clock_6 ->
+     input_channel ? min_in ->
+     sync_clock_6 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_6 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_6 ! min_second_temp ->
+                        Minutes_clock_6(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+N_minutes_clock_6 =
+        (
+            (
+            Minutes_clock_6(clock_c_out_val_clock_6)
+            [|{| minutes_min_out_first_digit_clock_6 |}|]
+            minutes_min_out_first_digit_monitor_clock_6(minutes_min_out_first_digit_clock_6)
+            )
+        [|{| minutes_min_out_second_digit_clock_6 |}|]
+        minutes_min_out_second_digit_monitor_clock_6(minutes_min_out_second_digit_clock_6)
+        )
+        [|{| sync_clock_6 |}|]
+        (
+        Clock_clock_6(0)
+        )
+
+assert SKIP [F= N_minutes_clock_6 \ Events
+
+
+Seconds_clock_6(input_channel) =
+    (sync_clock_6 ->
+     input_channel ? sec_in ->
+     sync_clock_6 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_6 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_6 ! sec_second_temp ->
+                        Seconds(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_6(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_6(c)
+    ) [] SKIP
+
+N_seconds_clock_6 =
+        (
+            (
+            Seconds_clock_6(clock_c_out_val_clock_6)
+            [|{| seconds_sec_out_first_digit_clock_6 |}|]
+            sec_sec_out_first_digit_monitor_clock_6(seconds_sec_out_first_digit_clock_6)
+            )
+        [|{| seconds_sec_out_second_digit_clock_6 |}|]
+        sec_sec_out_second_digit_monitor_clock_6(seconds_sec_out_second_digit_clock_6)
+        )
+        [|{| sync_clock_6 |}|]
+        (
+        Clock_clock_6(0)
+        )
+
+assert SKIP [F= N_seconds_clock_6 \ Events
+
+-- -------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_7 : {0..3}
+channel hours_hours_out_second_digit_clock_7 : {0..15}
+channel minutes_min_out_first_digit_clock_7 : {0..7}
+channel minutes_min_out_second_digit_clock_7 : {0..15}
+channel seconds_sec_out_first_digit_clock_7 : {0..7}
+channel seconds_sec_out_second_digit_clock_7 : {0..15}
+channel clock_c_out_val_clock_7 : { 0..20}
+channel sync_clock_7
+
+Clock_clock_7(1) = SKIP
+Clock_clock_7(n) =  sync_clock_7 -> sync_clock_7 -> Clock_clock_7(n+1)
+
+Hours_clock_7(input_channel) =
+    (sync_clock_7 ->
+     input_channel ? hours_in ->
+     sync_clock_7 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_7 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_7 ! hours_second_temp ->
+                        Hours_clock_7(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+
+N_hours_clock_7 =
+        (
+            (
+            Hours_clock_7(clock_c_out_val_clock_7)
+            [|{| hours_hours_out_first_digit_clock_7 |}|]
+            hours_hours_out_first_digit_monitor_clock_7(hours_hours_out_first_digit_clock_7)
+            )
+        [|{| hours_hours_out_second_digit_clock_7 |}|]
+        hours_hours_out_second_digit_monitor_clock_7(hours_hours_out_second_digit_clock_7)
+        )
+        [|{| sync_clock_7 |}|]
+        (
+        Clock_clock_7(0)
+        )
+
+assert SKIP [F= N_hours_clock_7 \ Events
+
+Minutes_clock_7(input_channel) =
+    (sync_clock_7 ->
+     input_channel ? min_in ->
+     sync_clock_7 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_7 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_7 ! min_second_temp ->
+                        Minutes_clock_7(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+N_minutes_clock_7 =
+        (
+            (
+            Minutes_clock_7(clock_c_out_val_clock_7)
+            [|{| minutes_min_out_first_digit_clock_7 |}|]
+            minutes_min_out_first_digit_monitor_clock_7(minutes_min_out_first_digit_clock_7)
+            )
+        [|{| minutes_min_out_second_digit_clock_7 |}|]
+        minutes_min_out_second_digit_monitor_clock_7(minutes_min_out_second_digit_clock_7)
+        )
+        [|{| sync_clock_7 |}|]
+        (
+        Clock_clock_7(0)
+        )
+
+assert SKIP [F= N_minutes_clock_7 \ Events
+
+
+Seconds_clock_7(input_channel) =
+    (sync_clock_7 ->
+     input_channel ? sec_in ->
+     sync_clock_7 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_7 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_7 ! sec_second_temp ->
+                        Seconds_clock_7(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_7(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_7(c)
+    ) [] SKIP
+
+N_seconds_clock_7 =
+        (
+            (
+            Seconds_clock_7(clock_c_out_val_clock_7)
+            [|{| seconds_sec_out_first_digit_clock_7 |}|]
+            sec_sec_out_first_digit_monitor_clock_7(seconds_sec_out_first_digit_clock_7)
+            )
+        [|{| seconds_sec_out_second_digit_clock_7 |}|]
+        sec_sec_out_second_digit_monitor_clock_7(seconds_sec_out_second_digit_clock_7)
+        )
+        [|{| sync_clock_7 |}|]
+        (
+        Clock_clock_7(0)
+        )
+
+assert SKIP [F= N_seconds_clock_7 \ Events
+
+-- -------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_8 : {0..3}
+channel hours_hours_out_second_digit_clock_8 : {0..15}
+channel minutes_min_out_first_digit_clock_8 : {0..7}
+channel minutes_min_out_second_digit_clock_8 : {0..15}
+channel seconds_sec_out_first_digit_clock_8 : {0..7}
+channel seconds_sec_out_second_digit_clock_8 : {0..15}
+channel clock_c_out_val_clock_8 : { 0..20}
+channel sync_clock_8
+
+Clock_clock_8(1) = SKIP
+Clock_clock_8(n) =  sync_clock_8 -> sync_clock_8 -> Clock_clock_8(n+1)
+
+Hours_clock_8(input_channel) =
+    (sync_clock_8 ->
+     input_channel ? hours_in ->
+     sync_clock_8 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_8 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_8 ! hours_second_temp ->
+                        Hours_clock_8(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+
+N_hours_clock_8 =
+        (
+            (
+            Hours_clock_8(clock_c_out_val_clock_8)
+            [|{| hours_hours_out_first_digit_clock_8 |}|]
+            hours_hours_out_first_digit_monitor_clock_8(hours_hours_out_first_digit_clock_8)
+            )
+        [|{| hours_hours_out_second_digit_clock_8 |}|]
+        hours_hours_out_second_digit_monitor_clock_8(hours_hours_out_second_digit_clock_8)
+        )
+        [|{| sync_clock_8 |}|]
+        (
+        Clock_clock_8(0)
+        )
+
+assert SKIP [F= N_hours_clock_8 \ Events
+
+Minutes_clock_8(input_channel) =
+    (sync_clock_8 ->
+     input_channel ? min_in ->
+     sync_clock_8 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_8 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_8 ! min_second_temp ->
+                        Minutes_clock_8(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+N_minutes_clock_8 =
+        (
+            (
+            Minutes_clock_8(clock_c_out_val_clock_8)
+            [|{| minutes_min_out_first_digit_clock_8 |}|]
+            minutes_min_out_first_digit_monitor_clock_8(minutes_min_out_first_digit_clock_8)
+            )
+        [|{| minutes_min_out_second_digit_clock_8 |}|]
+        minutes_min_out_second_digit_monitor_clock_8(minutes_min_out_second_digit_clock_8)
+        )
+        [|{| sync_clock_8 |}|]
+        (
+        Clock_clock_8(0)
+        )
+
+assert SKIP [F= N_minutes_clock_8 \ Events
+
+
+Seconds_clock_8(input_channel) =
+    (sync_clock_8 ->
+     input_channel ? sec_in ->
+     sync_clock_8 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_8 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_8 ! sec_second_temp ->
+                        Seconds_clock_8(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_8(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_8(c)
+    ) [] SKIP
+
+N_seconds_clock_8 =
+        (
+            (
+            Seconds_clock_8(clock_c_out_val_clock_8)
+            [|{| seconds_sec_out_first_digit_clock_8 |}|]
+            sec_sec_out_first_digit_monitor_clock_8(seconds_sec_out_first_digit_clock_8)
+            )
+        [|{| seconds_sec_out_second_digit_clock_8 |}|]
+        sec_sec_out_second_digit_monitor_clock_8(seconds_sec_out_second_digit_clock_8)
+        )
+        [|{| sync_clock_8 |}|]
+        (
+        Clock_clock_8(0)
+        )
+
+assert SKIP [F= N_seconds_clock_8 \ Events
+
+-- -------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_9 : {0..3}
+channel hours_hours_out_second_digit_clock_9 : {0..15}
+channel minutes_min_out_first_digit_clock_9 : {0..7}
+channel minutes_min_out_second_digit_clock_9 : {0..15}
+channel seconds_sec_out_first_digit_clock_9 : {0..7}
+channel seconds_sec_out_second_digit_clock_9 : {0..15}
+channel clock_c_out_val_clock_9 : { 0..20}
+channel sync_clock_9
+
+Clock_clock_9(1) = SKIP
+Clock_clock_9(n) =  sync_clock_9 -> sync_clock_9 -> Clock_clock_9(n+1)
+
+Hours_clock_9(input_channel) =
+    (sync_clock_9 ->
+     input_channel ? hours_in ->
+     sync_clock_9 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_9 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_9 ! hours_second_temp ->
+                        Hours_clock_9(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+
+N_hours_clock_9 =
+        (
+            (
+            Hours_clock_9(clock_c_out_val_clock_9)
+            [|{| hours_hours_out_first_digit_clock_9 |}|]
+            hours_hours_out_first_digit_monitor_clock_9(hours_hours_out_first_digit_clock_9)
+            )
+        [|{| hours_hours_out_second_digit_clock_9 |}|]
+        hours_hours_out_second_digit_monitor_clock_9(hours_hours_out_second_digit_clock_9)
+        )
+        [|{| sync_clock_9 |}|]
+        (
+        Clock_clock_9(0)
+        )
+
+assert SKIP [F= N_hours_clock_9 \ Events
+
+Minutes_clock_9(input_channel) =
+    (sync_clock_9 ->
+     input_channel ? min_in ->
+     sync_clock_9 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_9 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_9 ! min_second_temp ->
+                        Minutes_clock_9(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+N_minutes_clock_9 =
+        (
+            (
+            Minutes_clock_9(clock_c_out_val_clock_9)
+            [|{| minutes_min_out_first_digit_clock_9 |}|]
+            minutes_min_out_first_digit_monitor_clock_9(minutes_min_out_first_digit_clock_9)
+            )
+        [|{| minutes_min_out_second_digit_clock_9 |}|]
+        minutes_min_out_second_digit_monitor_clock_9(minutes_min_out_second_digit_clock_9)
+        )
+        [|{| sync_clock_9 |}|]
+        (
+        Clock_clock_9(0)
+        )
+
+assert SKIP [F= N_minutes_clock_9 \ Events
+
+
+Seconds_clock_9(input_channel) =
+    (sync_clock_9 ->
+     input_channel ? sec_in ->
+     sync_clock_9 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_9 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_9 ! sec_second_temp ->
+                        Seconds_clock_9(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_9(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_9(c)
+    ) [] SKIP
+
+N_seconds_clock_9 =
+        (
+            (
+            Seconds_clock_9(clock_c_out_val_clock_9)
+            [|{| seconds_sec_out_first_digit_clock_9 |}|]
+            sec_sec_out_first_digit_monitor_clock_9(seconds_sec_out_first_digit_clock_9)
+            )
+        [|{| seconds_sec_out_second_digit_clock_9 |}|]
+        sec_sec_out_second_digit_monitor_clock_9(seconds_sec_out_second_digit_clock_9)
+        )
+        [|{| sync_clock_9 |}|]
+        (
+        Clock_clock_9(0)
+        )
+
+assert SKIP [F= N_seconds_clock_9 \ Events
+
+-- -------------------------------------------------------------------------------
+
+
+channel hours_hours_out_first_digit_clock_10 : {0..3}
+channel hours_hours_out_second_digit_clock_10 : {0..15}
+channel minutes_min_out_first_digit_clock_10 : {0..7}
+channel minutes_min_out_second_digit_clock_10 : {0..15}
+channel seconds_sec_out_first_digit_clock_10 : {0..7}
+channel seconds_sec_out_second_digit_clock_10 : {0..15}
+channel clock_c_out_val_clock_10 : { 0..20}
+channel sync_clock_10
+
+Clock_clock_10(1) = SKIP
+Clock_clock_10(n) =  sync_clock_10 -> sync_clock_10 -> Clock_clock_10(n+1)
+
+Hours_clock_10(input_channel) =
+    (sync_clock_10 ->
+     input_channel ? hours_in ->
+     sync_clock_10 ->
+            let
+                hours = ( hours_in / 3600 ) % 24
+                hours_first_temp = hours / 10
+                hours_second_temp = hours % 10
+            within
+                (hours_first_temp <= 3) &
+                    (hours_hours_out_first_digit_clock_10 ! hours_first_temp ->
+                    (hours_second_temp <= 15) &
+                        (hours_hours_out_second_digit_clock_10 ! hours_second_temp ->
+                        Hours_clock_10(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+hours_hours_out_first_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 2) &
+        hours_hours_out_first_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+hours_hours_out_second_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        hours_hours_out_second_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+
+N_hours_clock_10 =
+        (
+            (
+            Hours_clock_10(clock_c_out_val_clock_10)
+            [|{| hours_hours_out_first_digit_clock_10 |}|]
+            hours_hours_out_first_digit_monitor_clock_10(hours_hours_out_first_digit_clock_10)
+            )
+        [|{| hours_hours_out_second_digit_clock_10 |}|]
+        hours_hours_out_second_digit_monitor_clock_10(hours_hours_out_second_digit_clock_10)
+        )
+        [|{| sync_clock_10 |}|]
+        (
+        Clock_clock_10(0)
+        )
+
+assert SKIP [F= N_hours_clock_10 \ Events
+
+Minutes_clock_10(input_channel) =
+    (sync_clock_10 ->
+     input_channel ? min_in ->
+     sync_clock_10 ->
+            let
+                min = ( min_in / 60 ) % 60
+                min_first_temp = min / 10
+                min_second_temp = min % 10
+            within
+                (min_first_temp <= 7) &
+                    (minutes_min_out_first_digit_clock_10 ! min_first_temp ->
+                    (min_second_temp <= 15) &
+                        (minutes_min_out_second_digit_clock_10 ! min_second_temp ->
+                        Minutes_clock_10(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+minutes_min_out_first_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        minutes_min_out_first_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+minutes_min_out_second_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        minutes_min_out_second_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+N_minutes_clock_10 =
+        (
+            (
+            Minutes_clock_10(clock_c_out_val_clock_10)
+            [|{| minutes_min_out_first_digit_clock_10 |}|]
+            minutes_min_out_first_digit_monitor_clock_10(minutes_min_out_first_digit_clock_10)
+            )
+        [|{| minutes_min_out_second_digit_clock_10 |}|]
+        minutes_min_out_second_digit_monitor_clock_10(minutes_min_out_second_digit_clock_10)
+        )
+        [|{| sync_clock_10 |}|]
+        (
+        Clock_clock_10(0)
+        )
+
+assert SKIP [F= N_minutes_clock_10 \ Events
+
+
+Seconds_clock_10(input_channel) =
+    (sync_clock_10 ->
+     input_channel ? sec_in ->
+     sync_clock_10 ->
+            let
+                sec = sec_in % 60
+                sec_first_temp = sec / 10
+                sec_second_temp = sec % 10
+            within
+                (sec_first_temp <= 7) &
+                    (seconds_sec_out_first_digit_clock_10 ! sec_first_temp ->
+                    (sec_second_temp <= 15) &
+                        (seconds_sec_out_second_digit_clock_10 ! sec_second_temp ->
+                        Seconds_clock_10(input_channel)
+                        )
+                    )
+    ) [] SKIP
+
+
+sec_sec_out_first_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 5) &
+        sec_sec_out_first_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+sec_sec_out_second_digit_monitor_clock_10(c) =
+    (c ? x ->
+    (0 <= x and x <= 9) &
+        sec_sec_out_second_digit_monitor_clock_10(c)
+    ) [] SKIP
+
+N_seconds_clock_10 =
+        (
+            (
+            Seconds_clock_10(clock_c_out_val_clock_10)
+            [|{| seconds_sec_out_first_digit_clock_10 |}|]
+            sec_sec_out_first_digit_monitor_clock_10(seconds_sec_out_first_digit_clock_10)
+            )
+        [|{| seconds_sec_out_second_digit_clock_10 |}|]
+        sec_sec_out_second_digit_monitor_clock_10(seconds_sec_out_second_digit_clock_10)
+        )
+        [|{| sync_clock_10 |}|]
+        (
+        Clock_clock_10(0)
+        )
+
+assert SKIP [F= N_seconds_clock_10 \ Events
+
+-- -------------------------------------------------------------------------------
