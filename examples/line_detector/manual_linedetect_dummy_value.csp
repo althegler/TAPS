@@ -106,5 +106,5 @@ System =
 
 
 assert SKIP [F= System \ Events
-assert System :[deadlock free [F]]
+-- assert System :[deadlock free [Fk]]
 
